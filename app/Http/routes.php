@@ -23,7 +23,7 @@ Route::get('/administration/auth/logout', 'Administration\AuthController@logout'
 // Backoffice administration routes
 Route::group(['prefix' => 'administration', 'middleware' => 'administration.auth'], function() {
 	// Main dashboard
-	Route::get('/', 'WelcomeController@administration');
+	Route::get('/', 'Administration\HomeController@index');
 	
 	// People controller
 	Route::get('/people', 'Administration\PeopleController@index');

@@ -10,6 +10,6 @@
 class MessageLevel extends \Tranquility\Enums\Enum {
 	const Error   = 'error';
 	const Warning = 'warning';
-	const Info    = 'information';
+	const Info    = 'info';
 	const Success = 'success';
 }

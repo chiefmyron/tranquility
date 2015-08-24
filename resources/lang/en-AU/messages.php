@@ -2,6 +2,7 @@
 
 return array(	
 	// Validation messages
+	'message_10001_record_not_found' => 'Sorry, we couldn\'t find a record with that ID...',
 	'message_10002_mandatory_input_field_missing' => 'This is a required field',
 	'message_10003_passwords_must_match' => 'Passwords do not match',
 	'message_10004_username_must_be_email_address' => 'There’s something wrong with your email. Check if you typed it in correctly. Perhaps you missed “.” or “@” somewhere?',

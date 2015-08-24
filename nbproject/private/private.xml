@@ -3,11 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Projects/tranquility/library/Tranquility/Auth/UserProvider.php</file>
-            <file>file:/C:/Projects/tranquility/app/Http/routes.php</file>
-            <file>file:/C:/Projects/tranquility/vendor/laravel/framework/src/Illuminate/Auth/Guard.php</file>
-            <file>file:/C:/Projects/tranquility/app/Http/Controllers/Administration/AuthController.php</file>
-            <file>file:/C:/Projects/tranquility/app/Http/Middleware/RedirectIfAuthenticated.php</file>
+            <file>file:/C:/Projects/tranquility/app/Http/Controllers/Administration/PeopleController.php</file>
+            <file>file:/C:/Projects/tranquility/library/Tranquility/Html/Toolbar/ServiceProvider.php</file>
         </group>
     </open-files>
 </project-private>
