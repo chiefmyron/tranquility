@@ -104,4 +104,13 @@ class User extends \Tranquility\Services\Service {
 		
 		return true;
 	}
+	
+	public function retrieveByToken($id, $token) {
+		$entity = $this->model->findByToken($id, $token);
+		return $this->_findResponse($entity);
+	}
+	
+	public function updateRememberToken($id, $token) {
+		$this->model->updateRememberToken($id, $token);
+	}
 }	

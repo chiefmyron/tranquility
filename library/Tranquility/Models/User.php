@@ -50,6 +50,11 @@ class User extends Entity {
 			'childId' => $entityId
 		));
 		
+		// Create new record for user tokens
+		DB::table('tql_sys_user_tokens')->insert(array(
+			'userId' => $entityId
+		));
+		
 		// Complete transaction, and return full User record
 		DB::commit();
 		return $this->find($entityId);
@@ -111,6 +116,13 @@ class User extends Entity {
 		DB::beginTransaction();
 		$this->_createHistoricalUserRecord($id);
 		$user = parent::delete($id);
+		
+		// Remove record for user tokens
+		DB::table('tql_sys_user_tokens')
+			->where('userId', '=', $id)
+			->delete();
+			
+		// Commit changes
 		DB::commit();
 		
 		// Retrieve User record (including audit information)
@@ -129,6 +141,38 @@ class User extends Entity {
 		$select = array(
 			'tql_entity_users.id as id',
 			'password',
+			'rememberToken',
+			'timezoneCode',
+			'localeCode',
+			'active',
+			'securityGroupId',
+			'registeredDateTime',
+			'tql_entity.transactionId as transactionId',
+			'transactionSource',
+			'updateBy',
+			'updateDateTime',
+			'updateReason'			
+		);
+		
+		// Execute query
+		$user = DB::table('tql_entity_users')
+					->join('tql_entity', 'tql_entity_users.id', '=', 'tql_entity.id')                                   // Join to Entity table
+					->join('tql_sys_trans_audit', 'tql_entity.transactionId', '=', 'tql_sys_trans_audit.transactionId') // Join to transaction audit table
+					->join('tql_entity_xref', 'tql_entity_users.id', '=', 'tql_entity_xref.childId')                    // Join to Entity cross reference table
+					->join('tql_entity_people', 'tql_entity_xref.parentId', '=', 'tql_entity_people.id')                // Join to related Person
+					->join('tql_sys_user_tokens', 'tql_entity_users.id', '=', 'tql_sys_user_tokens.userId')             // Join to user tokens 
+					->where($searchField, $searchTerm)
+					->select($select)
+					->first();
+		return $user;
+	}
+	
+	public function findByToken($id, $token) {
+		// Define select fields
+		$select = array(
+			'tql_entity_users.id as id',
+			'password',
+			'rememberToken',
 			'timezoneCode',
 			'localeCode',
 			'active',
@@ -147,10 +191,18 @@ class User extends Entity {
 					->join('tql_sys_trans_audit', 'tql_entity.transactionId', '=', 'tql_sys_trans_audit.transactionId') // Join to transaction audit table
 					->join('tql_entity_xref', 'tql_entity_users.id', '=', 'tql_entity_xref.childId')                    // Join to Entity cross reference table
 					->join('tql_entity_people', 'tql_entity_xref.parentId', '=', 'tql_entity_people.id')                // Join to related Person 
-					->where($searchField, $searchTerm)
+					->join('tql_sys_user_tokens', 'tql_entity_users.id', '=', 'tql_sys_user_tokens.userId')             // Join to user tokens
+					->where('tql_entity_users.id', '=', $id)                                                            // Limit by user ID
+					->where('tql_sys_user_tokens.rememberToken', '=', $token)                                           // Limit by 'remember me' token
 					->select($select)
 					->first();
 		return $user;
+	}
+	
+	public function updateRememberToken($id, $token) {
+		DB::table('tql_sys_user_tokens')
+			->where('userId', '=', $id)
+			->update(array('rememberToken' => $token));
 	}
 	
 	// Retrieve a collection of associated entities

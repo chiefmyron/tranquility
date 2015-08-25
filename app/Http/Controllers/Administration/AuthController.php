@@ -1,8 +1,11 @@
 <?php namespace App\Http\Controllers\Administration;
 
+use \Event as Event;
 use \Session as Session;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
+
+use App\Events\AdminUserLogin;
 use App\Http\Controllers\Controller;	
 
 use Tranquility\Enums\System\MessageLevel as EnumMessageLevel;

@@ -214,11 +214,16 @@ class InitialDatabaseSchema extends Migration {
             $table->dateTime('lockedDateTime');
         });
         
+        Schema::create('tql_sys_sessions', function(Blueprint $table) {
+            $table->string('sessionId')->primary();
+            $table->text('payload');    
+            $table->integer('lastActivity');
+        });
+        
         Schema::create('tql_sys_user_tokens', function(Blueprint $table) {
-            $table->bigInteger('entityId')->primary();
-            $table->string('resetToken')->index();
-            $table->timestamp('createdDateTime');
-            $table->primary(['entityId', 'resetToken']);
+            $table->bigInteger('userId')->primary();
+            $table->string('sessionId');
+            $table->string('rememberToken');
         });
     }
 
