@@ -155,17 +155,17 @@ a.btn {
 /******************************************************************************
  * Navigation                                                                 *
  ******************************************************************************/
-/*.navbar-inverse {
-    background-color: #4B8200;
+.navbar-default {
+    border-color: #285405;
 }
 
-.navbar-inverse .navbar-brand {
-    color: #ffffff;
+.navbar-default .navbar-brand {
+    color: #4B8200;
 }
 
-.navbar-inverse .navbar-nav > li > a {
-    color: #ffffff;
-}*/
+.navbar-default .navbar-brand:hover {
+    color: #609D02;
+}
 
 /******************************************************************************
  * Breadcrumbs                                                                *
