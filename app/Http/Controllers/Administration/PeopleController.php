@@ -40,7 +40,8 @@ class PeopleController extends Controller {
 	 * @return Response
 	 */
 	public function index() {
-		$response = $this->_person->all();
+		// Get the list of people
+		$response = $this->_person->all();				
 		return view('administration.people.index', $response->toArray());
 	}
 	
@@ -48,7 +49,8 @@ class PeopleController extends Controller {
 		$response = $this->_person->find($id);
 		if ($response->containsErrors()) {
 			// Redirect to index with error message
-			
+			Session::flash('messages', $response->getMessages());
+			return redirect()->action('Administration\PeopleController@index');
 		}
 		return view('administration.people.show')->with('person', $response->getFirstContentItem());
 	}
@@ -61,6 +63,8 @@ class PeopleController extends Controller {
 		$response = $this->_person->find($id);
 		if ($response->containsErrors()) {
 			// Redirect to index with error message
+			Session::flash('messages', $response->getMessages());
+			return redirect()->action('Administration\PeopleController@index');
 		}
 		return view('administration.people.update')->with('person', $response->getFirstContentItem());
 	}

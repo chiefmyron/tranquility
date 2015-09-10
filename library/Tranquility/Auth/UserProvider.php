@@ -55,7 +55,16 @@ class UserProvider implements UserProviderInterface {
 	 * @return \Illuminate\Contracts\Auth\Authenticatable|null
 	 */
 	public function retrieveByToken($identifier, $token) {
+		// Retrieve user record
+		$response = $this->_service->findByToken($identifier, $token);
+		if ($response->containsErrors()) {
+			return null;
+		}
 		
+		// Create user object and return
+		$obj = (array)$response->getFirstContentItem();
+		$user = new User($obj);
+		return $user;
 	}
 
 	/**
@@ -66,7 +75,7 @@ class UserProvider implements UserProviderInterface {
 	 * @return void
 	 */
 	public function updateRememberToken(Authenticatable $user, $token) {
-		
+		$this->_service->updateRememberToken($user->id, $token);
 	}
 
 	/**

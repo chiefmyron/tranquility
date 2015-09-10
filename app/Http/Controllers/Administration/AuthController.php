@@ -1,8 +1,11 @@
 <?php namespace App\Http\Controllers\Administration;
 
+use \Event as Event;
 use \Session as Session;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
+
+use App\Events\AdminUserLogin;
 use App\Http\Controllers\Controller;	
 
 use Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
@@ -113,7 +116,7 @@ class AuthController extends Controller {
 	 */
 	public function logout() {
 		$this->auth->logout();
-		return redirect(property_exists($this, 'redirectAfterLogout') ? $this->redirectAfterLogout : '/');
+		return redirect(property_exists($this, 'redirectAfterLogout') ? $this->redirectAfterLogout : action('WelcomeController@index'));
 	}
 
 	/**
@@ -126,7 +129,7 @@ class AuthController extends Controller {
 			return $this->redirectPath;
 		}
 
-		return property_exists($this, 'redirectTo') ? $this->redirectTo : '/';
+		return property_exists($this, 'redirectTo') ? $this->redirectTo : action('Administration\HomeController@index');
 	}
 
 	/**
@@ -136,7 +139,7 @@ class AuthController extends Controller {
 	 */
 	public function loginPath()
 	{
-		return property_exists($this, 'loginPath') ? $this->loginPath : '/administration/auth';
+		return property_exists($this, 'loginPath') ? $this->loginPath : action('Administration\AuthController@index');
 	}
 	
 	/**

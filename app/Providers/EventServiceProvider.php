@@ -10,11 +10,10 @@ class EventServiceProvider extends ServiceProvider {
 	 *
 	 * @var array
 	 */
-	protected $listen = [
-		'event.name' => [
-			'EventListener',
-		],
-	];
+	protected $listen = array(
+		'auth.login' => array('App\Listeners\LinkUserToSession'),
+		'auth.logout' => array('App\Listeners\UnlinkUserFromSession'),
+	);
 
 	/**
 	 * Register any other events for your application.

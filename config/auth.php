@@ -64,4 +64,15 @@ return [
 		'expire' => 60,
 	],
 
+	/*
+	 |--------------------------------------------------------------------------
+	 | User tokens table
+	 |--------------------------------------------------------------------------
+	 | 
+	 | Name of the database table used to store the session ID currently 
+	 | associated with the user, as well as the 'remember me' token name.
+	 |
+	 */
+	'tokensTable' => 'tql_sys_user_tokens',
+
 ];

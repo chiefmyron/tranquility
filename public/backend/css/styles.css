@@ -1,3 +1,7 @@
+#content-wrapper {
+  padding: 60px 15px 0;
+}
+
 /******************************************************************************
  * Typography                                                                 *
  ******************************************************************************/
@@ -146,6 +150,83 @@ a.btn {
 .btn-primary.dropdown-toggle .caret {
     border-top-color: #ffffff;
     border-bottom-color: #ffffff;
+}
+
+/******************************************************************************
+ * Navigation                                                                 *
+ ******************************************************************************/
+.navbar-default {
+    border-color: #285405;
+}
+
+.navbar-default .navbar-brand {
+    color: #4B8200;
+}
+
+.navbar-default .navbar-brand:hover {
+    color: #609D02;
+}
+
+/******************************************************************************
+ * Breadcrumbs                                                                *
+ ******************************************************************************/
+.breadcrumb {
+    padding-left: 0px;
+    padding-top: 0px;
+    margin-bottom: 0px;
+    background-color: #ffffff;
+}
+
+/******************************************************************************
+ * Toolbar                                                                    *
+ ******************************************************************************/
+.toolbar {
+    box-shadow: none;
+    border: 0px;
+}
+
+.toolbar h3 {
+    color: #959595;
+    font-size: 0.9em;
+    font-weight: 700;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    text-transform: uppercase;
+}
+
+.toolbar .list-group-item {
+    border: 0px;
+    padding: 5px 0px;
+}
+
+.toolbar :first-child.list-group-item {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.toolbar :last-child.list-group-item {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.toolbar .list-group-item .glyphicon {
+    color: #4B8200;
+}
+
+.toolbar .list-group-item.disabled,
+.toolbar .list-group-item.disabled a,
+.toolbar .list-group-item.disabled .glyphicon {
+    color: #959595;
+    background-color: #ffffff;
+    cursor: not-allowed;
+}
+
+.toolbar .list-group-item.disabled a:hover {
+    text-decoration: none;
+}
+
+.toolbar .list-group-item.divider {
+    border-top: 1px solid #eeeeee;
+    margin-top: 5px;
 }
 
 /******************************************************************************

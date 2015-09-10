@@ -70,7 +70,7 @@ class User implements UserContract {
 	 */
 	public function getRememberTokenName()
 	{
-		return 'remember_token';
+		return 'rememberToken';
 	}
 
 	/**
