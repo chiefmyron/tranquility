@@ -42,11 +42,11 @@ class Manager {
      * If the link is only intended to execute using JavaScript, use '#' as the
      * url parameter.
      *
-     * @param string $text      Link text displayed to the user
-     * @param string $id        HTML element ID
-     * @param string $url       URL of the link
-     * @param string $class     CSS classes to apply to the link element
-     * @param string $icon      Icon identifier for link (optional)
+     * @param string  $text      Link text displayed to the user
+     * @param string  $id        HTML element ID
+     * @param string  $url       URL of the link
+     * @param string  $class     CSS classes to apply to the link element
+     * @param string  $icon      Icon identifier for link (optional)
      * @param boolean $enabled  Sets whether the link is initially enabled
      * @return void
      */

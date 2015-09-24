@@ -71,52 +71,15 @@
             // Divider                
             case 'divider':
                 // Write divider element
-                $output .= '            <li class="list-group-item divider" />'."\n";
+                $output .= '            <li class="list-group-item divider"></li>'."\n";
                 break;
-                
-            /*case 'button':
-                $output .= '<button class="btn btn-block'.$class.'" id="'.$element['id'].'" type="button">'.$element['text'].'</button>';
-                break;
-            case 'multibutton':
-                $output .= '<div class="btn-group btn-block btn-dropdown-container">'."\n";
-                $output .= '    <button type="button" class="btn btn-block'.$class.'" id="'.$element['id'].'">'.$element['text'].'</button>'."\n";
-                $output .= '    <button type="button" class="btn dropdown-toggle'.$class.'" data-toggle="dropdown"><span class="caret"></span></button>'."\n";
-                $output .= '    <ul class="dropdown-menu" role="menu">'."\n";
-                foreach ($element['items'] as $item) {
-                    if ($item['text'] == '-') {
-                        $output .= '        <li class="divider"></li>'."\n";
-                    } else {
-                        $output .= '        <li>'."\n";
-                        $output .= '            <a href="'.$item['url'].'" id="'.$item['id'].'">'.$item['text'].'</a>'."\n";
-                        $output .= '        </li>'."\n";
-                    }
-                }
-                $output .= '    </ul>'."\n";
-                $output .= '</div>'."\n";
-                $output .= '<div class="clearfix"></div>';
-                break;
-            case 'divider':
-                // Write divider element
-                $output .= '<li class="divider" />'."\n";;
-                break;
-            case 'link':
-                $output .= "<li class='toolbar-16-".$element['class']."' id='".$element['id']."'>\n";
-                $output .= "    <a href='".$element['url']."'>".$element['text']."</a>\n"; 
-                $output .= "</li> \n";
-                break;
-            case 'text':
-                $output .= "<div class='data-item".$class."'>\n";
-                $output .= "    ".$element['text']."\n";
-                $output .= "</div> \n";
-                break;
-            case 'textWithLabel':
-                $output .= "<div class='data-item".$class."'>\n";
-                $output .= "    <span id='".$element['id']."'>".$element['text']."</span> \n";
-                $output .= "    <span class='sub-label'>".$element['label']."</span> \n";
-                $output .= "</div> \n";
-                break;*/
         }
-    }    
+    }   
+    
+    // Close off unordered list, if it is open
+    if ($groupStarted) {
+        $output .= '        </ul>'."\n";
+    } 
     
     echo $output;
 ?>      
