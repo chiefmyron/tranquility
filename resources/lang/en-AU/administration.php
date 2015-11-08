@@ -19,4 +19,5 @@ return array(
 	
 	// People strings
 	'people_heading_people' => 'People',
+	'people_name' => 'Name',
 );

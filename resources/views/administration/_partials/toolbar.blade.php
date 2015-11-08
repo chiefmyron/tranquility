@@ -47,7 +47,7 @@
                 
             // Hyperlinked toolbar item
             case 'link':
-                $output .= '            <li class="list-group-item '.$class.'"'.$id.'>'."\n";
+                $output .= '            <li class="list-group-item'.$class.'"'.$id.'>'."\n";
                 
                 // Add item
                 $output .= '                '.$icon.'<a href="'.$element['url'].'">'.trans($element['text']).'</a>'."\n"; 
@@ -56,7 +56,7 @@
                 
             // Plain text toolbar item
             case 'text':
-                $output .= '            <li class="list-group-item '.$class.'"'.$id.'>'."\n";
+                $output .= '            <li class="list-group-item'.$class.'"'.$id.'>'."\n";
                 
                 // Include icon if specified
                 if ($icon != '') {

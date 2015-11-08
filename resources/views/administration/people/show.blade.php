@@ -12,3 +12,7 @@
 	</dl>
 	
 @stop
+
+@section('toolbar')
+	@include('administration.people._partials.toolbar-show')
+@stop

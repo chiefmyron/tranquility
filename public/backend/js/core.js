@@ -61,7 +61,23 @@ function attachCommonHandlers() {
     $('table th .selectAll').on('click.selectAllCheckbox', function(e){
         var table = $(e.target).closest('table');
         $('td input:checkbox', table).prop('checked', this.checked);
+        changeToolbarLinkStatus();
     });
+    
+    // Handle click event for any 'record selector' checkbox in a table
+    $('table td input:checkbox.record-select').change(function () {
+        changeToolbarLinkStatus();
+    });
+}
+
+// Enable toolbar links that interact with multiple selected items only if at least one item is selected
+function changeToolbarLinkStatus() {
+    if ($('table td input.record-select').is(':checked')) {
+        $("#toolbar-container li.multi-select").removeClass("disabled");
+    } else {
+        $("#toolbar-container li.multi-select").addClass("disabled");
+        $('table th .selectAll').prop('checked', false);
+    }
 }
 
 /**

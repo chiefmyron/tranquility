@@ -36,7 +36,7 @@ class PeopleController extends Controller {
 	}
 
 	/**
-	 * Show the application welcome screen to the user.
+	 * Show a list of people
 	 *
 	 * @return Response
 	 */
@@ -64,9 +64,13 @@ class PeopleController extends Controller {
 		// Full page response
 		return view('administration.people.index', $responseArray);
 	}
-	
 
-	
+	/**
+	 * Show details of one specific person
+	 *
+	 * @param int $id  Entity ID of the person to show
+	 * @return Response
+	 */
 	public function show($id) {
 		$response = $this->_person->find($id);
 		if ($response->containsErrors()) {
