@@ -3,7 +3,9 @@
 use \DB                                    as DB;
 use \Hash                                  as Hash;
 use \Carbon\Carbon;
+
 use \Tranquility\Utility                   as Utility;
+use \Tranquility\Models\ModelException     as ModelException;
 use \Tranquility\Enums\System\EntityType   as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
@@ -207,7 +209,7 @@ class User extends Entity {
 	
 	// Retrieve a collection of associated entities
 	public function getRelatedEntities($entityId, $filters = array()) {
-		throw new \Exception("Not implemented!");
+		throw new ModelException("Not implemented!");
 	}
 	
 	// Retrieve all records of the entity type
@@ -229,7 +231,7 @@ class User extends Entity {
 	
 	// Paginated set of records of the entity type
 	public function paginate($perPage = 20, $includeDeleted = false) {
-		throw new \Exception("Not implemented!");
+		throw new ModelException("Not implemented!");
 	}
 	
 	/**

@@ -2,7 +2,7 @@
 
 use \DB                                    as DB;
 use \Tranquility\Utility                   as Utility;
-use \Tranquility\Exception                 as Exception;
+use \Tranquility\Models\ModelException     as ModelException;
 use \Tranquility\Enums\System\EntityType   as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
@@ -18,7 +18,7 @@ abstract class Entity implements ModelInterface {
 		// Retrieve entity type from inputs
 		$type = Utility::extractValue($data, 'type');
 		if (!EnumEntityType::isValidValue($type)) {
-			throw new Exception('Unknown entity type supplied while trying to create a new entity record: '.$type);
+			throw new ModelException('Unknown entity type supplied while trying to create a new entity record: '.$type);
 		}
 		
 		// Create new audit trail record
@@ -116,7 +116,7 @@ abstract class Entity implements ModelInterface {
 	 *
 	 * @param array $data Audit trail inputs (transactionSource, updateBy, updateDatetime, updateReason)
 	 * @return int The auto-generated transactionID
-	 * @throws \Tranquility\Exception
+	 * @throws \Tranquility\Models\ModelException
 	 */
 	protected function _createTransactionRecord(array $data) {
 		// Create new audit trail record
@@ -129,7 +129,7 @@ abstract class Entity implements ModelInterface {
 		
 		// Check that transaction ID is valid
 		if ($id <= 0) {
-			throw new Exception('Unable to create new audit trail record');
+			throw new ModelException('Unable to create new audit trail record');
 		}
 		
 		// Return newly generated transaction ID

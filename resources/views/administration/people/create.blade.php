@@ -6,6 +6,6 @@
 	@include('administration.errors.list')
 	
 	{!! Form::open(['url' => 'administration/people']) !!}
-	@include('administration.people.partials.form', ['submitButtonText' => 'Add new person'])
+	@include('administration.people._partials.form', ['submitButtonText' => 'Add new person'])
 	{!! Form::close() !!}
 @stop

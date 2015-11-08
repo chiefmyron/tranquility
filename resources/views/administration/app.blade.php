@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 	
 	<!-- Favicon -->
 	
@@ -39,13 +40,13 @@
             <div class="row">
                 
                 <!-- Toolbar -->
-                <div class="col-md-3 col-md-push-9">
+                <div id="toolbar-container" class="col-md-3 col-md-push-9">
                     @yield('toolbar')  
                 </div>
                 <!-- End of toolbar -->
                 
                 <!-- Main content panel -->
-                <div class="col-md-9 col-md-pull-3">
+                <div id="main-content-container" class="col-md-9 col-md-pull-3">
                     @yield('content')
                 </div>
                 <!-- End of main content panel -->
@@ -61,15 +62,8 @@
     <!-- Add JavaScript at the bottom to prevent page load blocking -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="/backend/js/core.js"></script>
 
 </body>
 
 </html>
-
-
-
-
-
-
-
-

@@ -3,15 +3,11 @@
 @section('breadcrumbs', Breadcrumbs::render('admin.people'))
 
 @section('content')
-	<div id="main-content-container">
-	@include('administration.people.partials.index-detail', ['content' => $content])
-	</div>
+	@include('administration.people._partials.index-'.$viewType, ['content' => $content])
 @stop
 
 @section('toolbar')
-	<div id="toolbar-container">
-	@include('administration.people.partials.toolbar-index-detail')
-	</div>
+	@include('administration.people._partials.toolbar-index-'.$viewType)
 @stop
 
 		

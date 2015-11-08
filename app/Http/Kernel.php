@@ -25,9 +25,10 @@ class Kernel extends HttpKernel {
 	 */
 	protected $routeMiddleware = [
 		// Administration-specific middlewares
-		'administration.auth'  => 'App\Http\Middleware\Administration\AuthenticationRequired',
-		'administration.guest' => 'App\Http\Middleware\Administration\RedirectIfAuthenticated',
-		
+		'administration.auth'    => 'App\Http\Middleware\Administration\AuthenticationRequired',
+		'administration.guest'   => 'App\Http\Middleware\Administration\RedirectIfAuthenticated',
+		'administration.noCache' => 'App\Http\Middleware\Administration\SetNoCacheHeaders',		
+
 		'auth' => 'App\Http\Middleware\Authenticate',
 		'auth.basic' => 'Illuminate\Auth\Middleware\AuthenticateWithBasicAuth',
 		'guest' => 'App\Http\Middleware\RedirectIfAuthenticated',

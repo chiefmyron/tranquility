@@ -21,7 +21,7 @@ Route::post('/administration/auth/forgot-password', ['middleware' => 'administra
 Route::get('/administration/auth/logout', 'Administration\AuthController@logout');
 	
 // Backoffice administration routes
-Route::group(['prefix' => 'administration', 'middleware' => 'administration.auth'], function() {
+Route::group(['prefix' => 'administration', 'middleware' => ['administration.auth', 'administration.noCache']], function() {
 	// Main dashboard
 	Route::get('/', 'Administration\HomeController@index');
 	

@@ -1,7 +1,8 @@
 <?php namespace App\Http\Controllers\Administration;
 
 use \Session as Session;
-use Illuminate\Http\Request as Request;
+use \Response as Response;
+use Illuminate\Support\Facades\Request as Request;
 use App\Http\Controllers\Controller;
 
 use Carbon\Carbon;
@@ -41,9 +42,30 @@ class PeopleController extends Controller {
 	 */
 	public function index() {
 		// Get the list of people
-		$response = $this->_person->all();				
-		return view('administration.people.index', $response->toArray());
+		$response = $this->_person->all();
+		$responseArray = $response->toArray();
+		
+		// Determine if we are using the detail or table view (default to table)
+		$viewType = Request::input('view', 'detail');
+		if ($viewType != 'detail' && $viewType != 'table') {
+			$viewType = 'table';
+		}
+		$responseArray['viewType'] = $viewType;
+		
+		// Display detail view
+		if (Request::ajax()) {
+			// AJAX response
+			$ajax = new \Tranquility\View\AjaxResponse();
+			$ajax->addContent('main-content-container', $this->_renderPartial('administration.people._partials.index-'.$viewType, $responseArray));
+			$ajax->addContent('toolbar-container', $this->_renderPartial('administration.people._partials.toolbar-index-'.$viewType), 'attachCommonHandlers');
+			return Response::json($ajax->toArray());
+		}
+		
+		// Full page response
+		return view('administration.people.index', $responseArray);
 	}
+	
+
 	
 	public function show($id) {
 		$response = $this->_person->find($id);
@@ -69,9 +91,10 @@ class PeopleController extends Controller {
 		return view('administration.people.update')->with('person', $response->getFirstContentItem());
 	}
 	
-	public function store(Request $request) {
+	public function store() {
 		// Save details of person
-		$params = $request->all();
+		$params = Request::all();
+		$id = Request::input('id', 0);
 		
 		// Add in additional audit trail details
 		$params['type'] = EnumEntityType::Person;
@@ -81,8 +104,8 @@ class PeopleController extends Controller {
 		$params['transactionSource'] = EnumTransactionSource::UIBackend;
 		
 		// Create or update record		
-		if ($request->has('id')) {
-			$result = $this->_person->update($request->id, $params);
+		if ($id != 0) {
+			$result = $this->_person->update($id, $params);
 		} else {
 			$result = $this->_person->create($params);
 		}

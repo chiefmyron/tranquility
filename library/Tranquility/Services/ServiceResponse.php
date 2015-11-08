@@ -9,7 +9,7 @@
  */
 
 use \Tranquility\Utility                     as Utility;
-use \Tranquility\Exception                   as Exception;
+use \Tranquility\Services\ServiceException   as ServiceException;
 use \Tranquility\Enums\System\EntityType     as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel   as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode as EnumHttpStatusCode;
@@ -81,7 +81,7 @@ class ServiceResponse {
 	 * @param array $content One or more content blocks to be returned
 	 * @param boolean $calculateMetadata If true, metadata for the response will automatically be calculated
 	 * @return boolean
-	 * @throws \Tranquility\Exception
+	 * @throws \Tranquility\Services\ServiceException
 	 */
 	public function setContent(array $content = array(), $calculateMetadata = true) {
 		$this->_content = $content;
@@ -128,13 +128,13 @@ class ServiceResponse {
 	 *
 	 * @param array $messages
 	 * @return boolean
-	 * @throws \Tranquility\Exception
+	 * @throws \Tranquility\Services\ServiceException
 	 */
 	public function addMessages(array $messages) {
 		foreach ($messages as $message) {
 			// Check mandatory message fields have been provided
 			if (!isset($message['code']) || !isset($message['text']) || !isset($message['level'])) {
-				throw new Exception('Message must contain at least a code, text and level');
+				throw new ServiceException('Message must contain at least a code, text and level');
 			}
 			
 			// Add message
@@ -154,12 +154,12 @@ class ServiceResponse {
 	 * @param string $level    Message level (defined in \Tranquility\Enum\MessageLevel)
 	 * @param string $fieldId  [Optional] Relates a message to a particular form element or field
 	 * @return boolean
-	 * @throws \Tranquility\Exception
+	 * @throws \Tranquility\Services\ServiceException
 	 */
 	public function addMessage($code, $text, $level, $fieldId = null) {
 		// Validate message level
 		if (!EnumMessageLevel::isValidValue($level)) {
-			throw new Exception('Invalid message level supplied while adding to service response: '.$level);
+			throw new ServiceException('Invalid message level supplied while adding to service response: '.$level);
 		}
 		
 		// Add message to internal array
@@ -198,7 +198,7 @@ class ServiceResponse {
 	 *
 	 * @param array $metadata
 	 * @return boolean
-	 * @throws \Tranquility\Exception
+	 * @throws \Tranquility\Services\ServiceException
 	 */
 	public function setMetadata(array $metadata = array()) {
 		$merged = array_merge($this->_meta, $metadata);
@@ -240,12 +240,12 @@ class ServiceResponse {
 	 *
 	 * @param int $code A valid HTTP status code (see \Tranquility\Enums\System\HttpStatusCode)
 	 * @return boolean
-	 * @throws \Tranquility\Exception
+	 * @throws \Tranquility\Services\ServiceException
 	 */
 	public function setHttpResponseCode($code) {
 		// Validate HTTP response code
 		if (!EnumHttpStatusCode::isValidValue($code)) {
-			throw new Exception('Unknown HTTP response code: '.$code);
+			throw new ServiceException('Unknown HTTP response code: '.$code);
 		}
 		
 		$this->_httpResponseCode = $code;
@@ -330,7 +330,7 @@ class ServiceResponse {
 	 *
 	 * @param string $threshold The level at which a message is considered an error. Defaults to 'error'.
 	 * @return boolean
-	 * @throws \Tranquility\Exception
+	 * @throws \Tranquility\Services\ServiceException
 	 */
 	public function containsErrors($threshold = EnumMessageLevel::Error) {
 		// Check HTTP response code first
@@ -340,7 +340,7 @@ class ServiceResponse {
 		
 		// Validate error threshold
 		if (!EnumMessageLevel::isValidValue($threshold)) {
-			throw new Exception('Invalid message level provided: '.$threshold);
+			throw new ServiceException('Invalid message level provided: '.$threshold);
 		}
 		
 		// Check message levels

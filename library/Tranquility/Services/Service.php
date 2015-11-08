@@ -2,7 +2,7 @@
 
 use Illuminate\Container\Container              as Container;
 use \Tranquility\Utility                        as Utility;
-use \Tranquility\Exception                      as Exception;
+use \Tranquility\Services\ServiceException      as ServiceException;
 use \Tranquility\Enums\System\MessageLevel      as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode    as EnumHttpStatusCode;
 use \Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
@@ -68,7 +68,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		$model = $this->container->make($this->model());
 		
 		if (!$model instanceof \Tranquility\Models\Entity) {
-			throw new Exception("Class ".$this->model()." must be an instance of Tranquility\\Models\\Entity");
+			throw new ServiceException("Class ".$this->model()." must be an instance of Tranquility\\Models\\Entity");
 		}
 		
 		$this->model = $model;
@@ -261,7 +261,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	public function findBy($fieldName, $fieldValue) {
 		// Check field is allowed
 		if (!in_array($fieldName, $this->_getFields())) {
-			throw new Exception('Invalid search field');
+			throw new ServiceException('Invalid search field');
 		}
 		
 		$entity = $this->model->find($fieldValue, $fieldName);
