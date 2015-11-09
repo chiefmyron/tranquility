@@ -1,7 +1,5 @@
 @if ($toolbar)
     <div class="toolbar">
-        
-
 <?php
     $output = '';
     $groupStarted = false;
