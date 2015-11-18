@@ -33,11 +33,11 @@ h6 {
 }
 
 a {
-    color: #4B8200;
+    color: #395A80;
 }
 
 a:hover {
-    color: #609D02;
+    color: #507EB2;
 }
 
 
@@ -122,8 +122,8 @@ a.btn {
 }
 
 .btn-primary {
-    background-color: #4B8200;
-    border-bottom-color: #214404;
+    background-color: #395A80;
+    border-bottom-color: #22364C;
     border-bottom-style: solid;
     color: #ffffff;
 }
@@ -134,12 +134,12 @@ a.btn {
 .btn-primary.active,
 .btn-primary.disabled,
 .btn-primary[disabled] {
-    background-color: #609D02;
-    border-bottom-color: #285405;
+    background-color: #507EB2;
+    border-bottom-color: #395A80;
 }
 
 .btn-group.open .btn-primary.dropdown-toggle {
-  background-color: #609D02;
+  background-color: #507EB2;
   border-left: 1px solid #ffffff;
 }
 
@@ -176,6 +176,24 @@ a.btn {
 .navbar-default .navbar-nav > .open > a:hover {
     background-color: #a5b4c5;
     color: #395A80;
+}
+
+.navbar-default .navbar-collapse, 
+.navbar-default .navbar-form {
+    border-color: transparent;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: #ffffff;
+}
+
+.navbar-default .navbar-toggle:focus, 
+.navbar-default .navbar-toggle:hover {
+    background-color: #a5b4c5;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #ffffff;
 }
 
 .navbar-default .input-group-btn .btn-default {
@@ -230,7 +248,7 @@ a.btn {
 }
 
 .toolbar .list-group-item .glyphicon {
-    color: #4B8200;
+    color: #395A80;
 }
 
 .toolbar .list-group-item.disabled,
