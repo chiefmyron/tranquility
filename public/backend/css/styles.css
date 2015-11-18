@@ -156,15 +156,31 @@ a.btn {
  * Navigation                                                                 *
  ******************************************************************************/
 .navbar-default {
-    border-color: #285405;
+    background-color: #395A80;
+    border-color: #395A80;
 }
 
-.navbar-default .navbar-brand {
-    color: #4B8200;
+.navbar-default .navbar-brand,
+.navbar-default .navbar-nav > li > a {
+    color: #a5b4c5;
 }
 
-.navbar-default .navbar-brand:hover {
-    color: #609D02;
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-nav > li > a:focus,
+.navbar-default .navbar-nav > li > a:hover {
+    color: #ffffff;
+}
+
+.navbar-default .navbar-nav > .open > a, 
+.navbar-default .navbar-nav > .open > a:focus, 
+.navbar-default .navbar-nav > .open > a:hover {
+    background-color: #a5b4c5;
+    color: #395A80;
+}
+
+.navbar-default .input-group-btn .btn-default {
+    border: 1px solid #ccc;
+    padding: 6px 12px;
 }
 
 .navbar-default .input-group-btn .btn-default {

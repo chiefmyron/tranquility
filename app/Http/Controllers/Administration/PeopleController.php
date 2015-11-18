@@ -2,7 +2,8 @@
 
 use \Session as Session;
 use \Response as Response;
-use Illuminate\Support\Facades\Request as Request;
+use Illuminate\Http\Request as Request;
+//use Illuminate\Support\Facades\Request as Request;
 use App\Http\Controllers\Controller;
 
 use Carbon\Carbon;
@@ -40,20 +41,22 @@ class PeopleController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index() {
+	public function index(Request $request) {
 		// Get the list of people
 		$response = $this->_person->all();
 		$responseArray = $response->toArray();
 		
 		// Determine if we are using the detail or table view (default to table)
-		$viewType = Request::input('view', 'detail');
+		$viewType = $request->input('view', $request->session()->get('people.index.viewType', 'table'));
 		if ($viewType != 'detail' && $viewType != 'table') {
+			// Default to table view
 			$viewType = 'table';
 		}
+		$request->session()->put('people.index.viewType', $viewType);
 		$responseArray['viewType'] = $viewType;
 		
 		// Display detail view
-		if (Request::ajax()) {
+		if ($request->ajax()) {
 			// AJAX response
 			$ajax = new \Tranquility\View\AjaxResponse();
 			$ajax->addContent('main-content-container', $this->_renderPartial('administration.people._partials.index-'.$viewType, $responseArray));
@@ -81,10 +84,21 @@ class PeopleController extends Controller {
 		return view('administration.people.show')->with('person', $response->getFirstContentItem());
 	}
 	
+	/**
+	 * Display page for creating a new person record
+	 *
+	 * @return Response
+	 */
 	public function create() {
 		return view('administration.people.create');
 	}
 	
+	/**
+	 * Displays page for updating details of an existing person record
+	 *
+	 * @param int $id  Entity ID of the person to update
+	 * @return Response
+	 */
 	public function update($id) {
 		$response = $this->_person->find($id);
 		if ($response->containsErrors()) {
@@ -95,10 +109,15 @@ class PeopleController extends Controller {
 		return view('administration.people.update')->with('person', $response->getFirstContentItem());
 	}
 	
-	public function store() {
+	/**
+	 * Store details of a new or updated person record
+	 *
+	 * @return Response
+	 */
+	public function store(Request $request) {
 		// Save details of person
-		$params = Request::all();
-		$id = Request::input('id', 0);
+		$params = $request->all();
+		$id = $request->input('id', 0);
 		
 		// Add in additional audit trail details
 		$params['type'] = EnumEntityType::Person;
@@ -123,5 +142,27 @@ class PeopleController extends Controller {
 		
 		// No errors - return to index page
 		return redirect()->action('Administration\PeopleController@index');
+	}
+	
+	public function confirmAction() {
+		$action = Request::input('action', null);
+		switch($action) {
+			case 'delete':
+			
+				break;
+			case 'logout':
+				
+				break;
+			case 'activate':
+				
+				break;
+			case 'deactivate':
+				
+				break;
+		}
+	}
+	
+	public function delete($id) {
+		
 	}
 }

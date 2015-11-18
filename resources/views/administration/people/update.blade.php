@@ -6,7 +6,7 @@
 	@include('administration.errors.list')
 	
 	{!! Form::model($person, ['url' => 'administration/people']) !!}
-	@include('administration.people.partials.form', ['submitButtonText' => 'Update person details'])
+	@include('administration.people._partials.form', ['submitButtonText' => 'Update person details'])
 	{!! Form::hidden('id', $person->id) !!}
 	{!! Form::close() !!}
 @stop
