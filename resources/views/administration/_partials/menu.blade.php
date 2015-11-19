@@ -1,4 +1,4 @@
-		<nav class="navbar navbar-default navbar-fixed-top">
+        <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -12,7 +12,7 @@
                 <div id="navbar" class="navbar-collapse collapse">
                     <!-- Left aligned navbar items -->
                     <ul class="nav navbar-nav">
-                        <li><a href="#">People</a></li>
+                        <li class="active"><a href="#">People</a></li>
                         <li><a href="#">Website</a></li>
                         <li><a href="#">Store</a></li>
                         <li><a href="#">Reports</a></li>

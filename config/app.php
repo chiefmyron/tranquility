@@ -147,6 +147,7 @@ return [
 		'Tranquility\Html\HtmlServiceProvider',
 		'Tranquility\Html\Toolbar\ServiceProvider',
 		'Tranquility\Providers\AuthProvider',
+		'Tranquility\Providers\ViewComposerProvider',
 		'DaveJamesMiller\Breadcrumbs\ServiceProvider',
 
 	],

@@ -3,12 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Projects/tranquility/config/session.php</file>
-            <file>file:/C:/Projects/tranquility/app/Http/Controllers/Administration/PeopleController.php</file>
-            <file>file:/C:/Projects/tranquility/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php</file>
-            <file>file:/C:/Projects/tranquility/app/Providers/AppServiceProvider.php</file>
-            <file>file:/C:/Projects/tranquility/library/Tranquility/Html/Toolbar/ServiceProvider.php</file>
-            <file>file:/C:/Projects/tranquility/library/Tranquility/Session/CustomDbHandler.php</file>
+            <file>file:/C:/Projects/tranquility/public/backend/css/login.css</file>
         </group>
     </open-files>
 </project-private>
