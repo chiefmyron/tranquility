@@ -307,7 +307,9 @@ h6 {
     .page-sidebar,
     .page-sidebar.navbar-collapse.in {
         border-top: 0 !important;
-        margin: 20px;
+        margin: 0px;
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
     }
     
     .page-sidebar.navbar-collapse {

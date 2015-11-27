@@ -55,7 +55,7 @@ body {
 }
 
 .page-sidebar .page-sidebar-menu > li.active > a {
-    border-left-color: #5C9ACF;
+    border-left-color: #395A80;
 }
 
 .main-content {
@@ -94,4 +94,12 @@ body {
     border-color: #cccccc;
     color: #555555;
     background-color: #ffffff;
+}
+
+@media (max-width:991px) {
+    .page-sidebar,
+    .page-sidebar.navbar-collapse.in {
+        background-color: #e9ecf3;
+		border-bottom-color: #395A80;
+    }
 }
