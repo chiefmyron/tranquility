@@ -20,7 +20,7 @@ Breadcrumbs::register('admin.home', function($breadcrumbs) {
 	$breadcrumbs->push(trans('administration.common_home'), action('Administration\HomeController@index'));
 });
 
-// People controllerr
+// People controller
 Breadcrumbs::register('admin.people', function($breadcrumbs) {
 	$breadcrumbs->parent('admin.home');
 	$breadcrumbs->push(trans('administration.people_heading_people'), action('Administration\PeopleController@index'));

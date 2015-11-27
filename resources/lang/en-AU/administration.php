@@ -3,6 +3,7 @@
 return array(
 	// Common strings
 	'common_home' => 'Home',
+	'common_dashboard' => 'Dashboard',
 	'common_email_address' => 'Email address',
 	'common_password' => 'Password',
 	'common_cancel' => 'Cancel',

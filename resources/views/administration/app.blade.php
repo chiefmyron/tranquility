@@ -14,6 +14,7 @@
         
         <!-- Linked fonts and icons -->
         @if(App::environment('local'))
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
         <link href="/backend/css/local/bootstrap.3.3.5.min.css" rel="stylesheet" type="text/css" />
         <link href="/backend/css/local/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="/backend/css/local/simple-line-icons.css" rel="stylesheet" type="text/css" />
@@ -48,10 +49,8 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">Tranquility</a>
+                    <a class="navbar-brand" href="{{ action('Administration\HomeController@index') }}">Tranquility</a>
                 </div>
-                
-
                 
                 <div class="page-actions hidden-sm hidden-xs">
                     <ul>
@@ -61,7 +60,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a href="#">Article</a></li>
-                                <li><a href="#">Person</a></li>
+                                <li><a href="{{ action('Administration\PeopleController@create') }}">Person</a></li>
                                 <li><a href="#">Invoice</a></li>
                                 <li><a href="#">Product</a></li>    
                             </ul>
@@ -83,8 +82,6 @@
                     
                     <!-- Top level navigation icons -->
                     <div class="top-menu">
-
-                        
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle dropdown-user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img src="/backend/images/user-avatar-default.png" class="img-circle" />
@@ -113,9 +110,9 @@
                 <div id="sidebar" class="page-sidebar navbar-collapse collapse" aria-expaned="false">
                     <ul class="page-sidebar-menu">
                         <li class="nav-item start active">
-                            <a href="#" class="nav-link">
+                            <a href="{{ action('Administration\HomeController@index') }}" class="nav-link">
                                 <i class="icon-home"></i>
-                                <span class="title">Dashboard</span>
+                                <span class="title">{{ trans('administration.common_dashboard') }}</span>
                             </a>
                         </li>
                         <li class="heading">
@@ -123,14 +120,35 @@
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link active">
-                                <i class="icon-settings"></i>
+                                <i class="icon-doc"></i>
                                 <span class="title">Pages</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link">
+                                <i class="icon-picture"></i>
+                                <span class="title">Image gallery</span>
+                            </a>
+                        </li>
+                        <li class="heading">
+                            <h3>Customers</h3>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ action('Administration\PeopleController@index') }}" class="nav-link active">
+                                <i class="icon-user"></i>
+                                <span class="title">{{ trans('administration.people_heading_people') }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="icon-briefcase"></i>
+                                <span class="title">Accounts</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
                                 <i class="icon-settings"></i>
-                                <span class="title">Pages</span>
+                                <span class="title">Invoices</span>
                             </a>
                         </li>
                     </ul>
