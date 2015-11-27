@@ -1,8 +1,4 @@
-		<h1>{{ trans('administration.people_heading_people') }}</h1>
-		<hr />
-		@include('administration.errors.list')
-		
-		<div class="table-responsive">
+    	<div class="table-responsive">
 			<table class="table table-striped">
 				<tr>
 					<th class="checkboxcol">

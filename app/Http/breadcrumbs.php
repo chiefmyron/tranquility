@@ -29,3 +29,7 @@ Breadcrumbs::register('admin.people.show', function($breadcrumbs, $person) {
 	$breadcrumbs->parent('admin.people');
 	$breadcrumbs->push($person->firstName.' '.$person->lastName, action('Administration\PeopleController@show', [$person->id]));
 });
+Breadcrumbs::register('admin.people.create', function($breadcrumbs) {
+	$breadcrumbs->parent('admin.people');
+	$breadcrumbs->push(trans('administration.people_heading_create'), action('Administration\PeopleController@create'));
+});

@@ -1,0 +1,97 @@
+/* Page background */
+body {
+	background-color: #e9ecf3;
+}
+
+/* Navigation bar */
+.page-header.navbar {
+    background-color: #395A80;
+}
+
+.page-header.navbar a.navbar-brand,
+.page-header.navbar .top-menu .dropdown-user {
+	color: #99aabd;
+}
+
+
+.page-header.navbar a.navbar-brand:hover,
+.page-header.navbar .top-menu .dropdown-user:hover,
+.page-header.navbar .top-menu .dropdown-user:focus {
+	color: #ffffff;
+}
+
+.page-header.navbar-inverse .navbar-nav > .open > a, 
+.page-header.navbar-inverse .navbar-nav > .open > a:focus, 
+.page-header.navbar-inverse .navbar-nav > .open > a:hover,
+.page-header.navbar .top-menu .dropdown-user:hover,
+.page-header.navbar .top-menu .dropdown-user:focus,
+.page-header.navbar .page-branding .navbar-toggle:hover,
+.page-header.navbar .page-branding .navbar-toggle:focus {
+	background-color: #567292;
+}
+
+.page-sidebar h3,
+.toolbar h3 {
+	color: #567292;
+}
+
+.page-header .dropdown-menu > li > a:focus, 
+.page-header .dropdown-menu > li > a:hover {
+	background-color: #dce6f2;
+}
+
+.page-header.navbar .navbar-nav .dropdown .btn {
+    color: #ffffff;
+}
+
+.page-sidebar {
+	background-color: #ffffff;
+}
+
+.page-sidebar .page-sidebar-menu > li.open > a, 
+.page-sidebar .page-sidebar-menu > li:hover > a,
+.page-sidebar .page-sidebar-menu > li.active > a {
+	background-color: #dce6f2;
+}
+
+.page-sidebar .page-sidebar-menu > li.active > a {
+    border-left-color: #5C9ACF;
+}
+
+.main-content {
+	background-color: #ffffff;
+}
+
+.main-content hr {
+	border-top-color: #e9ecf3;
+}
+
+.toolbar .list-group-item {
+    background-color: transparent;
+}
+
+.toolbar .list-group-item.disabled,
+.toolbar .list-group-item.disabled a,
+.toolbar .list-group-item.disabled .glyphicon {
+    color: #959595;
+}
+
+.toolbar .list-group-item.divider {
+    border-top-color: #e9ecf3;
+}
+
+.page-header.navbar .search-form.open .input-group .form-control {
+    color: #555555;
+	background-color: #ffffff;
+	border-color: #cccccc;
+}
+
+.page-header.navbar .search-form .input-group .input-group-btn .btn {
+	color: #ffffff;	
+}
+
+.page-header.navbar .search-form.open .input-group .input-group-btn .btn {
+    border-color: #cccccc;
+    color: #555555;
+    background-color: #ffffff;
+}

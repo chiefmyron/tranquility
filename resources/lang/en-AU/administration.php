@@ -19,5 +19,6 @@ return array(
 	
 	// People strings
 	'people_heading_people' => 'People',
+	'people_heading_create' => 'Add a new person',
 	'people_name' => 'Name',
 );
