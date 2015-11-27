@@ -222,8 +222,8 @@ class InitialDatabaseSchema extends Migration {
         
         Schema::create('tql_sys_user_tokens', function(Blueprint $table) {
             $table->bigInteger('userId')->primary();
-            $table->string('sessionId');
-            $table->string('rememberToken');
+            $table->string('sessionId')->nullable();
+            $table->string('rememberToken')->nullable();
         });
     }
 
