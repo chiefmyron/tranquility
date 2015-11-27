@@ -179,6 +179,11 @@ h6 {
     margin: 0;
 }
 
+.page-header .dropdown-menu {
+    border-radius: 0px;
+    margin: 0;
+}
+
 .page-header.navbar .top-menu .dropdown-user {
     background: transparent;
     border: 0;
@@ -197,6 +202,7 @@ h6 {
     border-radius: 0px;
     border-width: 0px;
 }
+
 
 @media (min-width: 768px) {
     .page-header.navbar .top-menu .dropdown-user > img {
