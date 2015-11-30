@@ -179,9 +179,11 @@ h6 {
     margin: 0;
 }
 
-.page-header .dropdown-menu {
+.page-header.navbar .dropdown-menu {
     border-radius: 0px;
     margin: 0;
+    right: 0;
+    left: auto;
 }
 
 .page-header.navbar .top-menu .dropdown-user {
