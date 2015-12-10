@@ -1,5 +1,9 @@
 @extends('administration.app')
 
+@section('sidebar')
+	@include('administration._partials.sidebar', ['active' => 'people'])
+@stop
+
 @section('content')
 	<h1>Update person</h1>
 	<hr />

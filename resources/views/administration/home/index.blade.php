@@ -6,6 +6,10 @@
 
 @section('breadcrumbs', Breadcrumbs::render('admin.home'))
 
+@section('sidebar')
+	@include('administration._partials.sidebar', ['active' => 'dashboard'])
+@stop
+
 @section('content')
 	This will be a beautiful dashboard... one day.
 @stop

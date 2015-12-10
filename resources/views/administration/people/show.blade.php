@@ -6,6 +6,10 @@
 
 @section('breadcrumbs', Breadcrumbs::render('admin.people.show', $person))
 
+@section('sidebar')
+	@include('administration._partials.sidebar', ['active' => 'people'])
+@stop
+
 @section('content')
 	<dl>
 		<dt>Position:</dt>
