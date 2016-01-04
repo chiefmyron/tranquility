@@ -144,6 +144,15 @@ h6 {
     width: auto !important;
 }
 
+@media (min-width: 768px) {
+    .page-header.navbar .search-form.open {
+        width: 250px !important;
+        display: inline-block;
+        position: static;
+        margin-right: 15px;
+    }
+}
+
 .page-header.navbar .search-form .input-group .form-control {
     border: 0;
     padding: 0;

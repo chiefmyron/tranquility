@@ -26,6 +26,7 @@ function attachCommonHandlers() {
     // Clear any existing handlers
     $("#toolbar-container li.ajax a").off('click.toolbarEvent');
     $("table th .selectAll").off('click.selectAllCheckbox');
+    $(".page-header.navbar .search-form button").off('click.globalSearch');
     
     // Handle click event for enabled toolbar links
     $("#toolbar-container li.ajax a").on('click.toolbarEvent', function (e) {
@@ -67,6 +68,20 @@ function attachCommonHandlers() {
     // Handle click event for any 'record selector' checkbox in a table
     $('table td input:checkbox.record-select').change(function () {
         changeToolbarLinkStatus();
+    });
+    
+    // Handle click event for global search button in page header
+    $('.page-header.navbar .search-form button').on('click.globalSearch', function(e) {
+        $('.page-header.navbar form.search-form').addClass("open");
+        $('.page-header.navbar .search-form input.form-control').focus();
+    });
+    $('.page-header.navbar .search-form input.form-control').on('focusout.globalSearch', function(e) {
+        $('.page-header.navbar form.search-form').removeClass("open");
+    });
+    $('.page-header.navbar').on('mousedown', '.search-form.open button.submit', function(e) {
+        e.preventDefault();
+        e.stopPropagation(); 
+        $(this).closest(".search-form").submit();
     });
 }
 
