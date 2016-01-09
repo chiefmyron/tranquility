@@ -103,3 +103,44 @@ body {
 		border-bottom-color: #395A80;
     }
 }
+
+/* Button colours */
+.btn {
+    border-bottom-color: #aaaaaa;
+    background-color: #ddd;
+    color: #333;
+}
+
+.btn-primary {
+    background-color: #567292;
+    border-bottom-color: #395A80;
+    color: #ffffff;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary.disabled,
+.btn-primary[disabled] {
+    background-color: #698bb2;
+    border-bottom-color: #567292;
+}
+
+.page-header .page-actions .dropdown .btn {
+    background-color: #4B8200;
+    border-bottom-color: #214404;
+    color: #ffffff;
+}
+
+.page-header .page-actions .dropdown .btn:hover,
+.page-header .page-actions .dropdown .btn:focus,
+.page-header .page-actions .dropdown .btn:active {
+    background-color: #609D02;
+    border-bottom-color: #285405;
+}
+
+/* Modal dialog */
+.modal-footer {
+    background-color: #f2f2f2;
+}

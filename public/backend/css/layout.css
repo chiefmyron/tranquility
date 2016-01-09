@@ -191,6 +191,9 @@ h6 {
 .page-header.navbar .dropdown-menu {
     border-radius: 0px;
     margin: 0;
+}
+
+.page-header.navbar .top-menu .dropdown-menu {
     right: 0;
     left: auto;
 }
@@ -454,6 +457,10 @@ input[type="color"],
             border-radius: 0;
 }
 
+.btn-primary {
+    border-bottom-style: solid;
+}
+
 .input-group .input-group-btn .btn {
     border: 1px solid #ccc
 }
@@ -487,3 +494,24 @@ input[type="color"],
      -moz-border-radius-bottomright: 0;
           border-bottom-right-radius: 0;
 }
+
+
+/******************************************************************************
+ * Modal dialog                                                               *
+ ******************************************************************************/
+ .modal-content {
+     border-radius: 0px;
+ }
+ 
+ .modal-header {
+     border-bottom: 0px;
+ }
+ 
+ .modal-body {
+     padding-bottom: 25px;
+ }
+ 
+ .modal-footer {
+     padding-top: 10px;
+     padding-bottom: 10px;
+ }
