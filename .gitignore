@@ -3,3 +3,4 @@
 /nbproject
 .env
 auth.json
+typings/jquery/jquery.d.ts

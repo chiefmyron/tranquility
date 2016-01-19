@@ -15,6 +15,7 @@ Route::get('/', 'WelcomeController@index');
 
 // Backoffice authentication routes
 Route::get('/administration/auth', ['middleware' => 'administration.guest', 'uses' => 'Administration\AuthController@index']);
+Route::post('/administration/auth/ajax', ['middleware' => 'administration.guest', 'uses' => 'Administration\AuthController@loginAjax']);
 Route::post('/administration/auth/login', ['middleware' => 'administration.guest', 'uses' => 'Administration\AuthController@login']);
 Route::get('/administration/auth/forgot-password', ['middleware' => 'administration.guest', 'uses' => 'Administration\AuthController@forgotPassword']);
 Route::post('/administration/auth/forgot-password', ['middleware' => 'administration.guest', 'uses' => 'Administration\AuthController@sendPassword']);
@@ -29,10 +30,11 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
 	Route::get('/people', 'Administration\PeopleController@index');
 	Route::post('/people', 'Administration\PeopleController@store');
 	Route::get('/people/create', 'Administration\PeopleController@create');
+	Route::post('/people/delete', 'Administration\PeopleController@delete');
+    Route::get('/people/confirm', 'Administration\PeopleController@confirmAction');
+    Route::post('/people/confirm', 'Administration\PeopleController@confirmAction');
 	Route::get('/people/{id}', 'Administration\PeopleController@show');
 	Route::get('/people/{id}/update', 'Administration\PeopleController@update');
-	Route::get('/people/{id}/confirm', 'Administration\PeopleController@confirmAction');
-	Route::post('/people/{id}/delete', 'Administration\PeopleController@delete');
 	
 	// Users controller
 	Route::get('/users', 'Administration\UsersController@index');

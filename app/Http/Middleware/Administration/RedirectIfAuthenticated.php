@@ -31,7 +31,7 @@ class RedirectIfAuthenticated {
 	 * @return mixed
 	 */
 	public function handle($request, Closure $next) {
-		if ($this->auth->check()) {
+		if ($this->auth->check() && !$request->ajax()) {
 			return new RedirectResponse(url('/administration'));
 		}
 

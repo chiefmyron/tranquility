@@ -150,6 +150,7 @@ return [
 		'Tranquility\Providers\AuthProvider',
 		'Tranquility\Providers\ViewComposerProvider',
 		'DaveJamesMiller\Breadcrumbs\ServiceProvider',
+		'Lavary\Menu\ServiceProvider',
 
 	],
 
@@ -203,6 +204,7 @@ return [
 		'FormError'   => 'Tranquility\Html\FormErrorFacade',
 		'Toolbar'     => 'Tranquility\Html\Toolbar\Facade',
 		'Breadcrumbs' => 'DaveJamesMiller\Breadcrumbs\Facade',
+		'Menu'        => 'Lavary\Menu\Facade',
 	],
 
 ];

@@ -2,8 +2,8 @@
 
 use \Session as Session;
 use \Response as Response;
+use \Auth as Auth;
 use Illuminate\Http\Request as Request;
-//use Illuminate\Support\Facades\Request as Request;
 use App\Http\Controllers\Controller;
 
 use Carbon\Carbon;
@@ -33,7 +33,6 @@ class PeopleController extends Controller {
 	 */
 	public function __construct(PersonService $person) {
 		$this->_person = $person;
-		//$this->middleware('guest');
 	}
 
 	/**
@@ -121,7 +120,7 @@ class PeopleController extends Controller {
 		
 		// Add in additional audit trail details
 		$params['type'] = EnumEntityType::Person;
-		$params['updateBy'] = 1;
+		$params['updateBy'] = Auth::user()->id;
 		$params['updateReason'] = 'who knows?';
 		$params['updateDatetime'] = Carbon::now();
 		$params['transactionSource'] = EnumTransactionSource::UIBackend;
@@ -144,25 +143,104 @@ class PeopleController extends Controller {
 		return redirect()->action('Administration\PeopleController@index');
 	}
 	
-	public function confirmAction() {
-		$action = Request::input('action', null);
+	public function confirmAction(Request $request) {
+		// Ensure this is received as an ajax request only
+		if (!$request->ajax()) {
+			// TODO: Proper error handling here
+			throw new Exception('Access only via AJAX request!');
+		}
+        
+        // Get inputs from request
+        $id = $request->input('id', array());
+        $action = $request->input('action', null);
+        
+        // Retrieve list of IDs to confirm action against
+        $person = null;
+        if (!is_array($id) && ($id > 0)) {
+            // Confirmation is for a single person only - retrieve details
+            $response = $this->_person->find($id);
+            if ($response->containsErrors()) {
+                // TODO: Proper error handling here
+                throw new Exception('Error:'.$response->getMessages());
+    		}
+            $person = $response->getFirstContentItem();
+            $id = array($id);
+        }
+        
+        $data = array(
+            'selectedIds' => $id,
+            'person' => $person
+        );
+        
+        // Render dialog based on action
+		$dialog = "";
 		switch($action) {
 			case 'delete':
-			
+                $dialog = $this->_renderPartial('administration.people._partials.dialogs.dialog-confirm-delete', $data);
 				break;
 			case 'logout':
-				
+				$dialog = $this->_renderPartial('administration.people._partials.dialogs.dialog-confirm-logout', $data);
 				break;
 			case 'activate':
-				
+				$dialog = $this->_renderPartial('administration.people._partials.dialogs.dialog-confirm-activate', $data);
 				break;
 			case 'deactivate':
-				
+				$dialog = $this->_renderPartial('administration.people._partials.dialogs.dialog-confirm-deactivate', $data);
 				break;
 		}
+		
+		// AJAX response
+		$ajax = new \Tranquility\View\AjaxResponse();
+		$ajax->addContent('modal-content', $dialog, 'displayDialog');
+		return Response::json($ajax->toArray());
 	}
-	
-	public function delete($id) {
+    
+	public function delete(Request $request) {
+		// Get array of IDs to work with from input
+        $inputIds = $request->input('id', array());
+        
+        // If no IDs have been supplied, return error message
+        if (count($inputIds) <= 0) {
+            // TODO: Error reporting
+            throw new Exception('At least one ID must be supplied');
+        }
+        
+        // Set up audit trail details
+        $params = array();
+        $params['updateBy'] = Auth::user()->id;
+        $params['updateReason'] = 'who knows?';
+        $params['updateDatetime'] = Carbon::now();
+        $params['transactionSource'] = EnumTransactionSource::UIBackend;
+        if (count($inputIds) > 1) {
+            $response = $this->_person->deleteMultiple($inputIds, $params);
+        } else {
+            $response = $this->_person->delete($inputIds[0], $params);
+        }
+        
+        // If AJAX request, send response
+        if ($request->ajax()) {
+            // Refresh index view
+            $responseArray = $this->_person->all()->toArray();
+            $responseArray['viewType'] = $request->session()->get('people.index.viewType', 'table');;
+
+			// AJAX response
+			$ajax = new \Tranquility\View\AjaxResponse();
+			$ajax->addContent('main-content-container', $this->_renderPartial('administration.people._partials.index-'.$responseArray['viewType'], $responseArray));
+			$ajax->addContent('toolbar-container', $this->_renderPartial('administration.people._partials.toolbar-index-'.$responseArray['viewType']), 'attachCommonHandlers');
+            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]));
+            $ajax->addCallback('closeDialog');
+			return Response::json($ajax->toArray());
+		}
+		
+		// Not AJAX request - redirect to index page
+        Session::flash('messages', $response->getMessages());
+        if ($response->containsErrors()) {
+            // Errors encountered - redisplay form with error messages
+			return redirect()->back()->withInput();
+        } else {
+            // No errors - return to list of people
+            return redirect()->action('Administration\PeopleController@index');
+        }
 		
 	}
 }
