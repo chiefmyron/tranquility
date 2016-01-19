@@ -1,5 +1,6 @@
 <?php namespace Tranquility\Providers;
 	
+use \Auth;
 use Tranquility\Auth\User;
 use Tranquility\Auth\UserProvider;
 use Tranquility\Services\User as UserService;
@@ -12,9 +13,9 @@ class AuthProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function boot() {
-		$this->app['auth']->extend('custom', function() {
-			return new UserProvider($this->app['hash'], new UserService($this->app));
-		});
+        Auth::extend('custom', function($app) {
+            return new UserProvider($this->app['hash'], new UserService($this->app));
+        });
 	}
 	
 	/**
