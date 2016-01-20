@@ -14,8 +14,8 @@ interface ModelInterface {
 	public function update($id, array $data);
 	
 	// Logically delete an existing record for the entity type
-	public function delete($id);
+	public function delete($id, array $auditTrailDetails);
 	
 	// Locate a specific record for the entity type 
-	public function find($searchTerm, $searchField = 'id');
+	public function find($searchTerm, array $searchOptions = array());
 }

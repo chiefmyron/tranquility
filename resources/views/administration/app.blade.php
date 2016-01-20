@@ -40,63 +40,7 @@
     <body>
         
         <!-- Start page header -->
-        <nav class="page-header navbar navbar-inverse navbar-fixed-top">
-            <div class="container-fluid">
-                <div class="page-branding">
-                    <button type="button" class="navbar-toggle collapsed pull-left visible-xs-block visible-sm-block" data-toggle="collapse" data-target="#sidebar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="{{ action('Administration\HomeController@index') }}">Tranquility</a>
-                </div>
-                
-                <div class="page-actions hidden-sm hidden-xs">
-                    <ul>
-                        <li class="dropdown">
-                            <a class="dropdown-toggle btn btn-primary" role="button" aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" href="#">
-                                <i class="fa fa-plus"></i> New <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Article</a></li>
-                                <li><a href="{{ action('Administration\PeopleController@create') }}">Person</a></li>
-                                <li><a href="#">Invoice</a></li>
-                                <li><a href="#">Product</a></li>    
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-                    
-                <div class="page-top">
-                    <!-- Header bar search form -->
-                    <form class="search-form" action="" method="GET">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search..." name="search" />
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search"></span></button>
-                            </span>
-                        </div>
-                    </form>
-                    <!-- End of header bar search form -->
-                    
-                    <!-- Top level navigation icons -->
-                    <div class="top-menu">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle dropdown-user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="/backend/images/user-avatar-default.png" class="img-circle" />
-                                <span class="hidden-sm hidden-xs">Andrew Patterson <span class="caret"></span></span>
-                            </button> 
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Settings</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="{{ action('Administration\AuthController@logout') }}">{{ trans('administration.login_logout') }}</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
+        @include('administration._partials.menu')
         <!-- End page header -->
         
         <!-- Separator between header and content -->
@@ -129,11 +73,13 @@
                                 
                                 <!-- Page heading and subheading -->
                                 @yield('heading')
-                                @include('administration.errors.list')
                                 
                                 <!-- Breadcrumbs -->
                                 @yield('breadcrumbs')
                                 <hr />
+                                
+                                <!-- Process messages -->
+                                @include('administration._partials.errors', ['messages' => Session::get('messages')])
                                 
                                 <div id="main-content-container">
                                     @yield('content')
@@ -141,13 +87,19 @@
                             </div>
                             <!-- End of main content panel -->
                         </div>
-                        
                         <!-- End of row for main content and toolbar -->
                     </div>
-                    
                 </div>
             </div> 
         </div>
+        
+        <!-- Container for modal dialog -->
+        <div id="modal-dialog-container" class="modal fade" tabindex="-1" role="dialog" aria-labelledBy="modal-dialog-title">
+            <div class="modal-dialog" role="document">
+				<div id="modal-content" class="modal-content"></div>
+            </div>
+        </div>
+        <!-- End of modal dialog -->
         
         <!-- Add JavaScript at the bottom to prevent page load blocking -->
         @if(App::environment('local'))

@@ -1,8 +1,8 @@
 <?php namespace Tranquility\View;
 
-use \Tranquility\View\ViewException    as ViewException;
-use \Tranquility\Enums\MessageLevel    as EnumMessageLevel;
-use \Tranquility\Enums\HttpStatusCode  as EnumHttpStatusCode;
+use \Tranquility\View\ViewException           as ViewException;
+use \Tranquility\Enums\System\MessageLevel    as EnumMessageLevel;
+use \Tranquility\Enums\System\HttpStatusCode  as EnumHttpStatusCode;
 
 /**
  * Representation of an AJAX response message. Can be used internally via
@@ -39,49 +39,45 @@ class AjaxResponse {
      *
      * @param array    $content             An array containing content items to be included in the response
      * @param array    $messages            An array of field-level validation messages to be included in the response
-     * @param boolean  $displayModalDialog  Flag to trigger display of a modal dialog
+     * @param array    $callbacks           An array containing JavaScript callbacks to be included in the response
+     * @param int      $httpResposneCode    Override the default HTTP response code of the response
      * @return void
      */
-    public function __construct(array $content = null, array $messages = null, $httpResponseCode = null) {
+    public function __construct(array $content = null, array $messages = null, array $callbacks = null, $httpResponseCode = null) {
         if (isset($content) && is_array($content)) {
             $this->addMultipleContentBlocks($content);
         }
         if (isset($messages) && is_array($messages)) {
             $this->addMessages($messages);
         }
+        if (isset($callbacks) && is_array($callbacks)) {
+            $this->addMultipleCallbacks($callbacks);
+        }
         if (isset($httpResponseCode) && is_int($httpResponseCode)) {
             $this->setHttpResponseCode($httpResponseCode);
         }
-        //$this->displayModalDialog = $displayModalDialog;
-    }
-    
-    /**
-     * Adds multiple content blocks to the response
-     *
-     * @param array $items  An array of arrays containing content. Each content item should have
-     *                      a key for 'element', 'content' and 'callback'
-     * @return void
-     */
-    public function addMultipleContentBlocks(array $items) {
-        foreach ($items as $item) {
-            $calllback = Utility::extractValue($items, 'callback', null);
-            $this->addContent($item['element'], $item['content'], $callback);
-        }    
     }
     
     /**
      * Assign a piece of rendered content to an HTML element
      *
-     * @param string $element  HTML element ID to inject the content into
-     * @param string $content  Rendered content
-     * @param string $callback JavaScript callback function
+     * @param string $element       HTML element ID to inject the content into
+     * @param string $content       Rendered content
+     * @param string $callback      JavaScript callback function
+     * @param array  $callbackArgs  Array of arguments for the callback function
      * @return void
      */
-    public function addContent($element, $content, $callback = null) {
+    public function addContent($element, $content, $callback = null, $callbackArgs = null) {
+        // Make sure any callback arguments are provided in an array
+        if (!is_null($callbackArgs) && !is_array($callbackArgs)) {
+            throw new ViewException('Any callback arguments specified as part of an AjaxResponse must be supplied as an array');
+        }
+        
         $this->content[] = array(
-            'element' => $element,
-            'content' => $content,
-            'callback' => $callback
+            'element'      => $element,
+            'content'      => $content,
+            'callback'     => $callback,
+            'callbackArgs' => $callbackArgs
         );
     }
     
@@ -101,7 +97,13 @@ class AjaxResponse {
         return false;
     }
     
-     
+    /**
+     * Clear one or more content items from the response
+     *
+     * @param string $element  If specified, clears content only for that element. Otherwise, clears content
+     *                         for the entire response
+     * @return void
+     */ 
     public function clearContent($element = null) {
         // If not element specified, clear all content
         if ($element === null) {
@@ -120,34 +122,50 @@ class AjaxResponse {
     }
     
     /**
+     * Adds multiple content blocks to the response
+     *
+     * @param array $items  An array of arrays containing content. Each content item should have
+     *                      a key for 'element', 'content', 'callback' and 'callbackArgs'
+     * @return void
+     */
+    public function addMultipleResponseElements(array $items) {
+        foreach ($items as $item) {
+            $element      = Utility::extractValue($items, 'element', null);
+            $content      = Utility::extractValue($items, 'content', null);
+            $callback     = Utility::extractValue($items, 'callback', null);
+            $callbackArgs = Utility::extractValue($items, 'callbackArgs', null);
+            $this->addContent($element, $content, $callback, $callbackArgs);
+        }    
+    }
+    
+    /**
      * Adds multiple messages to the response
      *
      * @param array $messages  Each element of the array should be it's own array, with keys for 'code', 
      *                         'text', 'level' and 'fieldId'
+     * @param string $target  [Optional] Target for message. Blank for main page, 'dialog' to display inside modal
      * @return void
      */
-    public function addMessages(array $messages) {
+    public function addMessages(array $messages, $target = null) {
         foreach ($messages as $message) {
-            $this->addMessage($message['code'], $message['text'], $message['level'], $message['fieldId']);
+            $this->addMessage($message['code'], $message['text'], $message['level'], $message['fieldId'], $target);
         }
     }
     
     /**
      * Add a new informational / error message to the response
      * 
-     * @param int $code
-     * @param string $text
-     * @param string $level
-     * @param string $fieldId
+     * @param int $code       Numeric error code for message
+     * @param string $text    Message text
+     * @param string $level   Message level (@see \Tranquility\Enums\System\MessageLevel)
+     * @param string $fieldId [Optional] HTML entity ID to associate message with
+     * @param string $target  [Optional] Target for message. Blank for main page, 'dialog' to display inside modal
      * @return void 
      */
-    public function addMessage($code, $text, $level, $fieldId) {
+    public function addMessage($code, $text, $level, $fieldId, $target = null) {
         // Validate message level
         if (!EnumMessageLevel::isValidValue($level)) {
             throw new ViewException('Message level "'.$level.'" is not valid');
-        }
-        if (is_null($fieldId)) {
-            throw new ViewException('A Field ID must be specified when adding a validation message');
         }
         
         // Add message to array
@@ -155,9 +173,30 @@ class AjaxResponse {
             'code' => $code,
             'text' => $text,
             'level' => $level,
-            'fieldId' => $fieldId
+            'fieldId' => $fieldId,
+            'target' => $target
         );
         $this->messages[] = $message;
+    }
+    
+    /**
+     * Add a JavaScript callback function to be executed in the response
+     *
+     * @param string $callback JavaScript callback function
+     * @return void
+     */
+    public function addCallback($callback, $arguments = null) {
+        // Make sure any callback arguments are provided in an array
+        if (!is_null($arguments) && !is_array($arguments)) {
+            throw new ViewException('Any callback arguments specified as part of an AjaxResponse must be supplied as an array');
+        }
+        
+        $this->content[] = array(
+            'element' => null,
+            'content' => null,
+            'callback' => $callback,
+            'callbackArgs' => $arguments
+        );
     }
     
     /**
@@ -182,7 +221,7 @@ class AjaxResponse {
         $response = array(
             'messages' => $this->messages,
             'content' => $this->content,
-            'responseCode' => 200
+            'responseCode' => $this->httpResponseCode
         );
         return $response;
     }

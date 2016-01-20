@@ -113,11 +113,11 @@ class User extends Entity {
 	 * @param  int   $id    Entity ID of the record to delete
 	 * @return mixed        The deleted User record (StdObj) if successful, otherwise false 
 	 */
-	public function delete($id) {
+	public function delete($id, array $auditTrailDetails) {
 		// Shift current User record to historical table
 		DB::beginTransaction();
 		$this->_createHistoricalUserRecord($id);
-		$user = parent::delete($id);
+		$user = parent::delete($id, $auditTrailDetails);
 		
 		// Remove record for user tokens
 		DB::table('tql_sys_user_tokens')
@@ -135,10 +135,13 @@ class User extends Entity {
 	 * Locate a specific User record
 	 *
 	 * @param string $searchTerm
-	 * @param string $searchField [Optional] Defaults to 'id'
-	 * @return mixed Array of data for Person, false if no record found
+	 * @param array  $searchOptions Array of key value pairs used to further restrict the search paramters
+	 * @return mixed Array of data for User, false if no record found
 	 */ 
-	public function find($searchTerm, $searchField = 'tql_entity.id') {
+	public function find($searchTerm, array $searchOptions = array()) {
+        // Extract search options
+        $searchField = Utility::extractValue($searchOptions, 'searchField', 'tql_entity.id');
+        
 		// Define select fields
 		$select = array(
 			'tql_entity_users.id as id',

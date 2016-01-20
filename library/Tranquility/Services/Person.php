@@ -62,6 +62,55 @@ class Person extends \Tranquility\Services\Service {
 		
 		return $response;
 	}
+    
+    /** Deletes an existing Person record
+     *
+     * @param int   $id                ID for existing Person record
+     * @param array $auditTrailFields  Array containing audit trail information
+     * @return \Tranquility\Services\ServiceResponse
+     */
+    public function delete($id, array $auditTrailFields) {
+        // Attempt to remove associated user account
+        // TODO
+		
+		// Attempt to update the entity
+        $response = parent::delete($id, $auditTrailFields);
+        
+        // Add entity specific success code
+        if (!$response->containsErrors()) {
+			$response->addMessage(10022, 'message_10022_person_record_deleted_successfully', EnumMessageLevel::Success);
+		}
+        
+		return $response;
+    }
+    
+    /** 
+     * Deletes multiple Person records in a single operation
+     * 
+     * @param array $personIds         Array of Person record IDs to mark as deleted
+     * @param array $auditTrailFields  Array containing audit trail information (will be used against all Person records being deleted)
+     * @return \Tranquility\Services\ServiceResponse
+     */
+    public function deleteMultiple(array $personIds, array $auditTrailFields) {
+        $response = new ServiceResponse();
+        $successCounter = 0;
+        
+        foreach ($personIds as $id) {
+            $deleteResponse = $this->delete($id, $auditTrailFields);
+            if ($deleteResponse->containsErrors()) {
+                $response->addMessages($deleteResponse->getMessages());
+            } else {
+                $successCounter++;
+            }
+        }
+        
+        // If at least one record was deleted successfully, add success message
+        if ($successCounter > 0) {
+            $response->addMessage(10022, 'message_10022_person_multiple_records_deleted_successfully', EnumMessageLevel::Success);
+        }
+        
+        return $response;
+    }
 	
 	/**
 	 * Get a list of data fields associated with the Person

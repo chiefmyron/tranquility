@@ -1,5 +1,6 @@
-@if(Session::has('messages'))
-	@foreach(Session::get('messages') as $message)
+<div id="process-message-container">
+@if(isset($messages))
+	@foreach($messages as $message)
 		@if(!isset($message['fieldId']))
 			<div class="alert alert-{{ $message['level'] }}">
 				{!! trans('messages.'.$message['text']) !!}
@@ -7,3 +8,4 @@
 		@endif
 	@endforeach
 @endif
+</div>

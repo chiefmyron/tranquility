@@ -1,3 +1,3 @@
 <?php namespace Tranquility\View;
 
-class ViewException extends Tranquility\Exception {}
+class ViewException extends \Tranquility\Exception {}

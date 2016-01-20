@@ -77,13 +77,13 @@ abstract class Entity implements ModelInterface {
 	 * @param int   $id    Entity ID of the record to delete
 	 * @param array 
 	 */
-	public function delete($id) {
+	public function delete($id, array $auditTrailDetails) {
 	    // Shift current entity record to historical table
 		DB::beginTransaction();
 		$this->_createHistoricalEntityRecord($id);
 		
 		// Create new audit trail record, and mark record as deleted
-		$transactionId = $this->_createTransactionRecord($data);
+		$transactionId = $this->_createTransactionRecord($auditTrailDetails);
 		DB::table('tql_entity')
 			->where('id', '=', $id)
 			->increment('version', 1, array(
@@ -91,13 +91,10 @@ abstract class Entity implements ModelInterface {
 				'transactionId' => $transactionId
 		));
 		DB::commit();
-		
-		// Retrieve entity record (including audit information)
-		return $this->find($id);
 	}
 	
 	// Locate a specific record for the entity type 
-	abstract function find($searchTerm, $searchField = 'tql_entity.id');
+	abstract function find($searchTerm, array $searchOptions = array());
 	
 	// Retrieve a collection of associated entities
 	abstract function getRelatedEntities($entityId, $filters = array());

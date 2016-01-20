@@ -7,7 +7,8 @@ return array(
 	'common_email_address' => 'Email address',
 	'common_password' => 'Password',
 	'common_cancel' => 'Cancel',
-	
+	'common_heading_delete_confirm' => 'Delete these records?',
+	'common_command_delete_confirm' => 'Delete records',
 	
 	// Login text
 	'login_heading_login' => 'Login',
@@ -22,4 +23,6 @@ return array(
 	'people_heading_people' => 'People',
 	'people_heading_create' => 'Add a new person',
 	'people_name' => 'Name',
+    'people_message_delete_confirmation_single' => 'Are you sure you want to delete the record for :name?',
+    'people_message_delete_confirmation_multiple' => 'Are you sure you want to delete the :count records currently selected?',
 );
