@@ -15,5 +15,5 @@
 @stop
 
 @section('toolbar')
-	@include('administration.people._partials.toolbar-index-'.$viewType)
+	@include('administration.people._partials.toolbars.index-'.$viewType)
 @stop

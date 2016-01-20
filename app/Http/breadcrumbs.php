@@ -33,3 +33,7 @@ Breadcrumbs::register('admin.people.create', function($breadcrumbs) {
 	$breadcrumbs->parent('admin.people');
 	$breadcrumbs->push(trans('administration.people_heading_create'), action('Administration\PeopleController@create'));
 });
+Breadcrumbs::register('admin.people.update', function($breadcrumbs, $person) {
+	$breadcrumbs->parent('admin.people.show', $person);
+	$breadcrumbs->push(trans('administration.people_command_update'), action('Administration\PeopleController@update'));
+});

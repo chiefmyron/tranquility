@@ -22,7 +22,10 @@ return array(
 	// People strings
 	'people_heading_people' => 'People',
 	'people_heading_create' => 'Add a new person',
+    'people_heading_update' => 'Update details for :name',
 	'people_name' => 'Name',
+    'people_command_create' => 'Create new person record',
+    'people_command_update' => 'Update details',
     'people_message_delete_confirmation_single' => 'Are you sure you want to delete the record for :name?',
     'people_message_delete_confirmation_multiple' => 'Are you sure you want to delete the :count records currently selected?',
 );

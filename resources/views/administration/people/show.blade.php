@@ -19,5 +19,5 @@
 @stop
 
 @section('toolbar')
-	@include('administration.people._partials.toolbar-show')
+	@include('administration.people._partials.toolbars.show')
 @stop

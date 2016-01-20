@@ -59,7 +59,7 @@ class PeopleController extends Controller {
 			// AJAX response
 			$ajax = new \Tranquility\View\AjaxResponse();
 			$ajax->addContent('main-content-container', $this->_renderPartial('administration.people._partials.index-'.$viewType, $responseArray));
-			$ajax->addContent('toolbar-container', $this->_renderPartial('administration.people._partials.toolbar-index-'.$viewType), 'attachCommonHandlers');
+			$ajax->addContent('toolbar-container', $this->_renderPartial('administration.people._partials.toolbars.index-'.$viewType), 'attachCommonHandlers');
 			return Response::json($ajax->toArray());
 		}
 		
@@ -176,16 +176,16 @@ class PeopleController extends Controller {
 		$dialog = "";
 		switch($action) {
 			case 'delete':
-                $dialog = $this->_renderPartial('administration.people._partials.dialogs.dialog-confirm-delete', $data);
+                $dialog = $this->_renderPartial('administration.people._partials.dialogs.confirm-delete', $data);
 				break;
 			case 'logout':
-				$dialog = $this->_renderPartial('administration.people._partials.dialogs.dialog-confirm-logout', $data);
+				$dialog = $this->_renderPartial('administration.people._partials.dialogs.confirm-logout', $data);
 				break;
 			case 'activate':
-				$dialog = $this->_renderPartial('administration.people._partials.dialogs.dialog-confirm-activate', $data);
+				$dialog = $this->_renderPartial('administration.people._partials.dialogs.confirm-activate', $data);
 				break;
 			case 'deactivate':
-				$dialog = $this->_renderPartial('administration.people._partials.dialogs.dialog-confirm-deactivate', $data);
+				$dialog = $this->_renderPartial('administration.people._partials.dialogs.confirm-deactivate', $data);
 				break;
 		}
 		
@@ -219,9 +219,10 @@ class PeopleController extends Controller {
 
 			// AJAX response
 			$ajax = new \Tranquility\View\AjaxResponse();
+            $ajax->addCallback('hideElement', array('process-message-container'));
 			$ajax->addContent('main-content-container', $this->_renderPartial('administration.people._partials.index-'.$responseArray['viewType'], $responseArray));
-			$ajax->addContent('toolbar-container', $this->_renderPartial('administration.people._partials.toolbar-index-'.$responseArray['viewType']), 'attachCommonHandlers');
-            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]));
+			$ajax->addContent('toolbar-container', $this->_renderPartial('administration.people._partials.toolbars.index-'.$responseArray['viewType']), 'attachCommonHandlers');
+            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
             $ajax->addCallback('closeDialog');
 			return Response::json($ajax->toArray());
 		}

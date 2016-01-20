@@ -84,10 +84,6 @@ function toolbarItemEventHandler(context, e) {
 }
 
 function processAjaxResponse(response) {
-    // Check HTTP response code
-    
-    // TODO: Error handling / 403 handling
-    
     // Update HTML areas with new content
     $.each(response.content, function(i, item) {
         // Replace HTML in specified element
@@ -137,9 +133,6 @@ function displayDialog(modalContent) {
 	}
     
     // Display dialog and attach default submit event handler
-    /*$("#modal-dialog-container button.ajax-submit").on("click.dialogSubmit", function (e) {
-        defaultDialogSubmitEventHandler(this, e);
-    });*/
     $("#modal-dialog-container form.ajax-submit").on("submit.dialogSubmit", function (e) {
         defaultDialogSubmitEventHandler(this, e);
     });
@@ -165,6 +158,14 @@ function defaultDialogSubmitEventHandler(context, e) {
 function closeDialog() {
     $("#modal-dialog-container").modal('hide');
     return false;
+}
+
+function hideElement(target) {
+    $("#" + target).collapse('hide');
+}
+
+function showElement(target) {
+    $("#" + target).collapse('show');
 }
 
 /**

@@ -12,6 +12,10 @@
 
 @section('content')
 	{!! Form::open(['url' => 'administration/people']) !!}
-	@include('administration.people._partials.form', ['submitButtonText' => 'Add new person'])
+	@include('administration.people._partials.forms.create')
+    <div class="form-group">
+        <a href="{{ action('Administration\PeopleController@index') }}" class="btn btn-default pull-left">{{ trans('administration.common_cancel') }}</a>
+    	{!! Form::submit(trans('administration.people_command_create'), ['class' => 'btn btn-primary pull-right']) !!}
+    </div>
 	{!! Form::close() !!}
 @stop
