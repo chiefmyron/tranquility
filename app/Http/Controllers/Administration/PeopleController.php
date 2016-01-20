@@ -199,12 +199,6 @@ class PeopleController extends Controller {
 		// Get array of IDs to work with from input
         $inputIds = $request->input('id', array());
         
-        // If no IDs have been supplied, return error message
-        if (count($inputIds) <= 0) {
-            // TODO: Error reporting
-            throw new Exception('At least one ID must be supplied');
-        }
-        
         // Set up audit trail details
         $params = array();
         $params['updateBy'] = Auth::user()->id;
