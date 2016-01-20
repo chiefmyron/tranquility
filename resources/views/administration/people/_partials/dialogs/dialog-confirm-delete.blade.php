@@ -10,16 +10,11 @@
                         @endif
 					</div>
 					<div class="modal-footer">
-                        {!! Form::open(array('action' => 'Administration\PeopleController@delete')) !!}
+                        {!! Form::open(array('action' => 'Administration\PeopleController@delete', 'class' => 'ajax-submit')) !!}
                         @foreach ($selectedIds as $id)
                         {!! Form::hidden('id[]', $id) !!}
                         @endforeach
 						<button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
-						
-                        @if (!is_null($person))
 						<button type="submit" class="btn btn-primary" id="dialog-submit">{{ trans('administration.common_command_delete_confirm') }}</button>
-                        @else
-                        <button type="button" class="btn btn-primary ajax-submit" id="dialog-submit">{{ trans('administration.common_command_delete_confirm') }}</button>
-                        @endif
                         {!! Form::close() !!}
 					</div>

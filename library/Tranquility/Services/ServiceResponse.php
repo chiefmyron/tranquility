@@ -139,7 +139,8 @@ class ServiceResponse {
 			
 			// Add message
 			$fieldId = Utility::extractValue($message, 'fieldId', null);
-			$this->addMessage($message['code'], $message['text'], $message['level'], $fieldId);
+            $textParameters = Utility::extractValue($message, 'textParameters', array());
+			$this->addMessage($message['code'], $message['level'], $message['text'], $textParameters, $fieldId);
 		}
 		
 		return true;
@@ -149,14 +150,15 @@ class ServiceResponse {
 	 * Add a single new error or information message to the existing set of messages 
 	 * in the service response
 	 *
-	 * @param int    $code     The error code associated with the message
-	 * @param string $text     The internal text key for the message text
-	 * @param string $level    Message level (defined in \Tranquility\Enum\MessageLevel)
-	 * @param string $fieldId  [Optional] Relates a message to a particular form element or field
+	 * @param int    $code            The error code associated with the message
+	 * @param string $level           Message level (defined in \Tranquility\Enum\MessageLevel)
+     * @param string $text            The internal text key for the message text
+	 * @param array  $textParameters  [Optional] Key/value array containing values to substitute into message text
+	 * @param string $fieldId         [Optional] Relates a message to a particular form element or field
 	 * @return boolean
 	 * @throws \Tranquility\Services\ServiceException
 	 */
-	public function addMessage($code, $text, $level, $fieldId = null) {
+	public function addMessage($code, $level, $text, $textParameters = array(), $fieldId = null) {
 		// Validate message level
 		if (!EnumMessageLevel::isValidValue($level)) {
 			throw new ServiceException('Invalid message level supplied while adding to service response: '.$level);
@@ -166,6 +168,7 @@ class ServiceResponse {
 		$this->_messages[] = array(
 			'code'    => $code,
 			'text'    => $text,
+            'params'  => $textParameters,
 			'level'   => $level,
 			'fieldId' => $fieldId	
 		);

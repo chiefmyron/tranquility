@@ -39,7 +39,7 @@ class Person extends \Tranquility\Services\Service {
 		
 		// Add entity specific success code
 		if (!$response->containsErrors()) {
-			$response->addMessage(10020, 'message_10020_person_record_created_successfully', EnumMessageLevel::Success);
+			$response->addMessage(10020, EnumMessageLevel::Success, 'message_10020_person_record_created_successfully');
 		}
 		
 		return $response;
@@ -57,7 +57,7 @@ class Person extends \Tranquility\Services\Service {
 		
 		// Add entity specific success code
 		if (!$response->containsErrors()) {
-			$response->addMessage(10021, 'message_10021_person_record_updated_successfully', EnumMessageLevel::Success);
+			$response->addMessage(10021, EnumMessageLevel::Success, 'message_10021_person_record_updated_successfully');
 		}
 		
 		return $response;
@@ -78,7 +78,7 @@ class Person extends \Tranquility\Services\Service {
         
         // Add entity specific success code
         if (!$response->containsErrors()) {
-			$response->addMessage(10022, 'message_10022_person_record_deleted_successfully', EnumMessageLevel::Success);
+			$response->addMessage(10022, EnumMessageLevel::Success, 'message_10022_person_record_deleted_successfully');
 		}
         
 		return $response;
@@ -93,8 +93,15 @@ class Person extends \Tranquility\Services\Service {
      */
     public function deleteMultiple(array $personIds, array $auditTrailFields) {
         $response = new ServiceResponse();
-        $successCounter = 0;
         
+        // Check that at least one ID has been supplied
+        if (count($personIds) <= 0) {
+            $response->addMessage(10002, EnumMessageLevel::Error, 'message_10002_mandatory_input_field_missing');
+            return $response;
+        }
+        
+        // Delete each person record individually
+        $successCounter = 0;
         foreach ($personIds as $id) {
             $deleteResponse = $this->delete($id, $auditTrailFields);
             if ($deleteResponse->containsErrors()) {
@@ -106,7 +113,7 @@ class Person extends \Tranquility\Services\Service {
         
         // If at least one record was deleted successfully, add success message
         if ($successCounter > 0) {
-            $response->addMessage(10022, 'message_10022_person_multiple_records_deleted_successfully', EnumMessageLevel::Success);
+            $response->addMessage(10023, EnumMessageLevel::Success, 'message_10023_person_multiple_records_deleted_successfully', ['count' => $successCounter]);
         }
         
         return $response;
