@@ -10,7 +10,11 @@
                         @endif
 					</div>
 					<div class="modal-footer">
+                        @if (!is_null($person))
+						{!! Form::open(array('action' => 'Administration\PeopleController@delete')) !!}
+                        @else
                         {!! Form::open(array('action' => 'Administration\PeopleController@delete', 'class' => 'ajax-submit')) !!}
+                        @endif
                         @foreach ($selectedIds as $id)
                         {!! Form::hidden('id[]', $id) !!}
                         @endforeach
