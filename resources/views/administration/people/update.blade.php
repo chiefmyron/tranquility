@@ -11,7 +11,7 @@
 @stop
 
 @section('content')
-	{!! Form::model($person, ['url' => 'administration/people']) !!}
+	{!! Form::model($person, ['action' => 'Administration\PeopleController@store']) !!}
     @include('administration.people._partials.forms.create')
     {!! Form::hidden('id', $person->id) !!}
     <div class="form-group">

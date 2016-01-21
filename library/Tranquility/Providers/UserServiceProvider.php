@@ -1,13 +1,14 @@
-<?php namespace Tranquility\Auth;
+<?php namespace Tranquility\Providers;
 
 use Illuminate\Contracts\Hashing\Hasher         as HasherContract;	
 use Illuminate\Contracts\Auth\UserProvider      as UserProviderInterface;
 use Illuminate\Contracts\Auth\Authenticatable   as Authenticatable;
 
-use \Tranquility\Utility                        as Utility;
+use Tranquility\Auth\User                       as User;
+use Tranquility\Utility                         as Utility;
 use Tranquility\Services\User                   as UserService;
 
-class UserProvider implements UserProviderInterface {		
+class UserServiceProvider implements UserProviderInterface {		
 	
 	/**
 	 * The data service used to retrieve user details

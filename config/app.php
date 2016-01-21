@@ -2,6 +2,18 @@
 
 return [
 
+    /*
+    |--------------------------------------------------------------------------
+    | Application Environment
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the "environment" your application is currently
+    | running in. This may determine how you prefer to configure various
+    | services your application utilizes. Set this in your ".env" file.
+    |
+    */
+    'env' => env('APP_ENV', 'production'),
+
 	/*
 	|--------------------------------------------------------------------------
 	| Application Debug Mode
@@ -113,12 +125,10 @@ return [
 		/*
 		 * Laravel Framework Service Providers...
 		 */
-		'Illuminate\Foundation\Providers\ArtisanServiceProvider',
 		'Illuminate\Auth\AuthServiceProvider',
 		'Illuminate\Bus\BusServiceProvider',
 		'Illuminate\Cache\CacheServiceProvider',
 		'Illuminate\Foundation\Providers\ConsoleSupportServiceProvider',
-		'Illuminate\Routing\ControllerServiceProvider',
 		'Illuminate\Cookie\CookieServiceProvider',
 		'Illuminate\Database\DatabaseServiceProvider',
 		'Illuminate\Encryption\EncryptionServiceProvider',
@@ -140,17 +150,13 @@ return [
 		/*
 		 * Application Service Providers...
 		 */
-		'App\Providers\AppServiceProvider',
-		'App\Providers\BusServiceProvider',
-		'App\Providers\ConfigServiceProvider',
 		'App\Providers\EventServiceProvider',
 		'App\Providers\RouteServiceProvider',
-		'Tranquility\Html\HtmlServiceProvider',
-		'Tranquility\Html\Toolbar\ServiceProvider',
-		'Tranquility\Providers\AuthProvider',
+		'Tranquility\Providers\HtmlServiceProvider',
+		'Tranquility\Providers\AuthServiceProvider',
 		'Tranquility\Providers\ViewComposerProvider',
+        'Tranquility\Providers\SessionServiceProvider',
 		'DaveJamesMiller\Breadcrumbs\ServiceProvider',
-		'Lavary\Menu\ServiceProvider',
 
 	],
 
@@ -199,9 +205,9 @@ return [
 		'URL'         => 'Illuminate\Support\Facades\URL',
 		'Validator'   => 'Illuminate\Support\Facades\Validator',
 		'View'        => 'Illuminate\Support\Facades\View',
-		'Html'        => 'Illuminate\Html\HtmlFacade',
-		'Form'        => 'Illuminate\Html\FormFacade',
-		'FormError'   => 'Tranquility\Html\FormErrorFacade',
+		'Html'        => 'Collective\Html\HtmlFacade',
+		'Form'        => 'Collective\Html\FormFacade',
+		'FormError'   => 'Tranquility\Html\FormError\Facade',
 		'Toolbar'     => 'Tranquility\Html\Toolbar\Facade',
 		'Breadcrumbs' => 'DaveJamesMiller\Breadcrumbs\Facade',
 		'Menu'        => 'Lavary\Menu\Facade',

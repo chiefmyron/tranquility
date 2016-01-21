@@ -1,11 +1,11 @@
-<?php namespace Tranquility\Html;
+<?php namespace Tranquility\Html\FormError;
 
 use Illuminate\Support\Traits\Macroable;
 
 use Tranquility\Utility;
 use Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
-class FormErrorBuilder {
+class Builder {
 
 	use Macroable;
 	

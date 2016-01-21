@@ -29,8 +29,19 @@ class User implements UserContract {
 	 */
 	public function getAuthIdentifier()
 	{
-		return $this->attributes['id'];
+        $name = $this->getAuthIdentifierName();
+		return $this->attributes[$name];
 	}
+    
+    /**
+     * Get the name of the unique identifier for the user.
+     *
+     * @return string
+     */
+    public function getAuthIdentifierName()
+    {
+        return 'id';
+    }
 
 	/**
 	 * Get the password for the user.

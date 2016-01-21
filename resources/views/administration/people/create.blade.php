@@ -11,7 +11,7 @@
 @stop
 
 @section('content')
-	{!! Form::open(['url' => 'administration/people']) !!}
+	{!! Form::open(['action' => 'Administration\PeopleController@store']) !!}
 	@include('administration.people._partials.forms.create')
     <div class="form-group">
         <a href="{{ action('Administration\PeopleController@index') }}" class="btn btn-default pull-left">{{ trans('administration.common_cancel') }}</a>
