@@ -2,7 +2,7 @@
 
 use Illuminate\Container\Container              as Container;
 use \Tranquility\Utility                        as Utility;
-use \Tranquility\Exception                      as Exception;
+use \Tranquility\Services\ServiceException      as ServiceException;
 use \Tranquility\Enums\System\MessageLevel      as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode    as EnumHttpStatusCode;
 use \Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
@@ -68,7 +68,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		$model = $this->container->make($this->model());
 		
 		if (!$model instanceof \Tranquility\Models\Entity) {
-			throw new Exception("Class ".$this->model()." must be an instance of Tranquility\\Models\\Entity");
+			throw new ServiceException("Class ".$this->model()." must be an instance of Tranquility\\Models\\Entity");
 		}
 		
 		$this->model = $model;
@@ -137,8 +137,8 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		// Check that audit trail field 'updateDatetime' is a valid date/time value
 		if (isset($inputs['updateDatetime']) && preg_match('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $inputs['updateDatetime']) !== 1) {
 			$messages[] = array(
-				'code' => 10008,
-				'text' => 'message_10008_invalid_datetime_format',
+				'code' => 10010,
+				'text' => 'message_10010_invalid_datetime_format',
 				'level' => EnumMessageLevel::Error,
 				'fieldId' => 'updateDatetime'
 			);
@@ -243,8 +243,15 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		return $response;
 	}
 	
-	public function delete($id) {
-		return $this->model->delete($id, $data);
+	public function delete($id, array $auditTrailDetails) {
+        // Set up response object
+		$response = new ServiceResponse();
+		
+		// Attempt to update the entity
+		$results = $this->model->delete($id, $auditTrailDetails);
+		$response->setContent(array($results));
+		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
+		return $response;
 	}
 	
 	/**
@@ -261,10 +268,11 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	public function findBy($fieldName, $fieldValue) {
 		// Check field is allowed
 		if (!in_array($fieldName, $this->_getFields())) {
-			throw new Exception('Invalid search field');
+			throw new ServiceException('Invalid search field');
 		}
-		
-		$entity = $this->model->find($fieldValue, $fieldName);
+        
+        $searchOptions = array('searchField' => $fieldName);
+		$entity = $this->model->find($fieldValue, $searchOptions);
 		return $this->_findResponse($entity);
 	}
 	

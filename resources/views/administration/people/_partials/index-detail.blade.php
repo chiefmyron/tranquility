@@ -1,7 +1,3 @@
-		<h1>{{ trans('administration.people_heading_people') }}</h1>
-		<hr />
-		@include('administration.errors.list')
-		
 		@foreach ($content as $person)
 		<div class="media">
 			<div class="media-left">

@@ -2,7 +2,7 @@
 
 use \DB                                    as DB;
 use \Tranquility\Utility                   as Utility;
-use \Tranquility\Exception                 as Exception;
+use \Tranquility\Models\ModelException     as ModelException;
 use \Tranquility\Enums\System\EntityType   as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
@@ -18,7 +18,7 @@ abstract class Entity implements ModelInterface {
 		// Retrieve entity type from inputs
 		$type = Utility::extractValue($data, 'type');
 		if (!EnumEntityType::isValidValue($type)) {
-			throw new Exception('Unknown entity type supplied while trying to create a new entity record: '.$type);
+			throw new ModelException('Unknown entity type supplied while trying to create a new entity record: '.$type);
 		}
 		
 		// Create new audit trail record
@@ -77,13 +77,13 @@ abstract class Entity implements ModelInterface {
 	 * @param int   $id    Entity ID of the record to delete
 	 * @param array 
 	 */
-	public function delete($id) {
+	public function delete($id, array $auditTrailDetails) {
 	    // Shift current entity record to historical table
 		DB::beginTransaction();
 		$this->_createHistoricalEntityRecord($id);
 		
 		// Create new audit trail record, and mark record as deleted
-		$transactionId = $this->_createTransactionRecord($data);
+		$transactionId = $this->_createTransactionRecord($auditTrailDetails);
 		DB::table('tql_entity')
 			->where('id', '=', $id)
 			->increment('version', 1, array(
@@ -91,13 +91,10 @@ abstract class Entity implements ModelInterface {
 				'transactionId' => $transactionId
 		));
 		DB::commit();
-		
-		// Retrieve entity record (including audit information)
-		return $this->find($id);
 	}
 	
 	// Locate a specific record for the entity type 
-	abstract function find($searchTerm, $searchField = 'tql_entity.id');
+	abstract function find($searchTerm, array $searchOptions = array());
 	
 	// Retrieve a collection of associated entities
 	abstract function getRelatedEntities($entityId, $filters = array());
@@ -116,7 +113,7 @@ abstract class Entity implements ModelInterface {
 	 *
 	 * @param array $data Audit trail inputs (transactionSource, updateBy, updateDatetime, updateReason)
 	 * @return int The auto-generated transactionID
-	 * @throws \Tranquility\Exception
+	 * @throws \Tranquility\Models\ModelException
 	 */
 	protected function _createTransactionRecord(array $data) {
 		// Create new audit trail record
@@ -129,7 +126,7 @@ abstract class Entity implements ModelInterface {
 		
 		// Check that transaction ID is valid
 		if ($id <= 0) {
-			throw new Exception('Unable to create new audit trail record');
+			throw new ModelException('Unable to create new audit trail record');
 		}
 		
 		// Return newly generated transaction ID

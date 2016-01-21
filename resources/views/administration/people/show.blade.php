@@ -1,14 +1,23 @@
 @extends('administration.app')
 
+@section('heading')
+	@include('administration._partials.heading', ['heading' => $person->firstName.' '.$person->lastName])
+@stop
+
 @section('breadcrumbs', Breadcrumbs::render('admin.people.show', $person))
 
+@section('sidebar')
+	@include('administration._partials.sidebar', ['active' => 'people'])
+@stop
+
 @section('content')
-	<h1>{{$person->firstName.' '.$person->lastName}}</h1>
-	<hr />
-	
 	<dl>
 		<dt>Position:</dt>
 		<dl>{{ $person->position }}</dl>	
 	</dl>
 	
+@stop
+
+@section('toolbar')
+	@include('administration.people._partials.toolbars.show')
 @stop

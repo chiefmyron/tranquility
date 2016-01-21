@@ -1,10 +1,15 @@
 @extends('administration.app')
 
+@section('heading')
+	@include('administration._partials.heading', ['heading' => trans('administration.common_dashboard')])
+@stop
+
 @section('breadcrumbs', Breadcrumbs::render('admin.home'))
 
-@section('content')
-	<h1>Dashboard</h1>
-	<hr />
+@section('sidebar')
+	@include('administration._partials.sidebar', ['active' => 'dashboard'])
+@stop
 
-	<a href="{{ action('Administration\PeopleController@index') }}"><h3>People</h3></a>
+@section('content')
+	This will be a beautiful dashboard... one day.
 @stop

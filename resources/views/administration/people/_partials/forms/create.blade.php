@@ -1,6 +1,6 @@
 <div class="form-group">
 	{!! Form::label('title', 'Title:') !!}
-	{!! Form::text('title', null, ['class' => 'form-control']) !!}	
+	{!! Form::text('title', null, ['class' => 'form-control', 'autofocus']) !!}	
 	{!! FormError::inline('title', Session::get('messages')) !!}
 </div>
 	
@@ -20,8 +20,4 @@
 	{!! Form::label('position', 'Position:') !!}
 	{!! Form::text('position', null, ['class' => 'form-control']) !!}	
 	{!! FormError::inline('position', Session::get('messages')) !!}
-</div>
-
-<div class="form-group">
-	{!! Form::submit($submitButtonText, ['class' => 'btn btn-primary form-control']) !!}
 </div>

@@ -2,6 +2,7 @@
 
 use \DB                                    as DB;
 use \Tranquility\Utility                   as Utility;
+use \Tranquility\Models\ModelException     as ModelException;
 use \Tranquility\Enums\System\EntityType   as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
@@ -88,39 +89,48 @@ class Person extends Entity {
 	 *
 	 * @abstract
 	 * @param int   $id    Entity ID of the record to delete
-	 * @return mixed       The deleted Person record (StdObj) if successful, otherwise false 
+	 * @return void 
 	 */
-	public function delete($id) {
-		// Shift current Person record to historical table
-		DB::beginTransaction();
-		$this->_createHistoricalPersonRecord($id);
-		$user = parent::delete($id);
-		DB::commit();
-		
-		// Retrieve Person record (including audit information)
-		return $user;
+	public function delete($id, array $auditTrailDetails) {
+        // Start transaction
+        DB::beginTransaction();
+        
+        // Create historical record of person, and then mark entity as deleted
+        $this->_createHistoricalPersonRecord($id);
+        parent::delete($id, $auditTrailDetails);
+        DB::commit();
 	}
 	
 	/**
 	 * Locate a specific Person record
 	 *
 	 * @param string $searchTerm
-	 * @param string $searchField [Optional] Defaults to 'id'
+	 * @param array  $searchOptions Array of key value pairs used to further restrict the search paramters
 	 * @return mixed Array of data for Person, false if no record found
 	 */ 
-	public function find($searchTerm, $searchField = 'tql_entity.id') {
+	public function find($searchTerm, array $searchOptions = array()) {
+        // Extract search options
+        $searchField = Utility::extractValue($searchOptions, 'searchField', 'tql_entity.id');
+        $includeDeleted = Utility::extractValue($searchOptions, 'includeDeleted', false, 'boolean');
+        
 		// Execute query
-		$person = DB::table('tql_entity_people')
+        $query = DB::table('tql_entity_people')
 					->join('tql_entity', 'tql_entity_people.id', '=', 'tql_entity.id')
 					->join('tql_sys_trans_audit', 'tql_entity.transactionId', '=', 'tql_sys_trans_audit.transactionId')
-					->where($searchField, $searchTerm)
-					->first();
-		return $person;
+					->where($searchField, $searchTerm);
+        
+        // If we are not including deleted entities, add an additional filter
+        if (!$includeDeleted) {
+            $query = $query->where('tql_entity.deleted', 0);
+        }
+		
+        // Return record
+		return $query->first();
 	}
 	
 	// Retrieve a collection of associated entities
 	public function getRelatedEntities($entityId, $filters = array()) {
-		throw new \Exception("Not implemented!");
+		throw new ModelException("Not implemented!");
 	}
 	
 	// Retrieve all records of the entity type
@@ -140,7 +150,7 @@ class Person extends Entity {
 	
 	// Paginated set of records of the entity type
 	public function paginate($perPage = 20, $includeDeleted = false) {
-		throw new \Exception("Not implemented!");
+		throw new ModelException("Not implemented!");
 	}
 	
 	/**

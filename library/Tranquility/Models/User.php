@@ -3,7 +3,9 @@
 use \DB                                    as DB;
 use \Hash                                  as Hash;
 use \Carbon\Carbon;
+
 use \Tranquility\Utility                   as Utility;
+use \Tranquility\Models\ModelException     as ModelException;
 use \Tranquility\Enums\System\EntityType   as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
@@ -111,11 +113,11 @@ class User extends Entity {
 	 * @param  int   $id    Entity ID of the record to delete
 	 * @return mixed        The deleted User record (StdObj) if successful, otherwise false 
 	 */
-	public function delete($id) {
+	public function delete($id, array $auditTrailDetails) {
 		// Shift current User record to historical table
 		DB::beginTransaction();
 		$this->_createHistoricalUserRecord($id);
-		$user = parent::delete($id);
+		$user = parent::delete($id, $auditTrailDetails);
 		
 		// Remove record for user tokens
 		DB::table('tql_sys_user_tokens')
@@ -133,10 +135,13 @@ class User extends Entity {
 	 * Locate a specific User record
 	 *
 	 * @param string $searchTerm
-	 * @param string $searchField [Optional] Defaults to 'id'
-	 * @return mixed Array of data for Person, false if no record found
+	 * @param array  $searchOptions Array of key value pairs used to further restrict the search paramters
+	 * @return mixed Array of data for User, false if no record found
 	 */ 
-	public function find($searchTerm, $searchField = 'tql_entity.id') {
+	public function find($searchTerm, array $searchOptions = array()) {
+        // Extract search options
+        $searchField = Utility::extractValue($searchOptions, 'searchField', 'tql_entity.id');
+        
 		// Define select fields
 		$select = array(
 			'tql_entity_users.id as id',
@@ -207,7 +212,7 @@ class User extends Entity {
 	
 	// Retrieve a collection of associated entities
 	public function getRelatedEntities($entityId, $filters = array()) {
-		throw new \Exception("Not implemented!");
+		throw new ModelException("Not implemented!");
 	}
 	
 	// Retrieve all records of the entity type
@@ -229,7 +234,7 @@ class User extends Entity {
 	
 	// Paginated set of records of the entity type
 	public function paginate($perPage = 20, $includeDeleted = false) {
-		throw new \Exception("Not implemented!");
+		throw new ModelException("Not implemented!");
 	}
 	
 	/**

@@ -5,22 +5,11 @@
 
 <p>{{ trans('administration.login_welcome_text') }}</p>
 
-@include('administration.errors.list')
+@include('administration._partials.errors', ['messages' => Session::get('messages')])
 
-{!! Form::open(['url' => 'administration/auth/login']) !!}
     <fieldset>
-        <div class="form-group">
-			{!! Form::label('email', 'Email address:') !!}
-			{!! Form::email('email', null, ['class' => 'form-control', 'required', 'autofocus']) !!}	
-			{!! FormError::inline('email', Session::get('messages')) !!}
-        </div>
-
-        <div class="form-group">
-			{!! Form::label('password', 'Password:') !!}
-			{!! Form::password('password', ['class' => 'form-control', 'required']) !!}	
-			{!! FormError::inline('password', Session::get('messages')) !!}
-        </div>
-        
+        {!! Form::open(['url' => 'administration/auth/login']) !!}
+        @include('administration.auth._partials.forms.form-login')
         <div class="checkbox">
             <label>
                 {!! Form::checkbox('remember', 1, null, ['id' => 'remember']) !!} {{ trans('administration.login_remember_me') }}
@@ -35,8 +24,7 @@
             <hr />
             <a href="/administration/auth/forgot-password">{{ trans('administration.login_forgot_password') }}</a>
         </div>
+        {!! Form::close() !!}
     </fieldset>
-{!! Form::close() !!}
-
 @endsection
 

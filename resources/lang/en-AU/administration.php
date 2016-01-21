@@ -3,10 +3,12 @@
 return array(
 	// Common strings
 	'common_home' => 'Home',
+	'common_dashboard' => 'Dashboard',
 	'common_email_address' => 'Email address',
 	'common_password' => 'Password',
 	'common_cancel' => 'Cancel',
-	
+	'common_heading_delete_confirm' => 'Delete these records?',
+	'common_command_delete_confirm' => 'Delete records',
 	
 	// Login text
 	'login_heading_login' => 'Login',
@@ -19,4 +21,11 @@ return array(
 	
 	// People strings
 	'people_heading_people' => 'People',
+	'people_heading_create' => 'Add a new person',
+    'people_heading_update' => 'Update details for :name',
+	'people_name' => 'Name',
+    'people_command_create' => 'Create new person record',
+    'people_command_update' => 'Update details',
+    'people_message_delete_confirmation_single' => 'Are you sure you want to delete the record for :name?',
+    'people_message_delete_confirmation_multiple' => 'Are you sure you want to delete the :count records currently selected?',
 );

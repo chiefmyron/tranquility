@@ -218,12 +218,15 @@ class InitialDatabaseSchema extends Migration {
             $table->string('sessionId')->primary();
             $table->text('payload');    
             $table->integer('lastActivity');
+            $table->integer('userId')->nullable();
+            $table->string('ipAddress')->nullable();
+            $table->text('userAgent');
         });
         
         Schema::create('tql_sys_user_tokens', function(Blueprint $table) {
             $table->bigInteger('userId')->primary();
-            $table->string('sessionId');
-            $table->string('rememberToken');
+            $table->string('sessionId')->nullable();
+            $table->string('rememberToken')->nullable();
         });
     }
 
