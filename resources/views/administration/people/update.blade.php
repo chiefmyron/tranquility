@@ -1,7 +1,7 @@
 @extends('administration.app')
 
 @section('heading')
-	@include('administration._partials.heading', ['heading' => trans('administration.people_heading_update', ['name' => $person->firstName.' '.$person->lastName])])
+	@include('administration._partials.heading', ['heading' => trans('administration.people_heading_update', ['name' => $person->getName()])])
 @stop
 
 @section('breadcrumbs', Breadcrumbs::render('admin.people.update', $person))

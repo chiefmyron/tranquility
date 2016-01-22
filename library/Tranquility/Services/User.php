@@ -5,33 +5,6 @@ use \Tranquility\Enums\System\EntityType   as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
 class User extends \Tranquility\Services\Service {
-	// Fields for a User entity
-	protected $_entityFields = array(
-		'username',
-		'password',
-		'timezoneCode',
-		'localeCode',
-		'active',
-		'securityGroupId',
-		'registeredDateTime'
-	);
-	
-	// Mandatory fields for a User entity
-	protected $_entityMandatoryFields = array(
-		'username',
-		'timezoneCode',
-		'localeCode',
-		'active',
-		'securityGroupId'	
-	);
-	
-	// Additional mandatory fields for creating a new User entity
-	protected $_newEntityMandatoryFields = array(
-		'password', 
-		'passwordConfirm', 
-		'parentId'
-	);
-
 	/** 
 	 * Specify actual model name
 	 *
@@ -40,28 +13,15 @@ class User extends \Tranquility\Services\Service {
 	public function model() {
 		return 'Tranquility\Models\User';
 	}
-	
-	/**
-	 * Get a list of data fields associated with the User
-	 * 
-	 * @return array
-	 */
-	protected function _getFields() {
-		return array_merge(parent::_getFields(), $this->_entityFields);
-	}
-	
-	/**
-	 * Get a list of fields that are mandatory for creating / updating a User entity
-	 * 
-	 * @return array
-	 */
-	protected function _getMandatoryFields($newRecord = false) {
-		$fields = array_merge(parent::_getMandatoryFields($newRecord), $this->_entityMandatoryFields);
-		if ($newRecord) {
-			$mandatoryFields = array_merge($fields, $this->_newEntityMandatoryFields);
-		}
-		return $mandatoryFields;
-	}
+    
+    /**
+     * Specify actual business object class name
+     *
+     * @return string
+     */
+    public function businessObject() {
+        return 'Tranquility\BusinessObjects\User';
+    }
 	
 	/**
 	 * Validate data for input fields - this includes checking mandatory fields and audit

@@ -13,7 +13,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	
 	// Model used for data access layer
 	protected $model;
-	
+    
 	// Common fields for all entities
 	protected $_commonFields = array(
 		'id',
@@ -55,9 +55,17 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	 * Specify the name of the model class
 	 *
 	 * @abstract
-	 * @return mixed
+	 * @return string
 	 */
 	abstract function model(); 
+    
+    /**
+	 * Specify the name of the business object class
+	 *
+	 * @abstract
+	 * @return string
+	 */
+	abstract function businessObject(); 
 	
 	/**
 	 * Instantiate model class to allow data access
@@ -80,7 +88,8 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	 * @return array
 	 */
 	protected function _getFields() {
-		return array_merge($this->_commonFields, $this->_auditFields);
+        $className = $this->businessObject();
+		return $className::getEntityFields();
 	}
 	
 	/**
@@ -88,21 +97,8 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	 * @return array
 	 */
 	protected function _getMandatoryFields($newRecord = false) {
-		// If updating an existing record, the field 'id' is also mandatory
-		if (!$newRecord) {
-			return array_merge(array('id'), $this->_commonMandatoryFields);
-		}
-		
-		return $this->_commonMandatoryFields;
-	}
-	
-	/**
-	 * Gets a list of fields that will always be present in the audit trail
-	 * 
-	 * @return array
-	 */
-	protected function _getAuditTrailFields() {
-		return $this->_auditFields;
+		$className = $this->businessObject();
+		return $className::getMandatoryEntityFields($newRecord);
 	}
 	
 	/**
@@ -156,6 +152,13 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 
 		// If there are one or more messages, then there are errors - return messages
 		if (count($messages) > 0) {
+            // Add top level error message
+            $messages[] = array(
+				'code' => 10005,
+				'text' => 'message_10005_form_validation_errors',
+				'level' => EnumMessageLevel::Error,
+				'fieldId' => null
+            );
 			return $messages;
 		}
 		
@@ -178,11 +181,16 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 			$filterConditions[] = array('deleted', '=', 0);
 		}
 				
+        // Convert result set into array of business objects
+        $businessObjects = array();
 		$results = $this->model->get($resultsPerPage, $startRecordIndex, $filterConditions, $orderConditions);
+        foreach ($results as $result) {
+            $businessObjects[] = $this->_createBusinessObject($result);
+        }
 		
 		// If no results are returned, add a warning message to the response
 		$messages = array();
-		if (count($results) <= 0) {
+		if (count($businessObjects) <= 0) {
 			$messages[] = array(
 				'code' => 10000,
 				'text' => 'message_10000_no_records_returned',
@@ -192,7 +200,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		
 		// Set up the response message
 		$response = new ServiceResponse(array(
-			'content' => $results,
+			'content' => $businessObjects,
 			'messages' => $messages,
 			'responseCode' => EnumHttpStatusCode::OK
 		));
@@ -290,14 +298,21 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		}
 		
 		// Setup the service response
+        $businessObject = $this->_createBusinessObject($entity);
 		$response = new ServiceResponse(array(
-			'content' => array($entity),
+			'content' => array($businessObject),
 			'messages' => $messages,
 			'responseCode' => EnumHttpStatusCode::OK
 		));
 		return $response;
 	}
 	
+    protected function _createBusinessObject($data) {
+        // Create business object instance
+        $className = $this->businessObject();
+        return new $className($data);
+    }
+    
 	/**
 	 * Checks for the existence of a particular field in the list of filter conditions
 	 *
