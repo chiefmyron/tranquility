@@ -1,13 +1,11 @@
-<?php namespace Tranquility\Data\BusinessObjects;
+<?php namespace Tranquility\Data\BusinessObjects\History;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Tranquility\Data\BusinessObjects\Extensions\UserTokens;
-
-class UserHistory extends EntityHistory  {
+class UserHistoricalBusinessObject extends EntityHistoricalBusinessObject  {
     use \Tranquility\Data\Traits\PropertyAccessorTrait;
     
     protected $username;

@@ -1,6 +1,6 @@
 <?php namespace Tranquility\Data\Traits;
 
-use Tranquility\Data\BusinessObjects\Entity as Entity;
+use Tranquility\Data\BusinessObjects\EntityBusinessObject as Entity;
 use Tranquility\Data\BusinessObjects\Extensions\AuditTrail as AuditTrail;
 use Tranquility\Data\Exceptions\BusinessObjectException as BusinessObjectException;
 
@@ -10,7 +10,7 @@ trait PropertyAccessorTrait {
      * 
      * @param string $name  Property name
      * @param mixed $value  Property value
-     * @throws Tranquility\Data\Exceptions\BusinessObjectException 
+     * @throws Tranquility\Exceptions\BusinessObjectException 
      * @return void
      */
     public function __set($name, $value) {
@@ -30,7 +30,7 @@ trait PropertyAccessorTrait {
      * Retrieves the value for an object property
      * 
      * @param string $name  Property name
-     * @throws Tranquility\Data\Exceptions\BusinessObjectException
+     * @throws Tranquility\Exceptions\BusinessObjectException
      * @return mixed
      */
     public function __get($name) {

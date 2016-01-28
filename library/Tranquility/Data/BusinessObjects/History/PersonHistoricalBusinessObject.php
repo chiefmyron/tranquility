@@ -1,11 +1,11 @@
-<?php namespace Tranquility\Data\BusinessObjects;
+<?php namespace Tranquility\Data\BusinessObjects\History;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
-class Person extends Entity {
+class PersonHistoricalBusinessObject extends EntityHistoricalBusinessObject {
     use \Tranquility\Data\Traits\PropertyAccessorTrait;
     
     protected $title;
@@ -25,25 +25,6 @@ class Person extends Entity {
         'lastName',
         'position'
     );
-    
-    /**
-     * Array of properties that are mandatory when creating or updating a business object
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_mandatoryFields = array(
-		'firstName',
-        'lastName'
-    );
-    
-    /**
-     * Array of properties that are additionally mandatory only when creating a business object
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_mandatoryFieldsNewEntity = array();
     
     /**
      * Name of the class responsible for representing historical versions of this business entity
@@ -71,7 +52,7 @@ class Person extends Entity {
     public static function loadMetadata(ClassMetadata $metadata) {
         $builder = new ClassMetadataBuilder($metadata);
         // Define table name
-        $builder->setTable('entity_people');
+        $builder->setTable('history_entity_people');
         $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\Entity');
         
         // Define fields

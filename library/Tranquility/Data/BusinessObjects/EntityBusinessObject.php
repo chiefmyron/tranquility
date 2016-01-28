@@ -6,9 +6,9 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use Tranquility\Data\BusinessObjects\Extensions\AuditTrail as AuditTrail;
-use Tranquility\Data\Exceptions\BusinessObjectException as BusinessObjectException;
+use Tranquility\Exceptions\BusinessObjectException         as BusinessObjectException;
 
-abstract class EntityHistory {
+abstract class EntityBusinessObject {
     protected $id;
     protected $version;
     protected $type;
@@ -31,6 +31,17 @@ abstract class EntityHistory {
     );
     
     /**
+     * Array of common properties that all Business Objects will require
+     * when creating or updating
+     *
+     * @static
+     * @var array
+     */
+    protected static $_mandatoryFields = array(
+        'type',
+    );
+    
+    /**
      * Create a new instance of the Business Object
      *
      * @var array $data     [Optional] Initial values for object properties
@@ -38,13 +49,17 @@ abstract class EntityHistory {
      * @return void
      */
     public function __construct($data = array(), $options = array()) {
-        // Set defaults for new entities
-        $this->version = 1;
-        $this->deleted = 0;
-        
         // Set values for valid properties
         if (count($data) > 0) {
             $this->populate($data);
+        }
+        
+        // Ensure version and deleted properties are initialised
+        if (!isset($this->version)) {
+            $this->version = 1;
+        }
+        if (!isset($this->deleted)) {
+            $this->deleted = 0;
         }
     }
     
@@ -52,11 +67,18 @@ abstract class EntityHistory {
      * Sets values for object properties, based on the inputs provided
      * 
      * @param mixed $data  May be an array or an instance of BusinessObject
-     * @throws Tranquility\Data\Exceptions\BusinessObjectException
+     * @throws Tranquility\Exceptions\BusinessObjectException
      * @return Tranquility\Data\BusinessObjects\Entity
      */
-    public function populate(Entity $entity) {
-        $data = $entity->toArray();
+    public function populate($data) {
+        if ($data instanceof Entity) {
+            $data = $data->toArray();
+        } elseif (is_object($data)) {
+            $data = (array) $data;
+        }
+        if (!is_array($data)) {
+            throw new BusinessObjectException('Initial data must be an array or object');
+        }
         
         // Assign relevant data to object properties
         $entityFields = $this->getEntityFields();
@@ -87,7 +109,7 @@ abstract class EntityHistory {
      * @return void
      */
     public function setAuditTrail($auditTrail) {
-        if (!($auditTrail instanceof \Tranquility\Data\BusinessObjects\Extensions\AuditTrail)) {
+        if (!($auditTrail instanceof AuditTrail)) {
             throw new BusinessObjectException('Audit trail information must be provided as a \Tranquility\Data\BusinessObjects\Extensions\AuditTrail object');
         }
         
@@ -97,10 +119,10 @@ abstract class EntityHistory {
     /**
      * Retrieve audit trail details for the entity as an array
      *
-     * @return array
+     * @return \Tranquility\Data\BusinessObjects\Extensions\AuditTrail
      */
     public function getAuditTrailDetails() {
-        return $this->auditTrail->getAuditTrailDetails();
+        return $this->auditTrail;
     }
      
     /**
@@ -112,17 +134,17 @@ abstract class EntityHistory {
     public static function loadMetadata(ClassMetadata $metadata) {
         $builder = new ClassMetadataBuilder($metadata);
         // Define table name
-        $builder->setTable('history_entity');
+        $builder->setTable('entity');
         
         // Define inheritence
         $builder->setJoinedTableInheritance();
         $builder->setDiscriminatorColumn('type');
-        $builder->addDiscriminatorMapClass('person', PersonHistory::class);
-        $builder->addDiscriminatorMapClass('user', UserHistory::class);
+        $builder->addDiscriminatorMapClass('person', PersonBusinessObject::class);
+        $builder->addDiscriminatorMapClass('user', UserBusinessObject::class);
         
         // Define fields
-        $builder->createField('id', 'integer')->isPrimaryKey()->build();
-        $builder->createField('version', 'integer')->isPrimaryKey()->build();
+        $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
+        $builder->addField('version', 'integer');
         $builder->addField('deleted', 'boolean');
         
         // Add relationships

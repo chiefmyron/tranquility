@@ -5,7 +5,9 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
-class PersonHistory extends EntityHistory {
+use Tranquility\Data\BusinessObjects\History\PersonHistoricalBusinessObject as PersonHistoricalBusinessObject;
+
+class PersonBusinessObject extends EntityBusinessObject {
     use \Tranquility\Data\Traits\PropertyAccessorTrait;
     
     protected $title;
@@ -27,12 +29,31 @@ class PersonHistory extends EntityHistory {
     );
     
     /**
+     * Array of properties that are mandatory when creating or updating a business object
+     * 
+     * @var array
+     * @static
+     */
+    protected static $_mandatoryFields = array(
+		'firstName',
+        'lastName'
+    );
+    
+    /**
+     * Array of properties that are additionally mandatory only when creating a business object
+     * 
+     * @var array
+     * @static
+     */
+    protected static $_mandatoryFieldsNewEntity = array();
+    
+    /**
      * Name of the class responsible for representing historical versions of this business entity
      * 
      * @var string
      * @static
      */
-    protected static $_historicalEntityClass = PersonHistory::class;
+    protected static $_historicalEntityClass = PersonHistoricalBusinessObject::class;
     
     /**
      * Retrieve formatted name for person
@@ -52,8 +73,8 @@ class PersonHistory extends EntityHistory {
     public static function loadMetadata(ClassMetadata $metadata) {
         $builder = new ClassMetadataBuilder($metadata);
         // Define table name
-        $builder->setTable('history_entity_people');
-        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\Entity');
+        $builder->setTable('entity_people');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
         
         // Define fields
         $builder->addField('title', 'string');

@@ -6,7 +6,7 @@ use Illuminate\Contracts\Auth\Authenticatable   as Authenticatable;
 
 use Tranquility\Data\BusinessObjects\User       as User;
 use Tranquility\Utility                         as Utility;
-use Tranquility\Services\User                   as UserService;
+use Tranquility\Services\UserService            as UserService;
 
 class UserServiceProvider implements UserProviderInterface {		
 	

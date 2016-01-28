@@ -3,14 +3,14 @@
 use \Tranquility\Enums\System\MessageLevel    as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode  as EnumHttpStatusCode;
 
-class User extends \Tranquility\Services\Service {
+class UserService extends \Tranquility\Services\Service {
     /**
      * Specify actual business object class name
      *
      * @return string
      */
     public function businessObject() {
-        return 'Tranquility\Data\BusinessObjects\User';
+        return 'Tranquility\Data\BusinessObjects\UserBusinessObject';
     }
 	
 	/**
@@ -64,7 +64,6 @@ class User extends \Tranquility\Services\Service {
 	 */
 	public function findByToken($id, $token) {
         $entity = $this->_getRepository()->findByToken($id, $token);
-		//$entity = $this->model->findByToken($id, $token);
 		return $this->_findResponse($entity);
 	}
 	

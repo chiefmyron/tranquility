@@ -1,9 +1,9 @@
 <?php namespace Tranquility\Data\Repositories;
 
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Tranquility\Data\BusinessObjects\Extensions\AuditTrail;
 
-class Entity extends EntityRepository {
+class EntityRepository extends \Doctrine\ORM\EntityRepository {
     
     public function all($filterConditions = array(), $orderConditions = array(), $resultsPerPage = 0, $startRecordIndex = 0) {
         // Start creation of query
@@ -32,7 +32,7 @@ class Entity extends EntityRepository {
      */
     public function create(array $data) {
 		// Create new audit trail record
-		$auditTrail = new \Tranquility\Data\BusinessObjects\Extensions\AuditTrail($data);
+		$auditTrail = new AuditTrail($data);
         $this->_em->persist($auditTrail);
         
         // Create new entity record, with the audit trail attached
@@ -67,7 +67,7 @@ class Entity extends EntityRepository {
         $this->_em->persist($historicalEntity);
         
         // Create new audit trail record
-		$auditTrail = new \Tranquility\Data\BusinessObjects\Extensions\AuditTrail($data);
+		$auditTrail = new AuditTrail($data);
         $this->_em->persist($auditTrail);
         
         // Update existing entity record with new details, incremented version number

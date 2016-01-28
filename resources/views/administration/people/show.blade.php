@@ -1,7 +1,7 @@
 @extends('administration.app')
 
 @section('heading')
-	@include('administration._partials.heading', ['heading' => $person->getName()])
+	@include('administration._partials.heading', ['heading' => $person->getFullName()])
 @stop
 
 @section('breadcrumbs', Breadcrumbs::render('admin.people.show', $person))

@@ -4,7 +4,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Illuminate\Container\Container              as Container;
 
 use \Tranquility\Utility                        as Utility;
-use \Tranquility\Services\ServiceException      as ServiceException;
+use \Tranquility\Exceptions\ServiceException    as ServiceException;
 use \Tranquility\Enums\System\MessageLevel      as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode    as EnumHttpStatusCode;
 use \Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
@@ -57,7 +57,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		
 		// Check that audit trail field 'updateBy' is a valid user
 		$updateBy = Utility::extractValue($inputs, 'updateBy', 0);
-        if (!($updateBy instanceof \Tranquility\Data\BusinessObjects\User)) {
+        if (!($updateBy instanceof \Tranquility\Data\BusinessObjects\UserBusinessObject)) {
             $messages[] = array(
 				'code' => 10012,
 				'text' => 'message_10012_invalid_user_assigned_to_audit_trail',

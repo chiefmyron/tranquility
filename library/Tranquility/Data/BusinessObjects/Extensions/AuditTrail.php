@@ -5,7 +5,8 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Tranquility\Data\BusinessObjects\User as User;
+use Tranquility\Data\BusinessObjects\UserBusinessObject;
+use Tranquility\Exceptions\BusinessObjectException;
 
 class AuditTrail {
     protected $transactionId;
@@ -50,7 +51,7 @@ class AuditTrail {
      * Sets values for object properties, based on the inputs provided
      * 
      * @param mixed $data  May be an array or an instance of BusinessObject
-     * @throws Tranquility\Data\Exceptions\BusinessObjectException
+     * @throws Tranquility\Exceptions\BusinessObjectException
      * @return Tranquility\Data\BusinessObjects\Entity
      */
     public function populate($data) {
@@ -106,7 +107,7 @@ class AuditTrail {
         $builder->addField('updateReason', 'string');
         
         // Add relationships
-        $builder->createOneToOne('updateBy', User::class)->addJoinColumn('updateBy','id')->build();
+        $builder->createOneToOne('updateBy', UserBusinessObject::class)->addJoinColumn('updateBy','id')->build();
     }
     
     /**

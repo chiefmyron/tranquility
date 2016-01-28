@@ -9,10 +9,10 @@
  */
 
 use \Tranquility\Utility                     as Utility;
-use \Tranquility\Services\ServiceException   as ServiceException;
 use \Tranquility\Enums\System\EntityType     as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel   as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode as EnumHttpStatusCode;
+use \Tranquility\Exceptions\ServiceException as ServiceException;
 
 class ServiceResponse {
 	/**

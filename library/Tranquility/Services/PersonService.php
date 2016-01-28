@@ -4,14 +4,14 @@ use \Tranquility\Utility                   as Utility;
 use \Tranquility\Enums\System\EntityType   as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
-class Person extends \Tranquility\Services\Service {
+class PersonService extends \Tranquility\Services\Service {
     /**
      * Specify business object name
      *
      * @return string
      */
     public function businessObject() {
-        return 'Tranquility\Data\BusinessObjects\Person';
+        return 'Tranquility\Data\BusinessObjects\PersonBusinessObject';
     }
 	
 	/**

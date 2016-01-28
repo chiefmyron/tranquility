@@ -1,9 +1,6 @@
 <?php namespace Tranquility\Data\Repositories;
 
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Tools\Pagination\Paginator;
-
-class User extends Entity {
+class UserRepository extends EntityRepository {
     
     /**
      * Update the "remember me" token for the given user in storage.

@@ -7,7 +7,7 @@ use Illuminate\Http\Request as Request;
 use App\Http\Controllers\Controller;
 
 use Carbon\Carbon;
-use Tranquility\Services\Person as PersonService;
+use Tranquility\Services\PersonService as PersonService;
 use Tranquility\Enums\System\EntityType as EnumEntityType;
 use Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
 

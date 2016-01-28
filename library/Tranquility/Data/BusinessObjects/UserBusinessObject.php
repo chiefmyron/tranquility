@@ -6,10 +6,11 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use Tranquility\Data\BusinessObjects\Extensions\UserTokens;
+use Tranquility\Data\BusinessObjects\History\UserHistoricalBusinessObject;
 
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
 
-class User extends Entity implements UserContract {
+class UserBusinessObject extends EntityBusinessObject implements UserContract {
     use \Tranquility\Data\Traits\PropertyAccessorTrait;
     
     protected $username;
@@ -36,6 +37,12 @@ class User extends Entity implements UserContract {
         'registeredDateTime',
     );
     
+    /**
+     * Array of properties that are mandatory when creating or updating a business object
+     * 
+     * @var array
+     * @static
+     */
     protected static $_mandatoryFields = array(
         'username',
 		'timezoneCode',
@@ -44,11 +51,25 @@ class User extends Entity implements UserContract {
 		'securityGroupId'
     );
     
+    /**
+     * Array of properties that are additionally mandatory only when creating a business object
+     * 
+     * @var array
+     * @static
+     */
     protected static $_mandatoryFieldsNewEntity = array(
         'password', 
 		'passwordConfirm', 
 		'parentId'
     );
+    
+    /**
+     * Name of the class responsible for representing historical versions of this business entity
+     * 
+     * @var string
+     * @static
+     */
+    protected static $_historicalEntityClass = UserHistoricalBusinessObject::class;
     
     /**
      * Metadata used to define object relationship to database
@@ -60,7 +81,7 @@ class User extends Entity implements UserContract {
         $builder = new ClassMetadataBuilder($metadata);
         // Define table name
         $builder->setTable('entity_users');
-        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\User');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\UserRepository');
         
         // Define fields
         $builder->addField('username', 'string');
