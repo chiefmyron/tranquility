@@ -157,6 +157,7 @@ return [
 		'Tranquility\Providers\ViewComposerProvider',
         'Tranquility\Providers\SessionServiceProvider',
 		'DaveJamesMiller\Breadcrumbs\ServiceProvider',
+        'LaravelDoctrine\ORM\DoctrineServiceProvider',
 
 	],
 
@@ -210,7 +211,9 @@ return [
 		'FormError'   => 'Tranquility\Html\FormError\Facade',
 		'Toolbar'     => 'Tranquility\Html\Toolbar\Facade',
 		'Breadcrumbs' => 'DaveJamesMiller\Breadcrumbs\Facade',
-		'Menu'        => 'Lavary\Menu\Facade',
+        'EntityManager' => 'LaravelDoctrine\ORM\Facades\EntityManager',
+        'Registry'      => 'LaravelDoctrine\ORM\Facades\Registry',
+        'Doctrine'      => 'LaravelDoctrine\ORM\Facades\Doctrine',
 	],
 
 ];

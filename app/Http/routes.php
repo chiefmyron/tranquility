@@ -13,6 +13,9 @@
 
 Route::get('/', 'WelcomeController@index');
 
+
+Route::get('/test', 'TestController@index');
+
 // Backoffice authentication routes
 Route::get('/administration/auth', ['middleware' => 'administration.guest', 'uses' => 'Administration\AuthController@index']);
 Route::post('/administration/auth/ajax', ['middleware' => 'administration.guest', 'uses' => 'Administration\AuthController@loginAjax']);
