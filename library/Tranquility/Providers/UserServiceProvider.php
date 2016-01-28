@@ -90,7 +90,7 @@ class UserServiceProvider implements UserProviderInterface {
 		if ($response->containsErrors()) {
 			return null;
 		}
-        
+		
 		// Create user object and return
 		$user = $response->getFirstContentItem();
 		return $user;

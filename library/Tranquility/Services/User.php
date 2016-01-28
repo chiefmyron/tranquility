@@ -82,4 +82,4 @@ class User extends \Tranquility\Services\Service {
 		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
 		return $response;
 	}
-}	
+}

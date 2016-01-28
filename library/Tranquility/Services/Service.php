@@ -259,7 +259,6 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		}
 		
 		// Setup the service response
-        $businessObject = $this->_createBusinessObject($entity);
 		$response = new ServiceResponse(array(
 			'content' => $entities,
 			'messages' => $messages,
