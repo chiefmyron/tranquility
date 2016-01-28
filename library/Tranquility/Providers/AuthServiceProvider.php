@@ -14,7 +14,7 @@ class AuthServiceProvider extends ServiceProvider {
 	 */
 	public function boot() {
         Auth::provider('custom', function($app, array $config) {
-            return new UserServiceProvider($this->app['hash'], new UserService($this->app));
+            return new UserServiceProvider($this->app['hash'], new UserService($this->app['em']));
         });
 	}
 	
