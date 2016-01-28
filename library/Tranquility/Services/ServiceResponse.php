@@ -78,20 +78,35 @@ class ServiceResponse {
 	/**
 	 * Sets the main content block(s) that will be returned in the service response
 	 *
-	 * @param array $content One or more content blocks to be returned
+	 * @param mixed $content One or more content blocks to be returned
 	 * @param boolean $calculateMetadata If true, metadata for the response will automatically be calculated
-	 * @return boolean
+	 * @return void
 	 * @throws \Tranquility\Services\ServiceException
 	 */
-	public function setContent(array $content = array(), $calculateMetadata = true) {
-		$this->_content = $content;
+	public function setContent($content = array(), $calculateMetadata = true) {
+        // If content is a collection, add each one separately
+        if (!is_array($content) && !($content instanceof \Traversable) && !($content instanceof \IteratorAggregate)) {
+            $content = array($content);
+        }
+        foreach ($content as $item) {
+            $this->addContent($item);
+        }
 		
 		// If the flag has been set, recalculate metadata
 		if ($calculateMetadata === true) {
 			$this->calculateMetadata();
 		}
-		return true;
 	}
+    
+    /**
+     * Add a single new content item to the service response
+     *
+     * @param mixed $content  Content item to be added to the response
+     * @return void
+     */
+    public function addContent($content) {
+        $this->_content[] = $content;
+    }
 	
 	/**
 	 * Returns the currently set content block(s) for the service response

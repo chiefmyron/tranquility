@@ -5,28 +5,14 @@ use \Tranquility\Enums\System\EntityType   as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
 class Person extends \Tranquility\Services\Service {
-	// Fields for a Person entity
-	protected $_entityFields = array(
-		'title',
-		'firstName',
-		'lastName',
-		'position'
-	);
-	
-	// Mandatory fields for a Person entity
-	protected $_entityMandatoryFields = array(
-		'firstName',
-		'lastName'	
-	);
-
-	/** 
-	 * Specify actual model name
-	 *
-	 * @return mixed
-	 */
-	public function model() {
-		return 'Tranquility\Models\Person';
-	}
+    /**
+     * Specify business object name
+     *
+     * @return string
+     */
+    public function businessObject() {
+        return 'Tranquility\Data\BusinessObjects\Person';
+    }
 	
 	/**
 	 * Create a new Person record
@@ -118,24 +104,6 @@ class Person extends \Tranquility\Services\Service {
         
         return $response;
     }
-	
-	/**
-	 * Get a list of data fields associated with the Person
-	 * 
-	 * @return array
-	 */
-	protected function _getFields() {
-		return array_merge(parent::_getFields(), $this->_entityFields);
-	}
-	
-	/**
-	 * Get a list of fields that are mandatory for creating / updating a Person entity
-	 * 
-	 * @return array
-	 */
-	protected function _getMandatoryFields($newRecord = false) {
-		return array_merge(parent::_getMandatoryFields($newRecord), $this->_entityMandatoryFields);
-	}
 	
 	/**
 	 * Validate data for input fields - this includes checking mandatory fields and audit

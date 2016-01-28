@@ -4,7 +4,7 @@ use Illuminate\Contracts\Hashing\Hasher         as HasherContract;
 use Illuminate\Contracts\Auth\UserProvider      as UserProviderInterface;
 use Illuminate\Contracts\Auth\Authenticatable   as Authenticatable;
 
-use Tranquility\Auth\User                       as User;
+use Tranquility\Data\BusinessObjects\User       as User;
 use Tranquility\Utility                         as Utility;
 use Tranquility\Services\User                   as UserService;
 
@@ -43,8 +43,7 @@ class UserServiceProvider implements UserProviderInterface {
 		}
 		
 		// Create user object and return
-		$obj = (array)$response->getFirstContentItem();
-		$user = new User($obj);
+		$user = $response->getFirstContentItem();
 		return $user;
 	}
 
@@ -63,8 +62,7 @@ class UserServiceProvider implements UserProviderInterface {
 		}
 		
 		// Create user object and return
-		$obj = (array)$response->getFirstContentItem();
-		$user = new User($obj);
+        $user = $response->getFirstContentItem();
 		return $user;
 	}
 
@@ -94,8 +92,7 @@ class UserServiceProvider implements UserProviderInterface {
 		}
 		
 		// Create user object and return
-		$obj = (array)$response->getFirstContentItem();
-		$user = new User($obj);
+		$user = $response->getFirstContentItem();
 		return $user;
 	}
 

@@ -41,8 +41,12 @@ class PeopleController extends Controller {
 	 * @return Response
 	 */
 	public function index(Request $request) {
+        // Get pagination details from request
+        $pageNumber = $request->get('page', 1);
+        $recordsPerPage = $request->get('recordsPerPage', 20);
+        
 		// Get the list of people
-		$response = $this->_person->all();
+		$response = $this->_person->all(array(), array(), $pageNumber, $recordsPerPage);
 		$responseArray = $response->toArray();
 		
 		// Determine if we are using the detail or table view (default to table)
@@ -120,9 +124,9 @@ class PeopleController extends Controller {
 		
 		// Add in additional audit trail details
 		$params['type'] = EnumEntityType::Person;
-		$params['updateBy'] = Auth::user()->id;
+		$params['updateBy'] = Auth::user();
 		$params['updateReason'] = 'who knows?';
-		$params['updateDatetime'] = Carbon::now();
+		$params['updateDateTime'] = Carbon::now();
 		$params['transactionSource'] = EnumTransactionSource::UIBackend;
 		
 		// Create or update record		
@@ -201,9 +205,9 @@ class PeopleController extends Controller {
         
         // Set up audit trail details
         $params = array();
-        $params['updateBy'] = Auth::user()->id;
+        $params['updateBy'] = Auth::user();
         $params['updateReason'] = 'who knows?';
-        $params['updateDatetime'] = Carbon::now();
+        $params['updateDateTime'] = Carbon::now();
         $params['transactionSource'] = EnumTransactionSource::UIBackend;
         if (count($inputIds) > 1) {
             $response = $this->_person->deleteMultiple($inputIds, $params);
