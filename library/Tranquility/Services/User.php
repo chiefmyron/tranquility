@@ -1,34 +1,24 @@
 <?php namespace Tranquility\Services;
 
-use \Tranquility\Utility                   as Utility;
-use \Tranquility\Enums\System\EntityType   as EnumEntityType;
-use \Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
+use \Tranquility\Enums\System\MessageLevel    as EnumMessageLevel;
+use \Tranquility\Enums\System\HttpStatusCode  as EnumHttpStatusCode;
 
 class User extends \Tranquility\Services\Service {
-	/** 
-	 * Specify actual model name
-	 *
-	 * @return mixed
-	 */
-	public function model() {
-		return 'Tranquility\Models\User';
-	}
-    
     /**
      * Specify actual business object class name
      *
      * @return string
      */
     public function businessObject() {
-        return 'Tranquility\BusinessObjects\User';
+        return 'Tranquility\Data\BusinessObjects\User';
     }
 	
 	/**
 	 * Validate data for input fields - this includes checking mandatory fields and audit
 	 * trail fields
 	 * 
-	 * @param array   $inputs    Array of data field values
-	 * @param boolean $newRecord True if creating validating fields for a new record
+	 * @param array   $inputs     Array of data field values
+	 * @param boolean $newRecord  True if creating validating fields for a new record
 	 * @return mixed  True if valid input, array of messages if invalid input
 	 */
 	public function validateInputFields($inputs, $newRecord = false) {
@@ -65,12 +55,31 @@ class User extends \Tranquility\Services\Service {
 		return true;
 	}
 	
+    /**
+	 * Retrieve a user by by their unique identifier and "remember me" token.
+	 *
+	 * @param  mixed   $id
+	 * @param  string  $token
+	 * @return \Tranquility\Services\ServiceResponse
+	 */
 	public function findByToken($id, $token) {
-		$entity = $this->model->findByToken($id, $token);
+        $entity = $this->_getRepository()->findByToken($id, $token);
+		//$entity = $this->model->findByToken($id, $token);
 		return $this->_findResponse($entity);
 	}
 	
+    /**
+     * Update the "remember me" token for the given user in storage.
+     *
+     * @param  int     $id
+     * @param  string  $token
+     * @return \Tranquility\Services\ServiceResponse
+     */
 	public function updateRememberToken($id, $token) {
-		$this->model->updateRememberToken($id, $token);
+        // Set up response object
+		$response = new ServiceResponse();
+        $this->_getRepository()->updateRememberToken($id, $token);
+		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
+		return $response;
 	}
 }	

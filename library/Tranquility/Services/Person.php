@@ -5,22 +5,13 @@ use \Tranquility\Enums\System\EntityType   as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
 class Person extends \Tranquility\Services\Service {
-	/** 
-	 * Specify actual model name
-	 *
-	 * @return string
-	 */
-	public function model() {
-		return 'Tranquility\Models\Person';
-	}
-    
     /**
      * Specify business object name
      *
      * @return string
      */
     public function businessObject() {
-        return 'Tranquility\BusinessObjects\Person';
+        return 'Tranquility\Data\BusinessObjects\Person';
     }
 	
 	/**

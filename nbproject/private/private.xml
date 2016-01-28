@@ -3,12 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Projects/tranquility/library/Tranquility/BusinessObjects/Entity.php</file>
-            <file>file:/C:/Projects/tranquility/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php</file>
-            <file>file:/C:/Projects/tranquility/library/Tranquility/BusinessObjects/Person.php</file>
-            <file>file:/C:/Projects/tranquility/library/Tranquility/Providers/UserServiceProvider.php</file>
-            <file>file:/C:/Projects/tranquility/library/Tranquility/Services/Service.php</file>
-            <file>file:/C:/Projects/tranquility/vendor/laravel/framework/src/Illuminate/Routing/Router.php</file>
+            <file>file:/C:/Projects/tranquility/library/Tranquility/Data/Repositories/Entity.php</file>
+            <file>file:/C:/Projects/tranquility/library/Tranquility/Services/Person.php</file>
         </group>
     </open-files>
 </project-private>

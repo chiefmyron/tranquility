@@ -1,6 +1,8 @@
 <?php namespace Tranquility\Services;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Illuminate\Container\Container              as Container;
+
 use \Tranquility\Utility                        as Utility;
 use \Tranquility\Services\ServiceException      as ServiceException;
 use \Tranquility\Enums\System\MessageLevel      as EnumMessageLevel;
@@ -8,57 +10,18 @@ use \Tranquility\Enums\System\HttpStatusCode    as EnumHttpStatusCode;
 use \Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
 
 abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterface {
-	// Laravel IoC container
-	private $container;
-	
-	// Model used for data access layer
-	protected $model;
-    
-	// Common fields for all entities
-	protected $_commonFields = array(
-		'id',
-		'version',
-		'type',
-		'subType',
-		'deleted',
-		'transactionId'	
-	);
-	
-	// Mandatory fields when creating or updating an entity
-	protected $_commonMandatoryFields = array(
-		'type',
-		'transactionSource',
-		'updateBy',
-		'updateDatetime',
-		'updateReason'
-	);
-
-	// Audit trail fields
-	protected $_auditFields = array(
-		'transactionSource',
-		'updateBy',
-		'updateDateTime',
-		'updateReason'	
-	);
+    // Doctrine entity manager
+    private $_entityManager;
 	
 	/**
 	 * Constructor
 	 *
 	 * @param Container $container Laravel IoC container
 	 */
-	public function __construct(Container $container) {
-		$this->container = $container;
-		$this->makeModel();
+	public function __construct(EntityManagerInterface $em) {
+        $this->_entityManager = $em;
 	}
 	
-	/**
-	 * Specify the name of the model class
-	 *
-	 * @abstract
-	 * @return string
-	 */
-	abstract function model(); 
-    
     /**
 	 * Specify the name of the business object class
 	 *
@@ -66,40 +29,6 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	 * @return string
 	 */
 	abstract function businessObject(); 
-	
-	/**
-	 * Instantiate model class to allow data access
-	 *
-	 * @return \Tranquility\Model
-	 */
-	public function makeModel() {
-		$model = $this->container->make($this->model());
-		
-		if (!$model instanceof \Tranquility\Models\Entity) {
-			throw new ServiceException("Class ".$this->model()." must be an instance of Tranquility\\Models\\Entity");
-		}
-		
-		$this->model = $model;
-		return $this->model;
-	}
-	
-	/**
-	 * Get a list of data fields associated with the entity 
-	 * @return array
-	 */
-	protected function _getFields() {
-        $className = $this->businessObject();
-		return $className::getEntityFields();
-	}
-	
-	/**
-	 * Get a list of fields that are mandatory for creating / updating an entity
-	 * @return array
-	 */
-	protected function _getMandatoryFields($newRecord = false) {
-		$className = $this->businessObject();
-		return $className::getMandatoryEntityFields($newRecord);
-	}
 	
 	/**
 	 * Validate data for input fields - this includes checking mandatory fields and audit
@@ -115,7 +44,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		// Validate that mandatory inputs have been provided
 		$mandatoryFieldNames = $this->_getMandatoryFields($newRecord);
 		foreach ($mandatoryFieldNames as $field) {
-			if (!isset($inputs[$field]) || $inputs[$field] == null || trim($inputs[$field]) == '') {
+			if (!isset($inputs[$field]) || $inputs[$field] == null || (!is_object($inputs[$field]) && trim($inputs[$field]) == '')) {
 				// Mandatory field is missing
 				$messages[] = array(
 					'code' => 10002,
@@ -127,11 +56,18 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		}
 		
 		// Check that audit trail field 'updateBy' is a valid user
-		$updateBy = Utility::extractValue($inputs, 'updateBy', 0, 'int');
-		// TODO: Entity check
+		$updateBy = Utility::extractValue($inputs, 'updateBy', 0);
+        if (!($updateBy instanceof \Tranquility\Data\BusinessObjects\User)) {
+            $messages[] = array(
+				'code' => 10012,
+				'text' => 'message_10012_invalid_user_assigned_to_audit_trail',
+				'level' => EnumMessageLevel::Error,
+				'fieldId' => 'updateBy'
+			);
+        }
 		
 		// Check that audit trail field 'updateDatetime' is a valid date/time value
-		if (isset($inputs['updateDatetime']) && preg_match('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $inputs['updateDatetime']) !== 1) {
+		if (isset($inputs['updateDateTime']) && preg_match('/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/', $inputs['updateDateTime']) !== 1) {
 			$messages[] = array(
 				'code' => 10010,
 				'text' => 'message_10010_invalid_datetime_format',
@@ -174,7 +110,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	 * @param array $order Used to specify order parameters to the set of results
 	 * @return \Tranquility\Service\ServiceResponse
 	 */
-	public function all($resultsPerPage = 0, $startRecordIndex = 0, $filterConditions = array(), $orderConditions = array()) {
+	public function all($filterConditions = array(), $orderConditions = array(), $resultsPerPage = 0, $startRecordIndex = 0) {
 		// If a 'deleted' filter has not been specified, default to select only records that have not been deleted
 		$deleted = $this->_checkForFilterCondition($filterConditions, 'deleted');
 		if ($deleted === false) {
@@ -182,11 +118,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		}
 				
         // Convert result set into array of business objects
-        $businessObjects = array();
-		$results = $this->model->get($resultsPerPage, $startRecordIndex, $filterConditions, $orderConditions);
-        foreach ($results as $result) {
-            $businessObjects[] = $this->_createBusinessObject($result);
-        }
+        $businessObjects = $this->_getRepository()->all($filterConditions, $orderConditions, $resultsPerPage, $startRecordIndex);
 		
 		// If no results are returned, add a warning message to the response
 		$messages = array();
@@ -206,11 +138,42 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		));
 		return $response;
 	}
-	
-	public function paginate($perPage = 20) {
-		return $this->model->paginate($perPage, $columns);
+    
+    /**
+	 * Find a single entity by ID
+	 *
+	 * @param int $id Entity ID of the object to retrieve
+	 * @return \Tranquility\Services\ServiceResponse
+	 */
+	public function find($id) {
+        $entity = $this->_entityManager->find($this->businessObject(), $id);
+		return $this->_findResponse(array($entity));
 	}
 	
+    /**
+     * Find a single entity by a specified field
+     *
+     * @param string $fieldName   Name of the field to search against
+     * @param string $fieldValue  Value for entity search
+     * @return \Tranquility\Services\ServiceResponse
+     */
+	public function findBy($fieldName, $fieldValue) {
+		// Check field is allowed
+		if (!in_array($fieldName, $this->_getFields())) {
+			throw new ServiceException('Invalid search field');
+		}
+        
+        $searchOptions = array($fieldName => $fieldValue);
+		$entity = $this->_getRepository()->findBy($searchOptions);
+		return $this->_findResponse($entity);
+	}
+	
+    /**
+     * Create a new record for a business object
+     * 
+     * @var array $data  Data used to create the new record
+     * @return \Tranquility\Services\ServiceResponse
+     */
 	public function create(array $data) {
 		// Set up response object
 		$response = new ServiceResponse();
@@ -225,12 +188,19 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		}
 		
 		// Attempt to create the entity
-		$results = $this->model->create($data);
-		$response->setContent(array($results));
+        $entity = $this->_getRepository()->create($data);
+		$response->setContent($entity);
 		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
 		return $response;
 	}
 	
+    /**
+     * Update an existing record for the specified business object
+     * 
+     * @var int   $id    Entity ID for the business object to update
+     * @var array $data  New data to update against the existing record
+     * @return \Tranquility\Services\ServiceResponse
+     */
 	public function update($id, array $data) {
 		// Set up response object
 		$response = new ServiceResponse();
@@ -245,68 +215,92 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		}
 		
 		// Attempt to update the entity
-		$results = $this->model->update($id, $data);
-		$response->setContent(array($results));
+        $entity = $this->_getRepository()->update($id, $data);
+		$response->setContent($entity);
 		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
 		return $response;
 	}
 	
-	public function delete($id, array $auditTrailDetails) {
+    /**
+     * Mark an existing busines object record as deleted
+     * 
+     * @var int   $id    Entity ID for the business object to be deleted
+     * @var array $data  Audit trail details to be attached to the deleted record
+     * @return \Tranquility\Services\ServiceResponse
+     */
+	public function delete($id, array $data) {
         // Set up response object
 		$response = new ServiceResponse();
 		
 		// Attempt to update the entity
-		$results = $this->model->delete($id, $auditTrailDetails);
-		$response->setContent(array($results));
+        $entity = $this->_getRepository()->delete($id, $data);
+		$response->setContent($entity);
 		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
 		return $response;
 	}
 	
-	/**
-	 * Find a single entity by ID
-	 *
-	 * @param int $id Entity ID of the object to retrieve
-	 * @return \Tranquility\Services\ServiceResponse
-	 */
-	public function find($id) {
-		$entity = $this->model->find($id);
-		return $this->_findResponse($entity);
-	}
-	
-	public function findBy($fieldName, $fieldValue) {
-		// Check field is allowed
-		if (!in_array($fieldName, $this->_getFields())) {
-			throw new ServiceException('Invalid search field');
-		}
-        
-        $searchOptions = array('searchField' => $fieldName);
-		$entity = $this->model->find($fieldValue, $searchOptions);
-		return $this->_findResponse($entity);
-	}
-	
-	protected function _findResponse($entity) {
+    /**
+     * Utility function to ensure 'find' functions return results in a uniform format
+     *
+     * @var mixed $entities  Either a single business object, or a collection of objects
+     * @return \Tranquility\Services\ServiceResponse
+     */
+	protected function _findResponse($entities) {
 		$messages = array();
 		
 		// If no entity was found, set the appropriate error message
-		if (is_null($entity) || $entity === false) {
+		if (is_null($entities) || $entities === false) {
 			$messages[] = array(
 				'code' => 10001,
 				'text' => 'message_10001_record_not_found',
 				'level' => EnumMessageLevel::Error
 			);
-			$entity = array();
+			$entities = array();
 		}
 		
 		// Setup the service response
         $businessObject = $this->_createBusinessObject($entity);
 		$response = new ServiceResponse(array(
-			'content' => array($businessObject),
+			'content' => $entities,
 			'messages' => $messages,
 			'responseCode' => EnumHttpStatusCode::OK
 		));
 		return $response;
 	}
+    
+    /**
+	 * Get a list of data fields associated with the entity 
+	 * @return array
+	 */
+	protected function _getFields() {
+        $className = $this->businessObject();
+		return $className::getEntityFields();
+	}
 	
+	/**
+	 * Get a list of fields that are mandatory for creating / updating an entity
+	 * @return array
+	 */
+	protected function _getMandatoryFields($newRecord = false) {
+		$className = $this->businessObject();
+		return $className::getMandatoryEntityFields($newRecord);
+	}
+    
+    /**
+     * Return an instance of the repository mapped to the current business object
+     * @return \Tranquility\Data\Repositories\Entity
+     */
+    protected function _getRepository() {
+        return $this->_entityManager->getRepository($this->businessObject());
+    }
+	
+    /**
+     * Generates a new instance of the business object, and populates it with the
+     * supplied data
+     *
+     * @var array $data  Data to populate the business object
+     * @return \Tranquility\Data\BusinessObjects\Entity
+     */
     protected function _createBusinessObject($data) {
         // Create business object instance
         $className = $this->businessObject();
@@ -328,7 +322,5 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		}
 		
 		return false;
-	}
-	
-	
+	}	
 }
