@@ -1,13 +1,7 @@
 /vendor
 /node_modules
 /nbproject
+/.vscode
 .env
 auth.json
 typings/jquery/jquery.d.ts
-nbproject/private/private.xml
-nbproject/private/private.xml
-<<<<<<< HEAD
-nbproject/private/private.xml
-=======
-/nbproject/private/private.xml
->>>>>>> refs/remotes/origin/master
