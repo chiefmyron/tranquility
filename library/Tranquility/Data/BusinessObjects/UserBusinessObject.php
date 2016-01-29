@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Tranquility\Data\BusinessObjects\PersonBusinessObject as Person;
 use Tranquility\Data\BusinessObjects\Extensions\UserTokens;
 use Tranquility\Data\BusinessObjects\History\UserHistoricalBusinessObject;
 
@@ -21,6 +22,7 @@ class UserBusinessObject extends EntityBusinessObject implements UserContract {
     protected $securityGroupId;
     protected $registeredDateTime;
     protected $userTokens;
+    protected $person;
     
     /**
      * Array of properties that are specific to a business object of a particular entity type
@@ -94,6 +96,7 @@ class UserBusinessObject extends EntityBusinessObject implements UserContract {
         
         // Add relationships
         $builder->createOneToOne('userTokens', UserTokens::class)->addJoinColumn('id','userId')->build();
+        $builder->createOneToOne('person', Person::class)->mappedBy('user')->build();
     }
     
     /**
@@ -151,4 +154,8 @@ class UserBusinessObject extends EntityBusinessObject implements UserContract {
 	public function getRememberTokenName() {
 		return 'rememberToken';
 	}
+    
+    public function getDisplayName() {
+        return $this->person->getFullName();
+    }
 }

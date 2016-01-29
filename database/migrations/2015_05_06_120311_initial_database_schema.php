@@ -50,6 +50,7 @@ class InitialDatabaseSchema extends Migration {
             $table->string('subType', 25)->nullable();
             $table->boolean('deleted');
             $table->bigInteger('transactionId');
+            $table->primary('id');
         });
         
         // Address details - electronic
@@ -92,6 +93,7 @@ class InitialDatabaseSchema extends Migration {
             $table->string('firstName', 255);
             $table->string('lastName', 255);
             $table->string('position', 255)->nullable();
+            $table->bigInteger('userId')->nullable();
         });
         
         // Application user account
@@ -178,6 +180,7 @@ class InitialDatabaseSchema extends Migration {
             $table->string('firstName', 255);
             $table->string('lastName', 255);
             $table->string('position', 255)->nullable();
+            $table->bigInteger('userId')->nullable();
             $table->primary(['id', 'version']);
         });
         

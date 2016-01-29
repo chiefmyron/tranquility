@@ -2,7 +2,7 @@
 
 use Tranquility\Data\BusinessObjects\EntityBusinessObject as Entity;
 use Tranquility\Data\BusinessObjects\Extensions\AuditTrail as AuditTrail;
-use Tranquility\Data\Exceptions\BusinessObjectException as BusinessObjectException;
+use Tranquility\Exceptions\BusinessObjectException as BusinessObjectException;
 
 trait PropertyAccessorTrait {
     /**

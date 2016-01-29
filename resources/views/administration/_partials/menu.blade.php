@@ -43,7 +43,7 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-default dropdown-toggle dropdown-user" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img src="/backend/images/user-avatar-default.png" class="img-circle" />
-                                <span class="hidden-sm hidden-xs">Andrew Patterson <span class="caret"></span></span>
+                                <span class="hidden-sm hidden-xs">{{ $_currentUser->getDisplayName() }} <span class="caret"></span></span>
                             </button> 
                             <ul class="dropdown-menu">
                                 <li><a href="#">Settings</a></li>

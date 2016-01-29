@@ -5,7 +5,8 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Tranquility\Data\BusinessObjects\History\PersonHistoricalBusinessObject as PersonHistoricalBusinessObject;
+use Tranquility\Data\BusinessObjects\UserBusinessObject                     as User;
+use Tranquility\Data\BusinessObjects\History\PersonHistoricalBusinessObject as PersonHistory;
 
 class PersonBusinessObject extends EntityBusinessObject {
     use \Tranquility\Data\Traits\PropertyAccessorTrait;
@@ -14,6 +15,7 @@ class PersonBusinessObject extends EntityBusinessObject {
     protected $firstName;
     protected $lastName;
     protected $position;
+    protected $user;
     
     /**
      * Array of properties that are specific to a business object of a particular entity type
@@ -53,7 +55,7 @@ class PersonBusinessObject extends EntityBusinessObject {
      * @var string
      * @static
      */
-    protected static $_historicalEntityClass = PersonHistoricalBusinessObject::class;
+    protected static $_historicalEntityClass = PersonHistory::class;
     
     /**
      * Retrieve formatted name for person
@@ -62,6 +64,10 @@ class PersonBusinessObject extends EntityBusinessObject {
      */
     public function getFullName() {
         return $this->firstName.' '.$this->lastName;
+    }
+    
+    public function getUserAccount() {
+        return $this->user;
     }
     
     /**
@@ -81,5 +87,8 @@ class PersonBusinessObject extends EntityBusinessObject {
         $builder->addField('firstName', 'string');
         $builder->addField('lastName', 'string');
         $builder->addField('position', 'string');
+        
+        // Add relationships
+        $builder->createOneToOne('user', User::class)->addJoinColumn('userId','id')->build();
     }
 }
