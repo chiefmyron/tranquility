@@ -12,6 +12,7 @@ use Tranquility\Services\UserService as UserService;
 use Tranquility\Services\PersonService as PersonService;
 use Tranquility\Enums\System\EntityType as EnumEntityType;
 use Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
+use Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
 class UsersController extends Controller {
 
@@ -79,9 +80,12 @@ class UsersController extends Controller {
 			Session::flash('messages', $response->getMessages());
 			return redirect()->action('Administration\UsersController@listPeopleUsers');
 		}
-        
+
         // Set flag to indicate if this is viewing the record for the current user
         $currentUser = ($id == Auth::user()->id);
+        if ($currentUser) {
+            $this->_addProcessMessage(EnumMessageLevel::Info, 'message_10034_user_viewing_own_record');
+        }
 		return view('administration.users.show', ['user' => $response->getFirstContentItem(), 'currentUser' => $currentUser]);
 	}
 	
@@ -142,7 +146,7 @@ class UsersController extends Controller {
 		}
 		
 		// No errors - return to index page
-		return redirect()->action('Administration\UsersController@listPeopleUsers');
+		return redirect()->action('Administration\UsersController@showPersonUser', ['id' => $result->getFirstContentItem()->id]);
 	}
     
     public function changePassword(Request $request) {

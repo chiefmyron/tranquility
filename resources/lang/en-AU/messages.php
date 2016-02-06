@@ -18,5 +18,8 @@ return array(
     'message_10022_person_record_deleted_successfully' => 'Person record was deleted successfully',
     'message_10023_person_multiple_records_deleted_successfully' => ':count people records were deleted successfully',
     
-    'message_10031_user_record_updated_successfully' => 'New user account added for :name',
+    'message_10030_user_record_created_successfully' => 'New user account added for :name',
+    'message_10031_user_record_updated_successfully' => 'User account added for :name has been updated',
+    
+    'message_10034_user_viewing_own_record' => 'Hey good looking! Checking out your own record? Can\'t say we blame you...',
 );
