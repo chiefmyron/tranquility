@@ -19,6 +19,7 @@ $.ajaxSetup({
 // Initial page setup
 $(document).ready(function() {
   attachCommonHandlers();
+  attachGlobalSearchHandlers();
 });
 
 // Every time a modal is shown, if it has an autofocus element, focus on it.
@@ -30,17 +31,18 @@ $('.modal').on('shown.bs.modal', function() {
 function attachCommonHandlers() {
     // Clear any existing handlers
     $("#toolbar-container li.ajax a").off('click.toolbarEvent');
+    $("a.ajax").off('click.ajaxLinkEvent');
     $("table th .selectAll").off('click.selectAllCheckbox');
     $(".page-header.navbar .search-form button").off('click.globalSearch');
     
     // Handle click event for enabled toolbar links
     $("#toolbar-container li.ajax a").on('click.toolbarEvent', function (e) {
-        toolbarItemEventHandler(this, e);
+        xhrItemEventHandler(this, e);
     });
     
     // Handle click event for links throughout the UI
     $("a.ajax").on('click.ajaxLinkEvent', function(e) {
-        toolbarItemEventHandler(this, e);    
+        xhrItemEventHandler(this, e);    
     });
     
     // Handle click event for a 'select all' checkbox in a table
@@ -54,7 +56,9 @@ function attachCommonHandlers() {
     $('table td input:checkbox.record-select').change(function () {
         changeToolbarLinkStatus();
     });
-    
+}
+
+function attachGlobalSearchHandlers() {
     // Handle click event for global search button in page header
     $('.page-header.navbar .search-form button').on('click.globalSearch', function(e) {
         $('.page-header.navbar form.search-form').addClass("open");
@@ -70,7 +74,7 @@ function attachCommonHandlers() {
     });
 }
 
-function toolbarItemEventHandler(context, e) {
+function xhrItemEventHandler(context, e) {
     // Prevent link navigation
     e.preventDefault();
     
@@ -88,6 +92,49 @@ function toolbarItemEventHandler(context, e) {
     processAjaxResponse(response);   
 }
 
+// Wrapper for JQuery $.ajax() call
+function ajaxCall( url, type, data, async, callback, datatype ) {
+    // Ensure call type is in uppercase
+    type = type.toUpperCase();
+    datatype = datatype.toLowerCase();
+    
+    // Perform AJAX call
+    var result = $.ajax({
+        url: url,
+        type: type,
+        data: data,
+        async: async,
+        dataType: datatype,
+        success: callback,
+        error: _ajaxErrorHandler
+    }); 
+    
+    // Determine what to do based on HTTP response code
+    switch (result.status) {
+        // Status OK
+        case 200:
+            // Parse responseText for a JSON object
+            var response = {};
+            try {
+                response = jQuery.parseJSON(result.responseText);
+            } catch (ex) {
+                // Setup response as an exception
+                response = {result: "exception", content: result.content};
+            }
+            return response;
+        // Unauthorised request
+        case 401:
+            return ajaxCall("/administration/auth", "GET", {}, false, null, "json");
+        // Server error
+        case 500:
+        default:
+            // Display error in modal dialog
+            $("#modal-dialog-container .modal-content").html(result.content);
+            $("#modal-dialog-container").modal('show');
+            return;
+    }
+}
+
 function processAjaxResponse(response) {
     // Update HTML areas with new content
     $.each(response.content, function(i, item) {
@@ -101,6 +148,12 @@ function processAjaxResponse(response) {
             executeFunctionByName(item.callback, window, item.callbackArgs);
         }
     });
+    
+    // Display inline error messages
+    $.each(response.messages, function(i, message) {
+        $("#" + message.fieldId).after('<span class="help-inline" style="display: none;">' + message.text + '</span>'); 
+    });
+    $("span.help-inline").slideDown();
 }
 
 // Enable toolbar links that interact with multiple selected items only if at least one item is selected
@@ -138,6 +191,7 @@ function displayDialog(modalContent) {
 	}
     
     // Display dialog and attach default submit event handler
+    $("#modal-dialog-container form.ajax-submit").off("submit.dialogSubmit")
     $("#modal-dialog-container form.ajax-submit").on("submit.dialogSubmit", function (e) {
         defaultDialogSubmitEventHandler(this, e);
     });
@@ -255,42 +309,6 @@ function displayMessages(messages, target) {
 
 
 
-/**
- * Used to display dialogs (e.g. options dialogs, etc...)
- * 
- * serviceResponse: see library/Tranquility/ServiceResponse.php for structure
- * type: Type of dialog to display. Valid types are "wide", "dialog".   
- */
-//function displayDialog(serviceResponse) {
-    // If type is not defined, set default to "wide"
-    /*if (type === null || type === undefined) {
-        type = "wide";
-    }*/
-    /*
-    // Display dialog contents
-    if (serviceResponse.content == undefined) {
-        dialogContent = "";
-    } else if (serviceResponse.content.dialog == undefined) {
-        dialogContent = serviceResponse.content;
-    } else {
-        dialogContent = serviceResponse.content.dialog;
-    }
-    if (dialogContent != "" && dialogContent != null) {
-        //$('#modalDialog').removeClass('wide dialog').addClass('wide');
-        $('#modalDialog .modal-content').html(dialogContent);
-        $('#modalDialog').modal();
-    }
-
-    // If there are any messages in the service response, display them now
-    if (serviceResponse.messages != undefined && serviceResponse.messages != null && serviceResponse.messages.length > 0) {
-        displayMessages(serviceResponse.messageTarget, serviceResponse.messages);
-    }*/
-//}
-
-
-
-
-
 function getSelectedCheckboxValues( element_name ) {
     var value_array = [];
     $('input:checkbox[name=' + element_name + ']:checked').each(function (i) {
@@ -300,48 +318,7 @@ function getSelectedCheckboxValues( element_name ) {
     return value_array;
 }
 
-// Wrapper for JQuery $.ajax() call
-function ajaxCall( url, type, data, async, callback, datatype ) {
-    // Ensure call type is in uppercase
-    type = type.toUpperCase();
-    datatype = datatype.toLowerCase();
-    
-    // Perform AJAX call
-    var result = $.ajax({
-        url: url,
-        type: type,
-        data: data,
-        async: async,
-        dataType: datatype,
-        success: callback,
-        error: _ajaxErrorHandler
-    }); 
-    
-    // Determine what to do based on HTTP response code
-    switch (result.status) {
-        // Status OK
-        case 200:
-            // Parse responseText for a JSON object
-            var response = {};
-            try {
-                response = jQuery.parseJSON(result.responseText);
-            } catch (ex) {
-                // Setup response as an exception
-                response = {result: "exception", content: result.content};
-            }
-            return response;
-        // Unauthorised request
-        case 401:
-            return ajaxCall("/administration/auth", "GET", {}, false, null, "json");
-        // Server error
-        case 500:
-        default:
-            // Display error in modal dialog
-            $("#modal-dialog-container .modal-content").html(result.content);
-            $("#modal-dialog-container").modal('show');
-            return;
-    }
-}
+
 
 function _ajaxErrorHandler(xhr, ajaxOptions, errorDetails) {
     // If the error is a HTTP 403 error, display a timeout dialog

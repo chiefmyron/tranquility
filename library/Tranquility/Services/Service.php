@@ -16,7 +16,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	/**
 	 * Constructor
 	 *
-	 * @param Container $container Laravel IoC container
+	 * @param \Doctrine\ORM\EntityManagerInterface $em   Doctrine entity manager
 	 */
 	public function __construct(EntityManagerInterface $em) {
         $this->_entityManager = $em;
@@ -55,7 +55,34 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 			}
 		}
 		
-		// Check that audit trail field 'updateBy' is a valid user
+		// Validate audit trail fields
+        $messages = array_merge($messages, $this->validateAuditTrailFields($inputs));
+
+		// If there are one or more messages, then there are errors - return messages
+		if (count($messages) > 0) {
+            // Add top level error message
+            $messages[] = array(
+				'code' => 10005,
+				'text' => 'message_10005_form_validation_errors',
+				'level' => EnumMessageLevel::Error,
+				'fieldId' => null
+            );
+			return $messages;
+		}
+		
+		return true;
+	}
+    
+    /**
+	 * Validate data for audit trail fields only 
+	 * 
+	 * @param array   $inputs    Array of data field values
+	 * @return array  Error messages from validation. Empty array if no errors.
+	 */
+    public function validateAuditTrailFields($inputs) {
+        $messages = array();
+        
+        // Check that audit trail field 'updateBy' is a valid user
 		$updateBy = Utility::extractValue($inputs, 'updateBy', 0);
         if (!($updateBy instanceof \Tranquility\Data\BusinessObjects\UserBusinessObject)) {
             $messages[] = array(
@@ -85,21 +112,9 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 				'fieldId' => 'transactionSource'
 			);
 		}
-
-		// If there are one or more messages, then there are errors - return messages
-		if (count($messages) > 0) {
-            // Add top level error message
-            $messages[] = array(
-				'code' => 10005,
-				'text' => 'message_10005_form_validation_errors',
-				'level' => EnumMessageLevel::Error,
-				'fieldId' => null
-            );
-			return $messages;
-		}
-		
-		return true;
-	}
+        
+        return $messages;
+    }
 	
 	/**
 	 * Retrieve all entities of this type

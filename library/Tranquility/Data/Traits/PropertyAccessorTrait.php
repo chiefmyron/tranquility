@@ -38,7 +38,7 @@ trait PropertyAccessorTrait {
         if (method_exists($this, $methodName)) {
             // Use custom function to retrieve value
             return $this->{$methodName}();
-        } elseif (in_array($name, self::getEntityFields())) {
+        } elseif (in_array($name, self::getEntityFields()) && !in_array($name, $this->_getHiddenFields())) {
             // Retrieve value directly
             return $this->$name;
         } else {
@@ -80,7 +80,7 @@ trait PropertyAccessorTrait {
     public function toArray() {
         $result = array();
         foreach (self::getEntityFields() as $fieldName) {
-            if (!in_array($fieldName, AuditTrail::getFields())) {
+            if (!in_array($fieldName, AuditTrail::getFields()) && !in_array($fieldName, $this->_getHiddenFields())) {
                 $result[$fieldName] = $this->$fieldName;
             }
         }
@@ -115,6 +115,13 @@ trait PropertyAccessorTrait {
             $fields = array_merge($fields, self::$_mandatoryFieldsNewEntity);
         }
         return $fields;
+    }
+    
+    protected function _getHiddenFields() {
+        if (!isset(self::$_hiddenFields)) {
+            return array();
+        }
+        return self::$_hiddenFields;
     }
     
     /**

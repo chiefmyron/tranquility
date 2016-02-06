@@ -22,4 +22,6 @@ return array(
     'message_10031_user_record_updated_successfully' => 'User account added for :name has been updated',
     
     'message_10034_user_viewing_own_record' => 'Hey good looking! Checking out your own record? Can\'t say we blame you...',
+    'message_10035_password_not_long_enough' => 'Your new password must be at least :length characters long',
+    'message_10036_password_updated_successfully' => 'Password for :name has been updated successfully!',
 );

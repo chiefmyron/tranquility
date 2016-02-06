@@ -47,6 +47,7 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
 	Route::get('/users/{id}', 'Administration\UsersController@showPersonUser');
 	Route::get('/users/{id}/update', 'Administration\UsersController@updatePersonUser');
     Route::get('/users/{id}/update/password', 'Administration\UsersController@changePassword');
+    Route::post('/users/{id}/update/password', 'Administration\UsersController@saveNewPassword');
     
     // Settings controller
     Route::get('/settings', 'Administration\SettingsController@index');

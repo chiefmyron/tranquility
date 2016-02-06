@@ -1,5 +1,7 @@
 <?php namespace Tranquility\Services;
 
+use \Hash;
+use \Tranquility\Utility                      as Utility;
 use \Tranquility\Enums\System\MessageLevel    as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode  as EnumHttpStatusCode;
 
@@ -33,6 +35,48 @@ class UserService extends \Tranquility\Services\Service {
 		
 		return $response;
 	}
+    
+    /**
+     * Changes the password for an existing user record
+     *
+     * @param int   $id    ID for existing User record
+     * @param array $data  Data for updating the User record with new password
+     * @return \Tranquility\Services\ServiceResponse
+     */
+    public function changePassword($id, array $data) {
+        // Set up response object
+		$response = new ServiceResponse();
+		
+		// Perform input validation
+        $auditTrailMessages = $this->validateAuditTrailFields($data);
+        $passwordMessages = $this->validateNewPasswordFields($data);
+        $messages = array_merge($auditTrailMessages, $passwordMessages);
+		if (count($messages) > 0) {
+            // Add top level error message
+            $messages[] = array(
+				'code' => 10005,
+				'text' => 'message_10005_form_validation_errors',
+				'level' => EnumMessageLevel::Error,
+				'fieldId' => null
+            );
+            
+			// Send error response back immediately
+			$response->addMessages($messages);
+			$response->setHttpResponseCode(EnumHttpStatusCode::BadRequest);
+			return $response;
+		}
+        
+        // Encode password
+        $data['password'] = Hash::make($data['password']); 
+        unset($data['passwordConfirm']);
+		
+		// Attempt to update the entity
+        $user = $this->_getRepository()->update($id, $data);
+		$response->setContent($user);
+        $response->addMessage(10036, EnumMessageLevel::Success, 'message_10036_password_updated_successfully', ['name' => $user->getDisplayName()]);
+		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
+		return $response;
+    }
 	
 	/**
 	 * Validate data for input fields - this includes checking mandatory fields and audit
@@ -53,19 +97,7 @@ class UserService extends \Tranquility\Services\Service {
 		
 		// Password verification
 		if ($newRecord) {
-			// Check password and password confirmation match
-			if ($inputs['password'] != $inputs['passwordConfirm']) {
-				// Passwords must match
-				$messages[] = array(
-					'code' => 10003,
-					'text' => 'message_10003_passwords_must_match',
-					'level' => EnumMessageLevel::Error,
-					'fieldId' => 'passwordConfirm'
-				);
-			}
-			
-			// Check password minimum length
-			
+            $messages = array_merge($messages, $this->validateNewPasswordFields);
 		}
 		
 		// If there are one or more messages, then there are errors - return messages
@@ -75,6 +107,44 @@ class UserService extends \Tranquility\Services\Service {
 		
 		return true;
 	}
+    
+    /**
+	 * Validate data for audit trail fields only 
+	 * 
+	 * @param array   $inputs    Array of data field values
+	 * @return array  Error messages from validation. Empty array if no errors.
+	 */
+    public function validateNewPasswordFields($inputs) {
+        $messages = array();
+        $password = Utility::extractValue($inputs, 'password', '');
+        $passwordConfirm = Utility::extractValue($inputs, 'passwordConfirm', '');
+        
+        // Check that passwords match
+        if ($password != $passwordConfirm) {
+            $messages[] = array(
+				'code' => 10003,
+				'text' => 'message_10003_passwords_must_match',
+				'level' => EnumMessageLevel::Error,
+				'fieldId' => 'password'
+			);
+        }
+        
+        // Check password meets minimum length requirements
+        if (strlen($password) < config('tranquility.minimum_password_length')) {
+            $messages[] = array(
+				'code' => 10035,
+				'text' => 'message_10035_password_not_long_enough',
+                'params' => array('length' => config('tranquility.minimum_password_length')),
+				'level' => EnumMessageLevel::Error,
+				'fieldId' => 'password'
+			);
+        }
+        
+        // TODO: Password complexity rule
+        
+        
+        return $messages;
+    }
 	
     /**
 	 * Retrieve a user by by their unique identifier and "remember me" token.

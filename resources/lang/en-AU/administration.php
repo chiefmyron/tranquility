@@ -47,6 +47,8 @@ return array(
     'users_label_locale' => 'Locale',
     'users_label_account_status' => 'Account status',
     'users_label_security_group' => 'User group',
+    'users_label_new_password' => 'New password',
+    'users_label_new_password_confirm' => 'Re-type your password to confirm',
     'users_status_active' => 'Active',
     'users_status_suspended' => 'Suspended',
     'users_tip_text_index' => 'To create a new user account, go to their Person record and create it from there. If the user doesn\'t have a Person record, create it first and then add a user account.',

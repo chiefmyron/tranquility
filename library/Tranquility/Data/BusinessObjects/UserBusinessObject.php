@@ -32,6 +32,7 @@ class UserBusinessObject extends EntityBusinessObject implements UserContract {
      */
     protected static $_fields = array(
         'username',
+        'password',
         'timezoneCode',
         'localeCode',
         'active',
@@ -63,6 +64,16 @@ class UserBusinessObject extends EntityBusinessObject implements UserContract {
         'password', 
 		'passwordConfirm', 
 		'parentId'
+    );
+    
+    /**
+     * Array of properties that will not be displayed externally
+     *
+     * @static
+     * @var array
+     */
+    protected static $_hiddenFields = array(
+        'password'
     );
     
     /**
