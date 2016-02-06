@@ -83,7 +83,8 @@ class UsersController extends Controller {
 
         // Set flag to indicate if this is viewing the record for the current user
         $currentUser = ($id == Auth::user()->id);
-        if ($currentUser) {
+        $messages = Session::get('messages');
+        if ($currentUser && (count($messages) <= 0)) {
             $this->_addProcessMessage(EnumMessageLevel::Info, 'message_10034_user_viewing_own_record');
         }
 		return view('administration.users.show', ['user' => $response->getFirstContentItem(), 'currentUser' => $currentUser]);
@@ -145,8 +146,11 @@ class UsersController extends Controller {
 			return redirect()->back()->withInput();
 		}
 		
-		// No errors - return to index page
-		return redirect()->action('Administration\UsersController@showPersonUser', ['id' => $result->getFirstContentItem()->id]);
+		// No errors - update session variables and return to user page
+        $user = $result->getFirstContentItem();
+        Session::set('tranquility.localeFormatCode', $user->localeCode);
+        Session::set('tranquility.timezoneFormatCode', $user->timezoneCode);
+		return redirect()->action('Administration\UsersController@showPersonUser', ['id' => $user->id]);
 	}
     
     public function changePassword(Request $request) {
