@@ -62,8 +62,12 @@ class PersonBusinessObject extends EntityBusinessObject {
      *
      * @return string
      */
-    public function getFullName() {
-        return $this->firstName.' '.$this->lastName;
+    public function getFullName($includeTitle = false) {
+        $name = $this->firstName.' '.$this->lastName;
+        if ($includeTitle) {
+            $name = $this->title.' '.$name;
+        }
+        return $name;
     }
     
     public function getUserAccount() {

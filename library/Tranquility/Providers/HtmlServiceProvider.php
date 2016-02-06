@@ -1,7 +1,9 @@
 <?php namespace Tranquility\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Tranquility\Html\FormError\Builder as FormErrorBuilder;
+use Tranquility\Html\Form\FormBuilder          as FormBuilder;
+use Tranquility\Html\FormError\Builder         as FormErrorBuilder;
+use Tranquility\Html\DateTimeFormatter\Builder as HtmlDateTimeFormatterBuilder;
 
 class HtmlServiceProvider extends \Collective\Html\HtmlServiceProvider {
 
@@ -17,17 +19,30 @@ class HtmlServiceProvider extends \Collective\Html\HtmlServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function register()
-	{
+	public function register() {
 		$this->registerHtmlBuilder();
 		$this->registerFormBuilder();
 		$this->registerFormErrorBuilder();
+        $this->registerDateTimeFormatterBuilder();
         $this->registerToolbarManager();
 
 		$this->app->alias('html', 'Collective\Html\HtmlBuilder');
-		$this->app->alias('form', 'Collective\Html\FormBuilder');
+		$this->app->alias('form', 'Tranquility\Html\Form\FormBuilder');
 		$this->app->alias('form-error', 'Tranquility\Html\FormError\Builder');
+        $this->app->alias('html-datetime', 'Tranquility\Html\DateTimeFormatter\Builder');
 	}
+    
+    /**
+     * Register the form builder instance.
+     *
+     * @return void
+     */
+    protected function registerFormBuilder() {
+        $this->app->singleton('form', function ($app) {
+            $form = new FormBuilder($app['html'], $app['url'], $app['view'], $app['session.store']->getToken());
+            return $form->setSessionStore($app['session.store']);
+        });
+    }
     
 	/**
 	 * Register the form error builder instance.
@@ -38,6 +53,18 @@ class HtmlServiceProvider extends \Collective\Html\HtmlServiceProvider {
 	{
         $this->app->singleton('form-error', function ($app) {
             return new FormErrorBuilder($app['session.store']->getToken());
+        });
+	}
+    
+    /**
+	 * Register the date/time formatter builder instance.
+	 *
+	 * @return void
+	 */
+	protected function registerDateTimeFormatterBuilder()
+	{
+        $this->app->singleton('html-datetime', function ($app) {
+            return new HtmlDateTimeFormatterBuilder();
         });
 	}
     
@@ -59,9 +86,8 @@ class HtmlServiceProvider extends \Collective\Html\HtmlServiceProvider {
 	 *
 	 * @return array
 	 */
-	public function provides()
-	{
-		return array('html', 'form', 'form-error', 'toolbar');
+	public function provides() {
+		return array('html', 'form', 'form-error', 'toolbar', 'html-datetime');
 	}
 
 }

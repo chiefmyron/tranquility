@@ -123,7 +123,11 @@ class ServiceResponse {
 	 * @return mixed
 	 */
 	public function getFirstContentItem() {
-		return $this->_content[0];
+        if (isset($this->_content[0])) {
+		  return $this->_content[0];
+        }
+        
+        return null;
 	}
 	
 	/**

@@ -38,11 +38,16 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
     Route::post('/people/confirm', 'Administration\PeopleController@confirmAction');
 	Route::get('/people/{id}', 'Administration\PeopleController@show');
 	Route::get('/people/{id}/update', 'Administration\PeopleController@update');
+    Route::get('/people/{id}/user', 'Administration\PeopleController@showUser');
 	
 	// Users controller
-	Route::get('/users', 'Administration\UsersController@index');
-	Route::post('/users', 'Administration\UsersController@store');
+	Route::get('/users', 'Administration\UsersController@listPeopleUsers');
+	Route::post('/users', 'Administration\UsersController@storePersonUser');
 	Route::get('/users/create', 'Administration\UsersController@create');
-	Route::get('/users/{id}', 'Administration\UsersController@show');
-	Route::get('/users/{id}/update', 'Administration\UsersController@update');
+	Route::get('/users/{id}', 'Administration\UsersController@showPersonUser');
+	Route::get('/users/{id}/update', 'Administration\UsersController@updatePersonUser');
+    Route::get('/users/{id}/update/password', 'Administration\UsersController@changePassword');
+    
+    // Settings controller
+    Route::get('/settings', 'Administration\SettingsController@index');
 });

@@ -1,9 +1,10 @@
 <?php namespace Tranquility\Providers;
 
 use Session;
+use Blade;
 use Illuminate\Support\ServiceProvider;
 
-class SessionServiceProvider extends ServiceProvider {
+class ApplicationServiceProvider extends ServiceProvider {
 
 	/**
 	 * Bootstrap any application services.
@@ -19,6 +20,11 @@ class SessionServiceProvider extends ServiceProvider {
 			
 			return new \Tranquility\Session\DatabaseSessionHandler($connection, $table, $this->app);
 		});
+        
+        // Register custom Blade functions
+        Blade::directive('datetime', function($expression) {
+            return "<?php echo with{$expression}->format('m/d/Y H:i'); ?>";
+        });
 	}
 
 	/**

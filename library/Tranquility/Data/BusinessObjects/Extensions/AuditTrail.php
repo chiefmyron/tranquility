@@ -75,6 +75,73 @@ class AuditTrail {
         return $this;
     }
     
+    /**
+     * Set the value for an object property
+     * 
+     * @param string $name  Property name
+     * @param mixed $value  Property value
+     * @throws Tranquility\Exceptions\BusinessObjectException 
+     * @return void
+     */
+    public function __set($name, $value) {
+        $methodName = '_set'.ucfirst($name);
+        if (method_exists($this, $methodName)) {
+            // Use custom function to set value
+            $this->{$methodName}($value);
+        } elseif (in_array($name, self::getFields())) {
+            // Store value directly
+            $this->$name = $value;
+        } else {
+            throw new BusinessObjectException('Cannot set property - class "'.get_class($this).'" does not have a property named "'.$name.'"');
+        }
+    }
+    
+    /**
+     * Retrieves the value for an object property
+     * 
+     * @param string $name  Property name
+     * @throws Tranquility\Exceptions\BusinessObjectException
+     * @return mixed
+     */
+    public function __get($name) {
+        $methodName = '_get'.ucfirst($name);
+        if (method_exists($this, $methodName)) {
+            // Use custom function to retrieve value
+            return $this->{$methodName}();
+        } elseif (in_array($name, self::getFields())) {
+            // Retrieve value directly
+            return $this->$name;
+        } else {
+            throw new BusinessObjectException('Cannot get property value - class "'.get_class($this).'" does not have a property named "'.$name.'"');
+        }
+    }
+    
+    /**
+     * Checks whether a value has been set for an object property
+     * 
+     * @param string $name  Property name
+     * @return boolean
+     */
+    public function __isset($name) {
+        if (in_array($name, self::getFields())) {
+            return isset($this->$name);
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Unsets the value of an object property
+     * 
+     * @param string $name  Property name
+     * @return void
+     */
+    public function __unset($name) {
+        if (isset($this->$name)) {
+            $this->$name = null;
+        }
+    }
+    
     public function getAuditTrailDetails() {
         return toArray();
     }

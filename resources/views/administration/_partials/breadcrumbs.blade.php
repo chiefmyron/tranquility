@@ -9,3 +9,4 @@
 		@endforeach
 	</ol>
 @endif
+    <hr />

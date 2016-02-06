@@ -108,8 +108,15 @@ class EntityRepository extends \Doctrine\ORM\EntityRepository {
         
         // Add filter conditions
 		foreach ($filterConditions as $filter) {
-            $queryBuilder = $queryBuilder->andWhere('e.'.$filter[0].' '.$filter[1].' :'.$filter[0]);
-            $parameters[$filter[0]] = $filter[2];
+            // Check for specialised conditions
+            if ((count($filter) == 2)  && strtoupper($filter[1]) == 'IS NULL') {
+                $queryBuilder = $queryBuilder->add('where', $queryBuilder->expr()->isNotNull($filter[0]));
+            } elseif ((count($filter) == 2)  && strtoupper($filter[1] == 'IS NOT NULL')) {
+                $queryBuilder = $queryBuilder->add('where', $queryBuilder->expr()->isNull($filter[0]));
+            } else {
+                $queryBuilder = $queryBuilder->andWhere('e.'.$filter[0].' '.$filter[1].' :'.$filter[0]);
+                $parameters[$filter[0]] = $filter[2];
+            }
 		}
 		
 		// Add order statements

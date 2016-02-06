@@ -17,4 +17,6 @@ return array(
     'message_10021_person_record_updated_successfully' => 'Person record was updated successfully',
     'message_10022_person_record_deleted_successfully' => 'Person record was deleted successfully',
     'message_10023_person_multiple_records_deleted_successfully' => ':count people records were deleted successfully',
+    
+    'message_10031_user_record_updated_successfully' => 'New user account added for :name',
 );

@@ -35,7 +35,12 @@ function attachCommonHandlers() {
     
     // Handle click event for enabled toolbar links
     $("#toolbar-container li.ajax a").on('click.toolbarEvent', function (e) {
-        toolbarItemEventHandler(this, e)
+        toolbarItemEventHandler(this, e);
+    });
+    
+    // Handle click event for links throughout the UI
+    $("a.ajax").on('click.ajaxLinkEvent', function(e) {
+        toolbarItemEventHandler(this, e);    
     });
     
     // Handle click event for a 'select all' checkbox in a table

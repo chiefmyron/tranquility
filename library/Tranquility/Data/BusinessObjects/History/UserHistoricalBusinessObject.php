@@ -51,4 +51,14 @@ class UserHistoricalBusinessObject extends EntityHistoricalBusinessObject  {
         $builder->addField('securityGroupId', 'integer');
         $builder->addField('registeredDateTime', 'datetime');
     }
+    
+    /**
+     * Set the password for the user.
+     *
+     * @param  string  $password
+     * @return void
+     */
+    public function setAuthPassword($password) {
+        $this->password = $password;
+    }
 }

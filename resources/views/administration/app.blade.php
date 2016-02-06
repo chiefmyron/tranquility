@@ -76,7 +76,6 @@
                                 
                                 <!-- Breadcrumbs -->
                                 @yield('breadcrumbs')
-                                <hr />
                                 
                                 <!-- Process messages -->
                                 @include('administration._partials.errors', ['messages' => Session::get('messages')])
