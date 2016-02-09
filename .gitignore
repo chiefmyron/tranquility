@@ -2,6 +2,7 @@
 /node_modules
 /nbproject
 /.vscode
+/.vagrant
 .env
 auth.json
 typings/jquery/jquery.d.ts

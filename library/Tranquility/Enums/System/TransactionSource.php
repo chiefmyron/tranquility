@@ -12,4 +12,5 @@ class TransactionSource extends \Tranquility\Enums\Enum {
 	const UIBackend  = 'audit_transaction_source_backend_ui';
 	const Batch      = 'audit_transaction_source_batch';
 	const ApiV1      = 'audit_transaction_source_api_v1';
+    const Setup      = 'audit_transaction_source_setup';
 }
