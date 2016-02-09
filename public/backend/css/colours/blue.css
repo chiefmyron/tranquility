@@ -195,3 +195,7 @@ body {
 dl.data-list dt {
     color: #555555;
 }
+
+.data-item .data-header {
+    border-bottom-color: #e9ecf3;
+}

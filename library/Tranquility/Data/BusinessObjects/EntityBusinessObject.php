@@ -5,8 +5,9 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Tranquility\Data\BusinessObjects\Extensions\AuditTrail as AuditTrail;
-use Tranquility\Exceptions\BusinessObjectException         as BusinessObjectException;
+use Tranquility\Data\BusinessObjects\AddressPhysicalBusinessObject          as AddressPhysical;
+use Tranquility\Data\BusinessObjects\Extensions\AuditTrail                  as AuditTrail;
+use Tranquility\Exceptions\BusinessObjectException                          as BusinessObjectException;
 
 abstract class EntityBusinessObject {
     protected $id;
@@ -16,6 +17,9 @@ abstract class EntityBusinessObject {
     protected $deleted;
     protected $auditTrail;
     protected $locks;
+    
+    // Related entities
+    protected $physicalAddresses;
     
     /**
      * List of properties that can be accessed via getters and setters
@@ -61,6 +65,9 @@ abstract class EntityBusinessObject {
         if (!isset($this->deleted)) {
             $this->deleted = 0;
         }
+        
+        // Initialise collections for related entities
+        $this->physicalAddresses = new ArrayCollection();
     }
     
     /**
@@ -141,6 +148,7 @@ abstract class EntityBusinessObject {
         $builder->setDiscriminatorColumn('type');
         $builder->addDiscriminatorMapClass('person', PersonBusinessObject::class);
         $builder->addDiscriminatorMapClass('user', UserBusinessObject::class);
+        $builder->addDiscriminatorMapClass('addressPhysical', AddressPhysicalBusinessObject::class);
         
         // Define fields
         $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
@@ -149,6 +157,7 @@ abstract class EntityBusinessObject {
         
         // Add relationships
         $builder->createOneToOne('auditTrail', AuditTrail::class)->addJoinColumn('transactionId','transactionId')->build();
+        $builder->createOneToMany('physicalAddresses', AddressPhysical::class)->mappedBy('parentEntity')->build();
     }
     
     /**

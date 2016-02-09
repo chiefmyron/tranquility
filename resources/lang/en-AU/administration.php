@@ -8,6 +8,7 @@ return array(
     'common_username' => 'Username',
 	'common_password' => 'Password',
 	'common_cancel' => 'Cancel',
+    'common_go_back' => 'Go back',
     'common_actions' => 'Actions',
     'common_tips' => 'Tips',
 	'common_heading_delete_confirm' => 'Delete these records?',
@@ -63,6 +64,12 @@ return array(
     'users_command_update_user' => 'Update user account',
     'users_command_change_password' => 'Change password',
     'users_command_back_to_users_list' => 'Back to list of users',
+    
+    // Address strings
+    'address_label_business_address' => 'Business address',
+    'address_label_home_address' => 'Home address',
+    'address_label_billing_address' => 'Billing address',
+    'address_label_shipping_address' => 'Shipping address',
     
     // Search strings
     'search_heading_search' => 'Search',

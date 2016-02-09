@@ -39,7 +39,9 @@ $user = $person->getUserAccount();
 
     <!-- Tab panes -->
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane" id="contact-details">...</div>
+        <div role="tabpanel" class="tab-pane active" id="contact-details">
+            @include('administration.addresses._partials.panels.physical-address', ['addresses' => $person->getPhysicalAddresses()])
+        </div>
         <div role="tabpanel" class="tab-pane" id="activity-feed">...</div>
         <div role="tabpanel" class="tab-pane" id="related-items">...</div>
     </div>

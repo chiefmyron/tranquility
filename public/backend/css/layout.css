@@ -526,6 +526,21 @@ input[type="color"],
     border-left: 1px solid;
 }
 
+.data-item .data-header {
+    border-bottom: 1px solid;
+    padding-bottom: 2px;
+    margin-bottom: 10px;
+}
+
+.data-item .data-header h4 {
+    display: inline;
+}
+
+.data-item .data-header span.action {
+    float: right;
+    text-transform: lowercase;
+}
+
 
 /******************************************************************************
  * Modal dialog                                                               *
@@ -569,3 +584,10 @@ input[type="color"],
      font-style: italic;
      font-weight: normal;
  }
+ 
+ /******************************************************************************
+  * Microformats                                                               *
+  ******************************************************************************/
+  p.h-adr span {
+      display: block;
+  }

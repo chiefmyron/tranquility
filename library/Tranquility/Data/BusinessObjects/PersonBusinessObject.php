@@ -3,6 +3,7 @@
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use Tranquility\Data\BusinessObjects\UserBusinessObject                     as User;
@@ -11,10 +12,13 @@ use Tranquility\Data\BusinessObjects\History\PersonHistoricalBusinessObject as P
 class PersonBusinessObject extends EntityBusinessObject {
     use \Tranquility\Data\Traits\PropertyAccessorTrait;
     
+    // Object properties
     protected $title;
     protected $firstName;
     protected $lastName;
     protected $position;
+    
+    // Related entities
     protected $user;
     
     /**
@@ -57,6 +61,8 @@ class PersonBusinessObject extends EntityBusinessObject {
      */
     protected static $_historicalEntityClass = PersonHistory::class;
     
+    
+    
     /**
      * Retrieve formatted name for person
      *
@@ -70,8 +76,25 @@ class PersonBusinessObject extends EntityBusinessObject {
         return $name;
     }
     
+    /**
+     * Retrieve the User object associated with this person
+     *
+     * @return \Tranquility\Data\BusinessObjects\UserBusinessObject
+     */
     public function getUserAccount() {
         return $this->user;
+    }
+    
+    /**
+     * Retreive a collection of physical addresses associated with this person
+     *
+     * @return mixed
+     */
+    public function getPhysicalAddresses() {
+        // Build criteria to ensure we only retrieve active address records
+        $criteria = Criteria::create()->where(Criteria::expr()->eq("deleted", 0));
+        $addresses = $this->physicalAddresses->matching($criteria);
+        return $addresses->toArray();
     }
     
     /**

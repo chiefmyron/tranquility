@@ -73,6 +73,7 @@ class UserBusinessObject extends EntityBusinessObject implements UserContract {
      * @var array
      */
     protected static $_hiddenFields = array(
+        'type', 
         'password'
     );
     
