@@ -72,6 +72,7 @@ class InitialDatabaseSchema extends Migration {
         // Address details - physical
         Schema::create('entity_addresses_physical', function(Blueprint $table) {
             $table->bigInteger('id')->primary();
+            $table->bigInteger('parentId');
             $table->string('addressType', 25);
             $table->string('addressLine1', 255);
             $table->string('addressLine2', 255)->nullable();
@@ -156,6 +157,7 @@ class InitialDatabaseSchema extends Migration {
         // Address details - physical
         Schema::create('history_entity_addresses_physical', function(Blueprint $table) {
             $table->bigInteger('id');
+            $table->bigInteger('parentId');
             $table->integer('version');
             $table->string('addressType', 25);
             $table->string('addressLine1', 255);
