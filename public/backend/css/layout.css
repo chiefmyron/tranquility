@@ -557,6 +557,11 @@ input[type="color"],
      padding-bottom: 25px;
  }
  
+ .modal-body.full-bleed {
+     padding: 0px;
+     margin-bottom: -5px;
+ }
+ 
  .modal-footer {
      padding-top: 10px;
      padding-bottom: 10px;
