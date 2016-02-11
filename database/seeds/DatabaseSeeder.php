@@ -43,6 +43,19 @@ class DatabaseSeeder extends Seeder {
             fclose($handle);
         }
         
+        // Add reference data for countries
+        if (($handle = fopen("./database/seeds/referenceData/cd_countries.csv", "r")) !== FALSE) {
+            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                DB::table('cd_countries')->insert(array(
+                    'code' => $data[0],
+                    'description' => $data[1],
+                    'ordering' => $data[2],
+                    'effectiveFrom' => DB::raw('NOW()')
+                ));
+            }
+            fclose($handle);
+        }
+        
         // Create new User record for system administrator
         $transactionId = DB::table('sys_trans_audit')->insertGetId(array(
             'transactionSource' => EnumTransactionSource::Setup,

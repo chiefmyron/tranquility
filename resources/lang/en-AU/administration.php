@@ -66,10 +66,17 @@ return array(
     'users_command_back_to_users_list' => 'Back to list of users',
     
     // Address strings
+    'address_heading_add_new_address' => 'Add address to record',
     'address_label_business_address' => 'Business address',
     'address_label_home_address' => 'Home address',
     'address_label_billing_address' => 'Billing address',
     'address_label_shipping_address' => 'Shipping address',
+    'address_label_line_1' => 'Address line 1',
+    'address_label_line_2' => 'Address line 2',
+    'address_label_city' => 'City',
+    'address_label_state' => 'State',
+    'address_label_postcode' => 'Postcode',
+    'address_label_country' => 'Country',
     
     // Search strings
     'search_heading_search' => 'Search',

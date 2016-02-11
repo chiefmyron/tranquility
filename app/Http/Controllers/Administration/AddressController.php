@@ -67,46 +67,35 @@ class AddressController extends Controller {
         $ajax->addContent('modal-content', $dialog, 'displayDialog');
 		return Response::json($ajax->toArray());
 	}
-
-	/**
-	 * Show details of one specific user
-	 *
-	 * @param int $id  Entity ID of the user to show
-	 * @return Response
-	 */
-	public function showPersonUser($id) {
-		$response = $this->_userService->find($id);
-		if ($response->containsErrors()) {
-			// Redirect to index with error message
-			Session::flash('messages', $response->getMessages());
-			return redirect()->action('Administration\UsersController@listPeopleUsers');
+    
+    /**
+     * Show form for creating a new address
+     *
+     * @param int $parentId  Parent entity ID
+     * @param Request $request
+     * @return Response
+     */
+    public function create($parentId, Request $request) {
+        // Ensure this is received as an ajax request only
+		if (!$request->ajax()) {
+			// TODO: Proper error handling here
+			throw new Exception('Access only via AJAX request!');
 		}
-
-        // Set flag to indicate if this is viewing the record for the current user
-        $currentUser = ($id == Auth::user()->id);
-        $messages = Session::get('messages');
-        if ($currentUser && (count($messages) <= 0)) {
-            $this->_addProcessMessage(EnumMessageLevel::Info, 'message_10034_user_viewing_own_record');
-        }
-		return view('administration.users.show', ['user' => $response->getFirstContentItem(), 'currentUser' => $currentUser]);
-	}
+        
+        // AJAX response
+        $ajax = new \Tranquility\View\AjaxResponse();
+        $dialog = $this->_renderPartial('administration.addresses._partials.dialogs.create-physical-address', ['parentId' => $parentId]);
+        $ajax->addContent('modal-content', $dialog, 'displayDialog');
+        return Response::json($ajax->toArray());
+    }
 	
 	/**
-	 * Display page for creating a new person record
+	 * Displays page for updating details of an existing address
 	 *
+	 * @param int $id  Entity ID of the address to update
 	 * @return Response
 	 */
-	public function create() {
-		return view('administration.people.create');
-	}
-	
-	/**
-	 * Displays page for updating details of an existing user record
-	 *
-	 * @param int $id  Entity ID of the user to update
-	 * @return Response
-	 */
-	public function updatePersonUser($id) {
+	public function update($id) {
 		$response = $this->_userService->find($id);
 		if ($response->containsErrors()) {
 			// Redirect to index with error message
@@ -121,7 +110,7 @@ class AddressController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function storePersonUser(Request $request) {
+	public function store(Request $request) {
 		// Save details of user
 		$params = $request->all();
 		$id = $request->input('id', 0);

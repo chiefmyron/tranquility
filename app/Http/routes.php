@@ -50,6 +50,8 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
     Route::post('/users/{id}/update/password', 'Administration\UsersController@saveNewPassword');
     
     // Address controller
+    Route::post('address', 'Administration\AddressController@store');
+    Route::get('/address/create/{parentId}', 'Administration\AddressController@create');
     Route::get('/address/{id}/map', 'Administration\AddressController@displayMap');
     
     // Settings controller

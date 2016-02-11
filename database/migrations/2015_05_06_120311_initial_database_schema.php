@@ -36,6 +36,15 @@ class InitialDatabaseSchema extends Migration {
             $table->dateTime('effectiveUntil')->nullable();
         });
         
+        // Countries reference data
+        Schema::create('cd_countries', function(Blueprint $table) {
+            $table->string('code', 30)->primary();
+            $table->string('description', 100);
+            $table->integer('ordering');
+            $table->dateTime('effectiveFrom');
+            $table->dateTime('effectiveUntil')->nullable();
+        });
+        
         /*************************************************************************
          * Business object tables                                                *
          *                                                                       *
