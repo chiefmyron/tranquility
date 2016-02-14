@@ -67,6 +67,7 @@ return array(
     
     // Address strings
     'address_heading_add_new_address' => 'Add address to record',
+    'address_label_address_type' => 'Address type',
     'address_label_business_address' => 'Business address',
     'address_label_home_address' => 'Home address',
     'address_label_billing_address' => 'Billing address',

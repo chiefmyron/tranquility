@@ -269,5 +269,6 @@ class InitialDatabaseSchema extends Migration {
         Schema::dropIfExists('entity');
         Schema::dropIfExists('cd_timezones');
         Schema::dropIfExists('cd_locales');
+        Schema::dropIfExists('cd_countries');
     }
 }

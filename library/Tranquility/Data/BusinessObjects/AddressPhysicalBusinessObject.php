@@ -55,7 +55,7 @@ class AddressPhysicalBusinessObject extends EntityBusinessObject {
 		'addressType',
         'addressLine1',
         'city',
-        'country'
+        'country',
     );
     
     /**
@@ -64,7 +64,9 @@ class AddressPhysicalBusinessObject extends EntityBusinessObject {
      * @var array
      * @static
      */
-    protected static $_mandatoryFieldsNewEntity = array();
+    protected static $_mandatoryFieldsNewEntity = array(
+        'parent'
+    );
     
     /**
      * Name of the class responsible for representing historical versions of this business entity
@@ -73,6 +75,26 @@ class AddressPhysicalBusinessObject extends EntityBusinessObject {
      * @static
      */
     protected static $_historicalEntityClass = AddressPhysicalHistory::class;
+    
+    /**
+     * Sets values for object properties, based on the inputs provided
+     * 
+     * @param mixed $data  May be an array or an instance of BusinessObject
+     * @throws Tranquility\Exceptions\BusinessObjectException
+     * @return Tranquility\Data\BusinessObjects\Entity
+     */
+    public function populate($data) {
+        parent::populate($data);
+        
+        // If entity ID is not set, and parent object is present, set it now
+        $result = isset($this->id);
+        $result = in_array('parent', $data);
+        if (!isset($this->id) && isset($data['parent'])) {
+            $this->parentEntity = $data['parent'];
+        }
+        
+        return $this;
+    }
     
     /**
      * Retrieve an array containing geo-coordinates for the address
@@ -127,6 +149,7 @@ class AddressPhysicalBusinessObject extends EntityBusinessObject {
         $builder = new ClassMetadataBuilder($metadata);
         // Define table name
         $builder->setTable('entity_addresses_physical');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
         
         // Define fields
         $builder->addField('addressType', 'string');
