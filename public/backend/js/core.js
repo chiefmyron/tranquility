@@ -167,6 +167,9 @@ function processAjaxResponse(response) {
     // Display inline error messages
     $.each(response.messages, function(i, message) {
         $("#" + message.fieldId).after('<span class="help-inline" style="display: none;">' + message.text + '</span>'); 
+        if (message.fieldId != null) {
+            console.log('[' + message.level + '] ' + message.text + '(Field ID: ' + message.fieldId + ')');
+        }
     });
     $("span.help-inline").slideDown();
 }

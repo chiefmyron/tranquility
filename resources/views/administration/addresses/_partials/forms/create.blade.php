@@ -1,12 +1,27 @@
+<?php
+$addressTypes = array(
+    \Tranquility\Enums\BusinessObjects\Address\PhysicalAddressTypes::Home => trans('administration.address_label_home_address'),
+    \Tranquility\Enums\BusinessObjects\Address\PhysicalAddressTypes::Work => trans('administration.address_label_business_address'),
+    \Tranquility\Enums\BusinessObjects\Address\PhysicalAddressTypes::Billing => trans('administration.address_label_billing_address'),
+    \Tranquility\Enums\BusinessObjects\Address\PhysicalAddressTypes::Delivery => trans('administration.address_label_shipping_address')
+);
+?>
+
+<div class="form-group">
+	{!! Form::label('addressType', trans('administration.address_label_address_type')) !!}
+    {!! Form::select('addressType', $addressTypes, null, ['class' => 'form-control']) !!}
+	{!! FormError::inline('addressType', Session::get('messages')) !!}
+</div>
+
 <div class="form-group">
 	{!! Form::label('addressLine1', trans('administration.address_label_line_1')) !!}
-	{!! Form::text('addressLine1', null, ['class' => 'form-control', 'autofocus']) !!}	
+	{!! Form::text('addressLine1', null, ['class' => 'form-control']) !!}	
 	{!! FormError::inline('addressLine1', Session::get('messages')) !!}
 </div>
 
 <div class="form-group">
 	{!! Form::label('addressLine2', trans('administration.address_label_line_2')) !!}
-	{!! Form::text('addressLine2', null, ['class' => 'form-control', 'autofocus']) !!}	
+	{!! Form::text('addressLine2', null, ['class' => 'form-control']) !!}	
 	{!! FormError::inline('addressLine2', Session::get('messages')) !!}
 </div>
 	
@@ -33,3 +48,5 @@
     {!! Form::selectFromReferenceData('country', ['tableName' => 'cd_countries', 'translateCode' => true, 'translatePrefix' => 'countries.'], null, ['class' => 'form-control']) !!}
 	{!! FormError::inline('country', Session::get('messages')) !!}	
 </div>	
+
+{!! Form::hidden('type', \Tranquility\Enums\System\EntityType::AddressPhysical) !!}

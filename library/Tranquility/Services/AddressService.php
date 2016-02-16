@@ -1,8 +1,11 @@
 <?php namespace Tranquility\Services;
 
-use \Tranquility\Utility                   as Utility;
-use \Tranquility\Enums\System\EntityType   as EnumEntityType;
-use \Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
+use \Log;
+use \Tranquility\Utility                     as Utility;
+use \Tranquility\Enums\System\EntityType     as EnumEntityType;
+use \Tranquility\Enums\System\MessageLevel   as EnumMessageLevel;
+use \Tranquility\Enums\System\HttpStatusCode as EnumHttpStatusCode;
+use \Tranquility\Exceptions\ServiceException as Exception;
 
 class AddressService extends \Tranquility\Services\Service {
     /**
@@ -21,11 +24,35 @@ class AddressService extends \Tranquility\Services\Service {
 	 * @return \Tranquility\Services\ServiceResponse
 	 */
 	public function create(array $data) {
-		$response = parent::create($data);
+        // Set up response object
+		$response = new ServiceResponse();
+				
+		// Perform input validation
+		$validation = $this->validateInputFields($data, true);
+		if ($validation !== true) {
+			// Send error response back immediately
+			$response->addMessages($validation);
+			$response->setHttpResponseCode(EnumHttpStatusCode::BadRequest);
+			return $response;
+		}
+        
+        // Perform geolocation for physical addresses
+        if ($data['type'] == EnumEntityType::AddressPhysical) {
+            $classname = $this->businessObject();
+            $address = new $classname($data);
+            $coordinates = $this->_callGeolocationService($address);
+            $data['latitude'] = $coordinates['latitude'];
+            $data['longitude'] = $coordinates['longitude'];
+        }
+		
+		// Attempt to create the entity
+        $entity = $this->_getRepository()->create($data);
+		$response->setContent($entity);
+		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
 		
 		// Add entity specific success code
 		if (!$response->containsErrors()) {
-			$response->addMessage(10020, EnumMessageLevel::Success, 'message_10020_person_record_created_successfully');
+			$response->addMessage(10040, EnumMessageLevel::Success, 'message_10040_physical_address_record_created_successfully');
 		}
 		
 		return $response;
@@ -93,4 +120,80 @@ class AddressService extends \Tranquility\Services\Service {
 		
 		return true;
 	}
+    
+    /**
+     * Performs geolocation of an address string. Content property of response
+     * object will contain an array of geolocation data.
+     * 
+     * @param string $address Address to perform geolocation on
+     * @return \Tranquility_ServiceResponse
+     */
+    public function performGeolocation($address) {
+        
+    }
+    
+    protected function _callGeolocationService($address) {
+        $classname = $this->businessObject();
+        if (!($address instanceof $classname)) {
+            throw new Exception('Geolocation is only for physical address records!');
+        }
+        
+        // Check config to see if we should make an external call
+        if (config('tranquility.geolocation_enabled') == false) {
+            return array('latitute' => 0, 'longitude' => 0);
+        }
+        
+        // Setup full URL to use for geolocation service
+        $uri = config('tranquility.geolocation_service_uri').'json?sensor=false&address='.utf8_encode($address->urlEncodedAddress());
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $uri);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        // Execute call
+        $data = curl_exec($ch);
+        if ($data == false) {
+            // Error has occured in cURL call
+            Log::warning('Call to external geolocation serivce failed - '.curl_error($ch).' (Error number: '.curl_errno($ch).')');
+            return false;
+        }
+        
+        // Successful call
+        curl_close($ch);
+        $geolocationData = json_decode($data, true);
+        
+        // Check if the response is in a recognised format
+        if (!is_array($geolocationData) || !isset($geolocationData['status'])) {
+            // Response is not in a recognised format
+            Log::warning('Call to external geolocation was successful, but response was not in the expected format. Response text was: '.$geolocationData);
+            return false;
+        }
+        
+        // Check the result code
+        if ($geolocationData['status'] != 'OK') {
+            switch ($geolocationData['status']) {
+                case 'ZERO_RESULTS':
+                    // Successful service call, but no results
+                    Log::info('Call to external geolocation was successful, but no results were found.');
+                case 'OVER_QUERY_LIMIT':
+                    // Over the quota of geolocation calls allowed
+                    Log::warning('External service quota exceeded');
+                case 'REQUEST_DENIED':
+                case 'INVALID_REQUEST':
+                default:
+                    // Incorrectly formed URL (due to lack of explicit 'sensor' parameter) or 'address' or 'latlng' parameters missing
+                    Log::warning('Request to external geolocation service was badly formed.');
+            }
+            return array('latitude' => 0, 'longitude' => 0);            
+        }
+        
+        // We were successful, so return an array with latitude and longitude
+        $coordinates = array(
+            'latitude' => $geolocationData['results'][0]['geometry']['location']['lat'],
+            'longitude' => $geolocationData['results'][0]['geometry']['location']['lng']
+        );
+        return $coordinates;
+    }
 }	

@@ -2,7 +2,7 @@
     <button class="close" data-dismiss="modal" aria-label="{{ trans('administration.common_cancel') }}"><span aria-hidden="true">&times;</span></button>
     <h3 class="modal-title" id="modal-dialog-title">{{ trans('administration.address_heading_add_new_address') }}</h3>
 </div>
-{!! Form::open(array('action' => array('Administration\AddressController@store'), 'class' => 'ajax-submit')) !!}
+{!! Form::open(array('url' => $formAction, 'class' => 'ajax-submit')) !!}
 <div class="modal-body">
     <div id="process-message-container"></div>
     @include('administration.addresses._partials.forms.create')

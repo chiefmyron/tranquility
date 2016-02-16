@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Tranquility\View\AjaxResponse as AjaxResponse;
 use Tranquility\Services\PersonService as PersonService;
+use Tranquility\Services\AddressService as AddressService;
 use Tranquility\Enums\System\EntityType as EnumEntityType;
 use Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
 
@@ -26,14 +27,16 @@ class PeopleController extends Controller {
 	*/
 	
 	private $_person;
+    private $_addressService;
 
 	/**
 	 * Create a new controller instance.
 	 *
 	 * @return void
 	 */
-	public function __construct(PersonService $person) {
+	public function __construct(PersonService $person, AddressService $address) {
 		$this->_person = $person;
+        $this->_addressService = $address;
 	}
 
 	/**
@@ -241,7 +244,79 @@ class PeopleController extends Controller {
             // No errors - return to list of people
             return redirect()->action('Administration\PeopleController@index');
         }
+	}
+    
+    /**
+     * Show form for adding a new physical address
+     *
+     * @param int $parentId  Parent entity ID
+     * @param Request $request
+     * @return Response
+     */
+    public function addPhysicalAddress($parentId, Request $request) {
+        // Ensure this is received as an ajax request only
+		if (!$request->ajax()) {
+			// TODO: Proper error handling here
+			throw new Exception('Access only via AJAX request!');
+		}
+        
+        // AJAX response
+        $data = array(
+            'parentId' => $parentId,
+            'formAction' => action('Administration\PeopleController@storeAddress', ['parentId' => $parentId])    
+        );
+        $ajax = new \Tranquility\View\AjaxResponse();
+        $dialog = $this->_renderPartial('administration.addresses._partials.dialogs.create-physical-address', $data);
+        $ajax->addContent('modal-content', $dialog, 'displayDialog');
+        return Response::json($ajax->toArray());
+    }
+    
+    /**
+	 * Store details of a new or updated address
+	 *
+	 * @return Response
+	 */
+	public function storeAddress(Request $request) {
+		// Save details of address
+		$params = $request->all();
+		$id = $request->input('id', 0);
+        $parentId = $request->input('parentId', 0);
 		
+		// Add in additional audit trail details
+		$params['updateBy'] = Auth::user();
+		$params['updateReason'] = 'who knows?';
+		$params['updateDateTime'] = Carbon::now();
+		$params['transactionSource'] = EnumTransactionSource::UIBackend;
+        
+        // Add parent to address data
+        $response = $this->_person->find($parentId);
+        if ($response->containsErrors()) {
+            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            return Response::json($ajax->toArray());
+        }
+        $person = $response->getFirstContentItem();
+        $params['parent'] = $person;
+		
+		// Create or update record		
+		if ($id != 0) {
+			$response = $this->_addressService->update($id, $params);
+		} else {
+			$response = $this->_addressService->create($params);
+		}
+        
+        // Set up response
+        $ajax = new \Tranquility\View\AjaxResponse();
+        if ($response->containsErrors()) {
+			// Errors encountered - redisplay form with error messages
+            $ajax->addContent('modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('modal-dialog-container #process-message-container'));
+			$ajax->addMessages($response->getMessages());
+            return Response::json($ajax->toArray());
+		}
+
+        // Render address panel for person
+        $ajax->addContent('contact-details', $this->_renderPartial('administration.addresses._partials.panels.physical-address', ['addresses' => $person->getPhysicalAddresses()]), 'closeDialog');
+        $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+        return Response::json($ajax->toArray());
 	}
     
     public function showUser($id, Request $request) {

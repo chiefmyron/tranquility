@@ -12,4 +12,5 @@ class EntityType extends \Tranquility\Enums\Enum {
 	const Address = 'address';
 	const Content = 'content';
 	const User    = 'user';
+    const AddressPhysical = 'addressPhysical';
 }
