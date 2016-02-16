@@ -66,6 +66,43 @@ class AddressService extends \Tranquility\Services\Service {
 	 * @return \Tranquility\Services\ServiceResponse
 	 */
 	public function update($id, array $data) {
+        // Set up response object
+		$response = new ServiceResponse();
+				
+		// Perform input validation
+		$validation = $this->validateInputFields($data, false);
+		if ($validation !== true) {
+			// Send error response back immediately
+			$response->addMessages($validation);
+			$response->setHttpResponseCode(EnumHttpStatusCode::BadRequest);
+			return $response;
+		}
+        
+        // Perform geolocation for physical addresses
+        if ($data['type'] == EnumEntityType::AddressPhysical) {
+            $classname = $this->businessObject();
+            $address = new $classname($data);
+            $coordinates = $this->_callGeolocationService($address);
+            $data['latitude'] = $coordinates['latitude'];
+            $data['longitude'] = $coordinates['longitude'];
+        }
+		
+		// Attempt to create the entity
+        $entity = $this->_getRepository()->update($id, $data);
+		$response->setContent($entity);
+		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
+		
+		// Add entity specific success code
+		if (!$response->containsErrors()) {
+			$response->addMessage(10040, EnumMessageLevel::Success, 'message_10041_physical_address_record_updated_successfully');
+		}
+		
+		return $response;
+        
+        
+        
+        
+        
 		$response = parent::update($id, $data);
 		
 		// Add entity specific success code

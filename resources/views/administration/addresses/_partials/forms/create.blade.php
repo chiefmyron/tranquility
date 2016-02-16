@@ -1,9 +1,9 @@
 <?php
 $addressTypes = array(
     \Tranquility\Enums\BusinessObjects\Address\PhysicalAddressTypes::Home => trans('administration.address_label_home_address'),
-    \Tranquility\Enums\BusinessObjects\Address\PhysicalAddressTypes::Work => trans('administration.address_label_business_address'),
+    \Tranquility\Enums\BusinessObjects\Address\PhysicalAddressTypes::Work => trans('administration.address_label_work_address'),
     \Tranquility\Enums\BusinessObjects\Address\PhysicalAddressTypes::Billing => trans('administration.address_label_billing_address'),
-    \Tranquility\Enums\BusinessObjects\Address\PhysicalAddressTypes::Delivery => trans('administration.address_label_shipping_address')
+    \Tranquility\Enums\BusinessObjects\Address\PhysicalAddressTypes::Delivery => trans('administration.address_label_delivery_address')
 );
 ?>
 

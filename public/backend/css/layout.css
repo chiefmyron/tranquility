@@ -526,6 +526,18 @@ input[type="color"],
     border-left: 1px solid;
 }
 
+/******************************************************************************
+ * Discreet data item panels                                                  *
+ ******************************************************************************/
+.data-item {
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+
 .data-item .data-header {
     border-bottom: 1px solid;
     padding-bottom: 2px;
@@ -540,7 +552,6 @@ input[type="color"],
     float: right;
     text-transform: lowercase;
 }
-
 
 /******************************************************************************
  * Modal dialog                                                               *

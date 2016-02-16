@@ -272,6 +272,39 @@ class PeopleController extends Controller {
     }
     
     /**
+     * Show form for updating an existing physical address
+     *
+     * @param int $parentId  Parent entity ID
+     * @param int $id        Address entity ID
+     * @return Response
+     */
+    public function updatePhysicalAddress($parentId, $id, Request $request) {
+        // Ensure this is received as an ajax request only
+		if (!$request->ajax()) {
+			// TODO: Proper error handling here
+			throw new Exception('Access only via AJAX request!');
+		}
+        
+        // Retrieve address record
+        $ajax = new \Tranquility\View\AjaxResponse();
+        $response = $this->_addressService->find($id);
+        if ($response->containsErrors()) {
+            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            return Response::json($ajax->toArray());
+        }
+        
+        // Format dialog and return
+        $data = array(
+            'parentId' => $parentId,
+            'address' => $response->getFirstContentItem(),
+            'formAction' => action('Administration\PeopleController@storeAddress', ['parentId' => $parentId])    
+        );
+        $dialog = $this->_renderPartial('administration.addresses._partials.dialogs.update-physical-address', $data);
+        $ajax->addContent('modal-content', $dialog, 'displayDialog');
+        return Response::json($ajax->toArray());
+    }
+    
+    /**
 	 * Store details of a new or updated address
 	 *
 	 * @return Response
@@ -314,8 +347,9 @@ class PeopleController extends Controller {
 		}
 
         // Render address panel for person
-        $ajax->addContent('contact-details', $this->_renderPartial('administration.addresses._partials.panels.physical-address', ['addresses' => $person->getPhysicalAddresses()]), 'closeDialog');
+        $ajax->addContent('contact-details', $this->_renderPartial('administration.addresses._partials.panels.physical-address', ['addresses' => $person->getPhysicalAddresses(), 'parentId' => $person->id]), 'attachCommonHandlers');
         $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+        $ajax->addCallback('closeDialog');
         return Response::json($ajax->toArray());
 	}
     

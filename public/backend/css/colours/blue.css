@@ -192,10 +192,14 @@ body {
     border-left-color: #e9ecf3;
 }
 
+.data-item {
+    background-color: #e9ecf3;
+}
+
 dl.data-list dt {
     color: #555555;
 }
 
 .data-item .data-header {
-    border-bottom-color: #e9ecf3;
+    border-bottom-color: #bbbbbb;
 }

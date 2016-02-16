@@ -52,12 +52,19 @@ abstract class EntityHistoricalBusinessObject {
     /**
      * Sets values for object properties, based on the inputs provided
      * 
-     * @param EntityBusinessObject $data  May be an array or an instance of BusinessObject
+     * @param mixed $data  May be an array or an instance of BusinessObject
      * @throws Tranquility\Exceptions\BusinessObjectException
      * @return Tranquility\Data\BusinessObjects\Entity
      */
-    public function populate(Entity $entity) {
-        $data = $entity->toArray();
+    public function populate($data) {
+        if ($data instanceof Entity) {
+            $data = $data->toArray();
+        } elseif (is_object($data)) {
+            $data = (array) $data;
+        }
+        if (!is_array($data)) {
+            throw new BusinessObjectException('Initial data must be an array or object');
+        }
         
         // Assign relevant data to object properties
         $entityFields = $this->getEntityFields();
@@ -120,6 +127,7 @@ abstract class EntityHistoricalBusinessObject {
         $builder->setDiscriminatorColumn('type');
         $builder->addDiscriminatorMapClass('person', PersonHistoricalBusinessObject::class);
         $builder->addDiscriminatorMapClass('user', UserHistoricalBusinessObject::class);
+        $builder->addDiscriminatorMapClass('addressPhysical', AddressPhysicalHistoricalBusinessObject::class);
         
         // Define fields
         $builder->createField('id', 'integer')->isPrimaryKey()->build();

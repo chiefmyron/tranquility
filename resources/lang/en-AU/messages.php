@@ -13,6 +13,7 @@ return array(
     'message_10009_invalid_transaction_source_code' => 'xxxxxxxxxxxxxxxxxxxxxxxxx',
     'message_10010_invalid_datetime_format' => 'xxxxxxxxxxxxxxxxxxxxxxxxx',
     'message_10011_expired_session_renewed' => 'Unfortunately, we\'ve had to log you out since you left us alone for so long! But that\'s OK - just log in below, and you can pick up right where you left off.',
+    
     'message_10020_person_record_created_successfully' => 'New person record created successfully',
     'message_10021_person_record_updated_successfully' => 'Person record was updated successfully',
     'message_10022_person_record_deleted_successfully' => 'Person record was deleted successfully',
@@ -26,4 +27,5 @@ return array(
     'message_10036_password_updated_successfully' => 'Password for :name has been updated successfully!',
     
     'message_10040_physical_address_record_created_successfully' => 'New address added to record',
+    'message_10041_physical_address_record_updated_successfully' => 'Physical address updated successfully'
 );

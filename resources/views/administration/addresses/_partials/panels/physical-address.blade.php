@@ -1,14 +1,14 @@
 @for ($i = 0; $i < count($addresses); $i++)
-    @if ($i%2 == 0)
+    @if ($i%3 == 0)
         <div class="row">
     @endif
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="data-item">
                     <div class="data-header">
                         <h4>{{ trans('administration.address_label_'.$addresses[$i]->addressType.'_address') }}</h4>
                         <span class="action">
                             <a href="#">Delete</a> |
-                            <a href="#">Update</a> |
+                            <a href="{{ action('Administration\PeopleController@updatePhysicalAddress', ['id' => $addresses[$i]->id, 'parentId' => $parentId]) }}" class="ajax">Update</a> |
                             <a href="{{ action('Administration\AddressController@displayMap', [$addresses[$i]->id]) }}" class="ajax">View map</a>    
                         </span>
                     </div>
@@ -27,12 +27,22 @@
                         <span class="p-region">{{ $addresses[$i]->state }}</span>
                         <span class="p-postal-code">{{ $addresses[$i]->postcode }}</span>
                         @if (isset($addresses[$i]->country) && $addresses[$i]->country != '') 
-                        <span class="p-country-name">{{ $addresses[$i]->country }}</span>
+                        <span class="p-country-name">{{ trans('countries.'.$addresses[$i]->country) }}</span>
                         @endif
                     </p>
                 </div>
             </div>
-    @if (($i%2 == 1) || ($i == count($addresses) - 1))
+    @if ($i%3 == 2)
         </div><!-- End of row -->
     @endif
 @endfor
+
+@if (count($addresses)%3 == 0)
+        <div class="row">
+@endif
+            <div class="col-md-4 text-center">
+                <div class="data-item">
+                    <a href="{{ action('Administration\PeopleController@addPhysicalAddress', [$parentId]) }}" class="ajax large"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add another address</a>    
+                </div>
+            </div>
+        </div>

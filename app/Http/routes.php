@@ -40,6 +40,7 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
 	Route::get('/people/{id}/update', 'Administration\PeopleController@update');
     Route::get('/people/{id}/user', 'Administration\PeopleController@showUser');
     Route::get('/people/{parentId}/address/add/physical', 'Administration\PeopleController@addPhysicalAddress');
+    Route::get('/people/{parentId}/address/update/physical/{id}', 'Administration\PeopleController@updatePhysicalAddress');
     Route::post('/people/{parentId}/address/store', 'Administration\PeopleController@storeAddress');
 	
 	// Users controller

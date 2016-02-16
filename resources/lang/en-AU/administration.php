@@ -67,11 +67,12 @@ return array(
     
     // Address strings
     'address_heading_add_new_address' => 'Add address to record',
+    'address_heading_update_address' => 'Update address details',
     'address_label_address_type' => 'Address type',
-    'address_label_business_address' => 'Business address',
+    'address_label_work_address' => 'Business address',
     'address_label_home_address' => 'Home address',
     'address_label_billing_address' => 'Billing address',
-    'address_label_shipping_address' => 'Shipping address',
+    'address_label_delivery_address' => 'Shipping address',
     'address_label_line_1' => 'Address line 1',
     'address_label_line_2' => 'Address line 2',
     'address_label_city' => 'City',
