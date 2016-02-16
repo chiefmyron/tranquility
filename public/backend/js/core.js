@@ -27,7 +27,10 @@ $('.modal').on('shown.bs.modal', function() {
   $(this).find('[autofocus]').focus();
 });
 
-// Attach event handlers to toolbar links
+/**
+ * Attach and/or refresh event handlers to common administration page elements 
+ * (e.g. toolbar, AJAX enalbed links, checkboxes in data tables).
+ */
 function attachCommonHandlers() {
     // Clear any existing handlers
     $("#toolbar-container li.ajax a").off('click.toolbarEvent');
@@ -58,6 +61,9 @@ function attachCommonHandlers() {
     });
 }
 
+/**
+ * Attach event handlers to search controls in administration page header
+ */
 function attachGlobalSearchHandlers() {
     // Handle click event for global search button in page header
     $('.page-header.navbar .search-form button').on('click.globalSearch', function(e) {
@@ -74,6 +80,9 @@ function attachGlobalSearchHandlers() {
     });
 }
 
+/**
+ * Event handler for AJAX enabled links
+ */
 function xhrItemEventHandler(context, e) {
     // Prevent link navigation
     e.preventDefault();
@@ -92,7 +101,9 @@ function xhrItemEventHandler(context, e) {
     processAjaxResponse(response);   
 }
 
-// Wrapper for JQuery $.ajax() call
+/**
+ * Wrapper to handle AJAX calls to backend
+ */
 function ajaxCall( url, type, data, async, callback, datatype ) {
     // Ensure call type is in uppercase
     type = type.toUpperCase();
@@ -135,6 +146,10 @@ function ajaxCall( url, type, data, async, callback, datatype ) {
     }
 }
 
+/**
+ * Callback function to process responses from a successful AJAX call to be backend.
+ * Expects response to be a serialised Tranquility\View\AjaxResponse object
+ */
 function processAjaxResponse(response) {
     // Update HTML areas with new content
     $.each(response.content, function(i, item) {
@@ -156,7 +171,24 @@ function processAjaxResponse(response) {
     $("span.help-inline").slideDown();
 }
 
-// Enable toolbar links that interact with multiple selected items only if at least one item is selected
+/**
+ * Handles error scenarios from an AJAX call
+ */
+function _ajaxErrorHandler(xhr, ajaxOptions, errorDetails) {
+    // If the error is a HTTP 403 error, display a timeout dialog
+    if (xhr.status == 403) {
+        // Display timeout dialog
+        ajaxCall('/backoffice/auth/loginAjax', "get", {}, false, displayDialog, "json");
+    } else {
+        // Display generic error dialog
+        xhr.content = xhr.responseText;
+        displayDialog(xhr)
+    }
+}
+
+/**
+ * Enable toolbar links that interact with multiple selected items only if at least one item is selected
+ */
 function changeToolbarLinkStatus() {
     if ($('table td input.record-select').is(':checked')) {
         $("#toolbar-container li.multi-select").removeClass("disabled");
@@ -198,6 +230,17 @@ function displayDialog(modalContent) {
     $("#modal-dialog-container").modal('show');
 }
 
+/**
+ * Force close the modal dialog
+ */
+function closeDialog() {
+    $("#modal-dialog-container").modal('hide');
+    return false;
+}
+
+/**
+ * Event handler for default dialog form submission action
+ */
 function defaultDialogSubmitEventHandler(context, e) {
     // Prevent default form behaviour
     e.preventDefault();
@@ -212,17 +255,15 @@ function defaultDialogSubmitEventHandler(context, e) {
 }
 
 /**
- * Force close the modal dialog
+ * Helper function to hide an element with the specified ID
  */
-function closeDialog() {
-    $("#modal-dialog-container").modal('hide');
-    return false;
-}
-
 function hideElement(target) {
     $("#" + target).collapse('hide');
 }
 
+/**
+ * Helper function to show an element with the specified ID
+ */
 function showElement(target) {
     $("#" + target).collapse('show');
 }
@@ -304,80 +345,18 @@ function displayMessages(messages, target) {
     $(inline_container + "span.help-inline").slideDown();
 }
 
-
-
-
-
-
-function getSelectedCheckboxValues( element_name ) {
-    var value_array = [];
-    $('input:checkbox[name=' + element_name + ']:checked').each(function (i) {
-        value_array[i] = $(this).val();
-    });
-
-    return value_array;
-}
-
-
-
-function _ajaxErrorHandler(xhr, ajaxOptions, errorDetails) {
-    // If the error is a HTTP 403 error, display a timeout dialog
-    if (xhr.status == 403) {
-        // Display timeout dialog
-        ajaxCall('/backoffice/auth/loginAjax', "get", {}, false, displayDialog, "json");
-    } else {
-        // Display generic error dialog
-        xhr.content = xhr.responseText;
-        displayDialog(xhr)
-    }
-}
-
+/**
+ * Attach datepicker control to input fields
+ */
 function attachDatePicker() {
     if ($(".date-input").length > 0) {
         $(".date-input").datepicker();
     }
 }
 
-function attachTabHandler() {
-    $('ul.nav-tabs a').click(function (e) {
-        e.preventDefault();
-        $(this).tab('show');
-    });
-}
-
-
-
-// Retrieves form inputs and returns as an array
-function _extractFormValues(formId) {
-    var inputs = {};
-    $("form#" + formId + " :input").each(function() {
-        var inputType = $(this).attr('type');
-        
-        switch (inputType) {
-            case 'checkbox':
-                if ($(this).is(':checked')) {
-                    inputs[this.name] = 1;
-                } else {
-                    inputs[this.name] = 0;
-                }
-                break;
-            case 'radio':
-                // Escape square brackets
-                var elementName = this.name;
-                elementName = elementName.replace("[", "\\[");
-                elementName = elementName.replace("]", "\\]");
-                inputs[this.name] = $('input:radio[name=' + elementName + ']:checked').val();
-                break;
-            default:
-                inputs[this.name] = $(this).val();
-                break;
-        }
-        
-    });
-    
-    return inputs;
-}
-
+/**
+ * Retrieve an array of all selected checkboxes with the specified name
+ */
 function _getSelectedListItems(inputName) {
     if (inputName == "" || inputName == undefined) {
         inputName = "id";
