@@ -1,9 +1,11 @@
+        <div id="physical-addresses-container">
+            <h3>{{ trans('administration.address_heading_physical_addresses') }}</h3>
 @if (count($addresses) <= 0)
             <div class="row">
                 <div class="col-md-12">
                 <div class="data-item text-center">
                     <p class="large">{{ trans('administration.people_message_no_physical_addresses') }}</p>
-                    <p class="large"><a href="{{ action('Administration\PeopleController@addPhysicalAddress', [$parentId]) }}" class="ajax"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.address_heading_add_new_address') }}</a></p>
+                    <p class="large"><a href="{{ action('Administration\AddressController@create', ['type' => 'physical', 'parentId' => $parentId]) }}" class="ajax"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.address_heading_add_new_address') }}</a></p>
                 </div>
                 </div>
             </div>
@@ -18,7 +20,7 @@
                             <h4>{{ trans('administration.address_label_'.$addresses[$i]->addressType.'_address') }}</h4>
                             <span class="action">
                                 <a href="{{ action('Administration\PeopleController@confirmAction', ['id' => $addresses[$i]->id, 'parentId' => $parentId, 'action' => 'deleteAddress']) }}" class="ajax">Delete</a> |
-                                <a href="{{ action('Administration\PeopleController@updatePhysicalAddress', ['id' => $addresses[$i]->id, 'parentId' => $parentId]) }}" class="ajax">Update</a> |
+                                <a href="{{ action('Administration\AddressController@update', ['id' => $addresses[$i]->id]) }}" class="ajax">Update</a> |
                                 <a href="{{ action('Administration\AddressController@displayMap', [$addresses[$i]->id]) }}" class="ajax">View map</a>    
                             </span>
                         </div>
@@ -57,3 +59,4 @@
                 </div>
             </div>
 @endif
+        </div>

@@ -68,6 +68,7 @@ return array(
     'users_command_back_to_users_list' => 'Back to list of users',
     
     // Address strings
+    'address_heading_physical_addresses' => 'Addresses',
     'address_heading_add_new_address' => 'Add address to record',
     'address_heading_update_address' => 'Update address details',
     'address_label_address_type' => 'Address type',

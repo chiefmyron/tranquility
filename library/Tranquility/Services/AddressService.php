@@ -16,6 +16,17 @@ class AddressService extends \Tranquility\Services\Service {
     public function businessObject() {
         return 'Tranquility\Data\BusinessObjects\AddressPhysicalBusinessObject';
     }
+    
+    /**
+     * Use the address service to find the parent entity for an address
+     *
+     * @param int $parentId  ID of the parent entity
+     * @return \Tranquility\Services\ServiceResponse
+     */
+    public function findParentEntity($parentId) {
+        $entity = $this->_entityManager->find('\Tranquility\Data\BusinessObjects\EntityBusinessObject', $parentId);
+		return $this->_findResponse(array($entity));
+    }
 	
 	/**
 	 * Create a new Address record

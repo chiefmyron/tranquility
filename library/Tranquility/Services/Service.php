@@ -11,7 +11,7 @@ use \Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
 
 abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterface {
     // Doctrine entity manager
-    private $_entityManager;
+    protected $_entityManager;
 	
 	/**
 	 * Constructor
