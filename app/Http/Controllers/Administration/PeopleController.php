@@ -195,6 +195,13 @@ class PeopleController extends Controller {
 			case 'deactivate':
 				$dialog = $this->_renderPartial('administration.people._partials.dialogs.confirm-deactivate', $data);
 				break;
+            case 'deleteAddress':
+                $data = array(
+                    'id' => $id[0],
+                    'parentId' => $request->input('parentId', 0)
+                );
+                $dialog = $this->_renderPartial('administration.people._partials.dialogs.confirm-delete-address', $data);
+                break;
 		}
 		
 		// AJAX response
@@ -352,6 +359,43 @@ class PeopleController extends Controller {
         $ajax->addCallback('closeDialog');
         return Response::json($ajax->toArray());
 	}
+    
+    public function deleteAddress(Request $request) {
+        // Save details of address
+		$params = $request->all();
+		$id = $request->input('id', 0);
+        $parentId = $request->input('parentId', 0);
+        
+        // Get details of parent person
+        $response = $this->_person->find($parentId);
+        if ($response->containsErrors()) {
+            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            return Response::json($ajax->toArray());
+        }
+        $person = $response->getFirstContentItem();
+		
+		// Add in additional audit trail details
+		$params['updateBy'] = Auth::user();
+		$params['updateReason'] = 'who knows?';
+		$params['updateDateTime'] = Carbon::now();
+		$params['transactionSource'] = EnumTransactionSource::UIBackend;
+        
+		// Delete address record
+        $ajax = new \Tranquility\View\AjaxResponse();
+        $response = $this->_addressService->delete($id, $params);
+        if ($response->containsErrors()) {
+			// Errors encountered - redisplay form with error messages
+            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+			$ajax->addMessages($response->getMessages());
+            return Response::json($ajax->toArray());
+		}
+
+        // Render address panel for person
+        $ajax->addContent('contact-details', $this->_renderPartial('administration.addresses._partials.panels.physical-address', ['addresses' => $person->getPhysicalAddresses(), 'parentId' => $person->id]), 'attachCommonHandlers');
+        $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+        $ajax->addCallback('closeDialog');
+        return Response::json($ajax->toArray());
+    }
     
     public function showUser($id, Request $request) {
 		// Ensure this is received as an ajax request only

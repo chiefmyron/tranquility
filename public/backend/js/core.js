@@ -207,7 +207,9 @@ function changeToolbarLinkStatus() {
  * @link http://stackoverflow.com/questions/359788/how-to-execute-a-javascript-function-when-i-have-its-name-as-a-string
  */
 function executeFunctionByName(functionName, context) {
-    var args = [].slice.call(arguments).splice(2);
+    //var args = [].slice.call(arguments).splice(2);
+    
+    var args = arguments[2];
     var namespaces = functionName.split(".");
     var func = namespaces.pop();
     for(var i = 0; i < namespaces.length; i++) {
@@ -219,7 +221,10 @@ function executeFunctionByName(functionName, context) {
 /** 
  * Force display of the modal dialog
  */
-function displayDialog(modalContent) {
+function displayDialog() {
+    var modalContent = arguments[0];
+    var size = arguments[1];
+    
     // If modal content has been supplied, inject it now
     if ((typeof modalContent !== 'undefined') && (modalContent !== null) && (modalContent.length > 0))  {
 		$("#modal-dialog-container").html(modalContent);
@@ -230,6 +235,17 @@ function displayDialog(modalContent) {
     $("#modal-dialog-container form.ajax-submit").on("submit.dialogSubmit", function (e) {
         defaultDialogSubmitEventHandler(this, e);
     });
+    
+    // Add class to change size of modal dialog
+    $("#modal-dialog-container .modal-dialog").removeClass("modal-lg modal-sm");
+    switch(size) {
+        case "large":
+            $("#modal-dialog-container .modal-dialog").addClass("modal-lg");
+            break;
+        case "small":
+            $("#modal-dialog-container .modal-dialog").addClass("modal-sm");
+            break;
+    }
     $("#modal-dialog-container").modal('show');
 }
 

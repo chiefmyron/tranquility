@@ -64,7 +64,7 @@ class AddressController extends Controller {
 		// AJAX response
 		$ajax = new \Tranquility\View\AjaxResponse();
 		$dialog = $this->_renderPartial('administration.addresses._partials.dialogs.show-map', ['address' => $response->getFirstContentItem()]);
-        $ajax->addContent('modal-content', $dialog, 'displayDialog');
+        $ajax->addContent('modal-content', $dialog, 'displayDialog', [null, "large"]);
 		return Response::json($ajax->toArray());
 	}
 }

@@ -30,18 +30,19 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
 	Route::get('/', 'Administration\HomeController@index');
 	
 	// People controller
-	Route::get('/people', 'Administration\PeopleController@index');
+	Route::get ('/people', 'Administration\PeopleController@index');
 	Route::post('/people', 'Administration\PeopleController@store');
-	Route::get('/people/create', 'Administration\PeopleController@create');
+	Route::get ('/people/create', 'Administration\PeopleController@create');
 	Route::post('/people/delete', 'Administration\PeopleController@delete');
-    Route::get('/people/confirm', 'Administration\PeopleController@confirmAction');
+    Route::get ('/people/confirm', 'Administration\PeopleController@confirmAction');
     Route::post('/people/confirm', 'Administration\PeopleController@confirmAction');
-	Route::get('/people/{id}', 'Administration\PeopleController@show');
-	Route::get('/people/{id}/update', 'Administration\PeopleController@update');
-    Route::get('/people/{id}/user', 'Administration\PeopleController@showUser');
-    Route::get('/people/{parentId}/address/add/physical', 'Administration\PeopleController@addPhysicalAddress');
-    Route::get('/people/{parentId}/address/update/physical/{id}', 'Administration\PeopleController@updatePhysicalAddress');
+	Route::get ('/people/{id}', 'Administration\PeopleController@show');
+	Route::get ('/people/{id}/update', 'Administration\PeopleController@update');
+    Route::get ('/people/{id}/user', 'Administration\PeopleController@showUser');
+    Route::get ('/people/{parentId}/address/add/physical', 'Administration\PeopleController@addPhysicalAddress');
+    Route::get ('/people/{parentId}/address/update/physical/{id}', 'Administration\PeopleController@updatePhysicalAddress');
     Route::post('/people/{parentId}/address/store', 'Administration\PeopleController@storeAddress');
+    Route::post('/people/{parentId}/address/delete', 'Administration\PeopleController@deleteAddress');
 	
 	// Users controller
 	Route::get('/users', 'Administration\UsersController@listPeopleUsers');
