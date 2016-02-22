@@ -27,5 +27,6 @@ return array(
     'message_10036_password_updated_successfully' => 'Password for :name has been updated successfully!',
     
     'message_10040_physical_address_record_created_successfully' => 'New address added to record',
-    'message_10041_physical_address_record_updated_successfully' => 'Physical address updated successfully'
+    'message_10041_physical_address_record_updated_successfully' => 'Physical address updated successfully',
+    'message_10042_physical_address_record_deleted_successfully' => 'Physical address deleted successfully',
 );

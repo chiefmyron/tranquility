@@ -105,20 +105,7 @@ class AddressService extends \Tranquility\Services\Service {
 		
 		// Add entity specific success code
 		if (!$response->containsErrors()) {
-			$response->addMessage(10040, EnumMessageLevel::Success, 'message_10041_physical_address_record_updated_successfully');
-		}
-		
-		return $response;
-        
-        
-        
-        
-        
-		$response = parent::update($id, $data);
-		
-		// Add entity specific success code
-		if (!$response->containsErrors()) {
-			$response->addMessage(10021, EnumMessageLevel::Success, 'message_10021_person_record_updated_successfully');
+			$response->addMessage(10041, EnumMessageLevel::Success, 'message_10041_physical_address_record_updated_successfully');
 		}
 		
 		return $response;
@@ -136,7 +123,7 @@ class AddressService extends \Tranquility\Services\Service {
         
         // Add entity specific success code
         if (!$response->containsErrors()) {
-			$response->addMessage(10022, EnumMessageLevel::Success, 'message_10022_person_record_deleted_successfully');
+			$response->addMessage(10042, EnumMessageLevel::Success, 'message_10042_physical_address_record_deleted_successfully');
 		}
         
 		return $response;

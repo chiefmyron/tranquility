@@ -19,7 +19,7 @@
                         <div class="data-header">
                             <h4>{{ trans('administration.address_label_'.$addresses[$i]->addressType.'_address') }}</h4>
                             <span class="action">
-                                <a href="{{ action('Administration\PeopleController@confirmAction', ['id' => $addresses[$i]->id, 'parentId' => $parentId, 'action' => 'deleteAddress']) }}" class="ajax">Delete</a> |
+                                <a href="{{ action('Administration\AddressController@confirm', ['id' => $addresses[$i]->id]) }}" class="ajax">Delete</a> |
                                 <a href="{{ action('Administration\AddressController@update', ['id' => $addresses[$i]->id]) }}" class="ajax">Update</a> |
                                 <a href="{{ action('Administration\AddressController@displayMap', [$addresses[$i]->id]) }}" class="ajax">View map</a>    
                             </span>

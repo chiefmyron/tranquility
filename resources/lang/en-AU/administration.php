@@ -33,7 +33,6 @@ return array(
     'people_command_update' => 'Update details',
     'people_message_delete_confirmation_single' => 'Are you sure you want to delete the record for :name?',
     'people_message_delete_confirmation_multiple' => 'Are you sure you want to delete the :count records currently selected?',
-    'people_message_delete_address_confirmation' => 'Are you sure you want this address?',
     'people_message_has_active_user_account' => ':name has had a user account on your site since :registeredDateTime.',
     'people_message_has_suspended_user_account' => ':name has a user account on your site, but it is currently suspended!',
     'people_message_no_user_account' => ':name does not have a user account on your site.',
@@ -82,6 +81,7 @@ return array(
     'address_label_state' => 'State',
     'address_label_postcode' => 'Postcode',
     'address_label_country' => 'Country',
+    'address_message_delete_address_confirmation' => 'Are you sure you want to delete this address?',
     
     // Search strings
     'search_heading_search' => 'Search',

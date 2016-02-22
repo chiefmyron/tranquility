@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Tranquility\View\AjaxResponse as AjaxResponse;
 use Tranquility\Services\PersonService as PersonService;
-use Tranquility\Services\AddressService as AddressService;
 use Tranquility\Enums\System\EntityType as EnumEntityType;
 use Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
 
@@ -27,16 +26,14 @@ class PeopleController extends Controller {
 	*/
 	
 	private $_person;
-    private $_addressService;
 
 	/**
 	 * Create a new controller instance.
 	 *
 	 * @return void
 	 */
-	public function __construct(PersonService $person, AddressService $address) {
+	public function __construct(PersonService $person) {
 		$this->_person = $person;
-        $this->_addressService = $address;
 	}
 
 	/**
@@ -195,13 +192,6 @@ class PeopleController extends Controller {
 			case 'deactivate':
 				$dialog = $this->_renderPartial('administration.people._partials.dialogs.confirm-deactivate', $data);
 				break;
-            case 'deleteAddress':
-                $data = array(
-                    'id' => $id[0],
-                    'parentId' => $request->input('parentId', 0)
-                );
-                $dialog = $this->_renderPartial('administration.people._partials.dialogs.confirm-delete-address', $data);
-                break;
 		}
 		
 		// AJAX response

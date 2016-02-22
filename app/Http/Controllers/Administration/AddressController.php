@@ -215,10 +215,29 @@ class AddressController extends Controller {
         return Response::json($ajax->toArray());
 	}
     
+    /**
+     * Confirm deletion of an address record
+     *
+     * @param $request Request
+     * @return Response
+     */
+    public function confirm($id, Request $request) {
+		// Ensure this is received as an ajax request only
+		if (!$request->ajax()) {
+			// TODO: Proper error handling here
+			throw new Exception('Access only via AJAX request!');
+		}
+        
+		// AJAX response
+        $dialog = $this->_renderPartial('administration.addresses._partials.dialogs.confirm-delete', ['id' => $id]);
+		$ajax = new \Tranquility\View\AjaxResponse();
+		$ajax->addContent('modal-content', $dialog, 'displayDialog');
+		return Response::json($ajax->toArray());
+	}
+    
     public function delete($id, Request $request) {
         // Save details of address
 		$params = $request->all();
-		$id = $request->input('id', 0);
         
         // Retrieve address record
         $ajax = new \Tranquility\View\AjaxResponse();
@@ -247,7 +266,7 @@ class AddressController extends Controller {
 		}
 
         // Render address panel for person
-        $ajax->addContent('physical-addresses-container', $this->_renderPartial('administration.addresses._partials.panels.physical-address', ['addresses' => $parentEntity->getPhysicalAddresses(), 'parentId' => $person->id]), 'attachCommonHandlers');
+        $ajax->addContent('physical-addresses-container', $this->_renderPartial('administration.addresses._partials.panels.physical-address', ['addresses' => $parentEntity->getPhysicalAddresses(), 'parentId' => $parentEntity->id]), 'attachCommonHandlers');
         $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
         $ajax->addCallback('closeDialog');
         return Response::json($ajax->toArray());

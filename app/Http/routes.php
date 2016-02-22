@@ -39,10 +39,6 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
 	Route::get ('/people/{id}', 'Administration\PeopleController@show');
 	Route::get ('/people/{id}/update', 'Administration\PeopleController@update');
     Route::get ('/people/{id}/user', 'Administration\PeopleController@showUser');
-    Route::get ('/people/{parentId}/address/add/physical', 'Administration\PeopleController@addPhysicalAddress');
-    Route::get ('/people/{parentId}/address/update/physical/{id}', 'Administration\PeopleController@updatePhysicalAddress');
-    Route::post('/people/{parentId}/address/store', 'Administration\PeopleController@storeAddress');
-    Route::post('/people/{parentId}/address/delete', 'Administration\PeopleController@deleteAddress');
 	
 	// Users controller
 	Route::get('/users', 'Administration\UsersController@listPeopleUsers');
@@ -58,6 +54,8 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
     Route::post('/address',               'Administration\AddressController@store');
     Route::get ('/address/create/{type}', 'Administration\AddressController@create');
     Route::get ('/address/{id}/update',   'Administration\AddressController@update');
+    Route::get ('/address/{id}/confirm',  'Administration\AddressController@confirm');
+    Route::post('/address/{id}/delete',   'Administration\AddressController@delete');
     Route::get ('/address/{id}/map',      'Administration\AddressController@displayMap');
     
     // Settings controller
