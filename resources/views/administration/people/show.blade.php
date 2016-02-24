@@ -40,7 +40,8 @@ $user = $person->getUserAccount();
     <!-- Tab panes -->
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="contact-details">
-            @include('administration.addresses._partials.panels.physical-address', ['addresses' => $person->getPhysicalAddresses(), 'parentId' => $person->id])
+            @include('administration.addresses._partials.panels.physical-address', ['addresses' => $person->getAddresses('physical'), 'parentId' => $person->id])
+            @include('administration.addresses._partials.panels.phone-address', ['addresses' => $person->getAddresses('phone'), 'parentId' => $person->id])
         </div>
         <div role="tabpanel" class="tab-pane" id="activity-feed">...</div>
         <div role="tabpanel" class="tab-pane" id="related-items">...</div>

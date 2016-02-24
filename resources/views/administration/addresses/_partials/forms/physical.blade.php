@@ -9,7 +9,7 @@ $addressTypes = array(
 
 <div class="form-group">
 	{!! Form::label('addressType', trans('administration.address_label_address_type')) !!}
-    {!! Form::select('addressType', $addressTypes, null, ['class' => 'form-control']) !!}
+    {!! Form::select('addressType', $addressTypes, null, ['class' => 'form-control', 'autofocus']) !!}
 	{!! FormError::inline('addressType', Session::get('messages')) !!}
 </div>
 
@@ -49,4 +49,4 @@ $addressTypes = array(
 	{!! FormError::inline('country', Session::get('messages')) !!}	
 </div>	
 
-{!! Form::hidden('type', \Tranquility\Enums\System\EntityType::AddressPhysical) !!}
+{!! Form::hidden('type', \Tranquility\Enums\BusinessObjects\Address\AddressTypes::Physical) !!}

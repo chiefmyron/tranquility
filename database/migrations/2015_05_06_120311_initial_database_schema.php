@@ -64,8 +64,8 @@ class InitialDatabaseSchema extends Migration {
         // Address details - electronic
         Schema::create('entity_addresses_electronic', function(Blueprint $table) {
             $table->bigInteger('id')->primary();
+            $table->bigInteger('parentId');
             $table->string('addressType', 25);
-            $table->string('category', 25);
             $table->string('addressText', 25);
             $table->boolean('primaryContact');
         });
@@ -73,6 +73,7 @@ class InitialDatabaseSchema extends Migration {
         // Address details - phone
         Schema::create('entity_addresses_phone', function(Blueprint $table) {
             $table->bigInteger('id')->primary();
+            $table->bigInteger('parentId');
             $table->string('addressType', 25);
             $table->string('addressText', 25);
             $table->boolean('primaryContact');
@@ -145,9 +146,9 @@ class InitialDatabaseSchema extends Migration {
         // Address details - electronic
         Schema::create('history_entity_addresses_electronic', function(Blueprint $table) {
             $table->bigInteger('id');
+            $table->bigInteger('parentId');
             $table->integer('version');
             $table->string('addressType', 25);
-            $table->string('category', 25);
             $table->string('addressText', 25);
             $table->boolean('primaryContact');
             $table->primary(['id', 'version']);
@@ -156,6 +157,7 @@ class InitialDatabaseSchema extends Migration {
         // Address details - phone
         Schema::create('history_entity_addresses_phone', function(Blueprint $table) {
             $table->bigInteger('id');
+            $table->bigInteger('parentId');
             $table->integer('version');
             $table->string('addressType', 25);
             $table->string('addressText', 25);

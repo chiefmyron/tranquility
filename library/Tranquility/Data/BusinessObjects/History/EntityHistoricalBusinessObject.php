@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Tranquility\Enums\System\EntityType                    as EnumEntityType;
 use Tranquility\Data\BusinessObjects\Extensions\AuditTrail as AuditTrail;
 use Tranquility\Data\BusinessObjects\EntityBusinessObject  as Entity;
 use Tranquility\Exceptions\BusinessObjectException         as BusinessObjectException;
@@ -95,8 +96,8 @@ abstract class EntityHistoricalBusinessObject {
      * @return void
      */
     public function setAuditTrail($auditTrail) {
-        if (!($auditTrail instanceof \Tranquility\Data\BusinessObjects\Extensions\AuditTrail)) {
-            throw new BusinessObjectException('Audit trail information must be provided as a \Tranquility\Data\BusinessObjects\Extensions\AuditTrail object');
+        if (!($auditTrail instanceof AuditTrail)) {
+            throw new BusinessObjectException('Audit trail information must be provided as a '.AuditTrail::class.'  object');
         }
         
         $this->auditTrail = $auditTrail;
@@ -125,9 +126,11 @@ abstract class EntityHistoricalBusinessObject {
         // Define inheritence
         $builder->setJoinedTableInheritance();
         $builder->setDiscriminatorColumn('type');
-        $builder->addDiscriminatorMapClass('person', PersonHistoricalBusinessObject::class);
-        $builder->addDiscriminatorMapClass('user', UserHistoricalBusinessObject::class);
-        $builder->addDiscriminatorMapClass('addressPhysical', AddressPhysicalHistoricalBusinessObject::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::Person, PersonHistoricalBusinessObject::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::User, UserHistoricalBusinessObject::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhysical, AddressPhysicalHistoricalBusinessObject::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhone, AddressPhoneHistoricalBusinessObject::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::AddressElectronic, AddressElectronicHistoricalBusinessObject::class);
         
         // Define fields
         $builder->createField('id', 'integer')->isPrimaryKey()->build();

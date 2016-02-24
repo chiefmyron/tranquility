@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Tranquility\Enums\System\EntityType as EnumEntityType;
 use Tranquility\Data\BusinessObjects\EntityBusinessObject as Entity;
 use Tranquility\Data\BusinessObjects\History\AddressPhysicalHistoricalBusinessObject as AddressPhysicalHistory;
 
@@ -77,6 +78,14 @@ class AddressPhysicalBusinessObject extends EntityBusinessObject {
      */
     protected static $_historicalEntityClass = AddressPhysicalHistory::class;
     
+    /** 
+     * Type of entity represented by the business object
+     *
+     * @var string
+     * @static
+     */
+    protected static $_entityType = EnumEntityType::AddressPhysical;
+    
     /**
      * Sets values for object properties, based on the inputs provided
      * 
@@ -93,6 +102,15 @@ class AddressPhysicalBusinessObject extends EntityBusinessObject {
         }
         
         return $this;
+    }
+    
+    /**
+     * Returns the parent entity for the address
+     *
+     * @return Tranquility\Data\BusinessIbjects\Entity
+     */
+    public function getParentEntity() {
+        return $this->parentEntity;
     }
     
     /**
@@ -165,9 +183,5 @@ class AddressPhysicalBusinessObject extends EntityBusinessObject {
         
         // Add relationships
         $builder->createManyToOne('parentEntity', Entity::class)->addJoinColumn('parentId', 'id')->inversedBy('physicalAddresses')->build();
-    }
-    
-    public function getParentEntity() {
-        return $this->parentEntity;
     }
 }

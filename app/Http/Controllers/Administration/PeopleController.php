@@ -207,7 +207,7 @@ class PeopleController extends Controller {
         // Set up audit trail details
         $params = array();
         $params['updateBy'] = Auth::user();
-        $params['updateReason'] = 'who knows?';
+        $params['updateReason'] = 'backend user delete';
         $params['updateDateTime'] = Carbon::now();
         $params['transactionSource'] = EnumTransactionSource::UIBackend;
         if (count($inputIds) > 1) {

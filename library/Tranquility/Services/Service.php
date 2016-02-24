@@ -42,18 +42,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		$messages = array();
 		
 		// Validate that mandatory inputs have been provided
-		$mandatoryFieldNames = $this->_getMandatoryFields($newRecord);
-		foreach ($mandatoryFieldNames as $field) {
-			if (!isset($inputs[$field]) || $inputs[$field] == null || (!is_object($inputs[$field]) && trim($inputs[$field]) == '')) {
-				// Mandatory field is missing
-				$messages[] = array(
-					'code' => 10002,
-					'text' => 'message_10002_mandatory_input_field_missing',
-					'level' => EnumMessageLevel::Error,
-					'fieldId' => $field
-				);
-			}
-		}
+		$messages = $this->validateMandatoryFields($inputs, $newRecord);
 		
 		// Validate audit trail fields
         $messages = array_merge($messages, $this->validateAuditTrailFields($inputs));
@@ -72,6 +61,31 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		
 		return true;
 	}
+    
+    /**
+     * Validate that mandatory information has been supplied
+     * 
+     * @param array   $inputs     Array of data field values
+     * @param boolean $newRecord  Flag indicating whether we are validating for a new or existing record
+     * @return array              Error messages from validation. Empty if no errors.
+     */
+    public function validateMandatoryFields($inputs, $newRecord = false) {
+        $messages = array();
+        
+        $mandatoryFieldNames = $this->_getMandatoryFields($newRecord);
+		foreach ($mandatoryFieldNames as $field) {
+			if (!isset($inputs[$field]) || $inputs[$field] == null || (!is_object($inputs[$field]) && trim($inputs[$field]) == '')) {
+				// Mandatory field is missing
+				$messages[] = array(
+					'code' => 10002,
+					'text' => 'message_10002_mandatory_input_field_missing',
+					'level' => EnumMessageLevel::Error,
+					'fieldId' => $field
+				);
+			}
+		}
+        return $messages;
+    }
     
     /**
 	 * Validate data for audit trail fields only 
@@ -182,6 +196,17 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		$entity = $this->_getRepository()->findBy($searchOptions);
 		return $this->_findResponse($entity);
 	}
+    
+    /**
+     * Use the address service to find the parent entity for an address
+     *
+     * @param int $parentId  ID of the parent entity
+     * @return \Tranquility\Services\ServiceResponse
+     */
+    public function findParentEntity($parentId) {
+        $entity = $this->_entityManager->find('\Tranquility\Data\BusinessObjects\EntityBusinessObject', $parentId);
+		return $this->_findResponse(array($entity));
+    }
 	
     /**
      * Create a new record for a business object

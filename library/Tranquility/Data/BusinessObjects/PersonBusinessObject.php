@@ -6,8 +6,11 @@ use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Tranquility\Enums\System\EntityType                                     as EnumEntityType;
+use Tranquility\Enums\BusinessObjects\Address\AddressTypes                  as EnumAddressType;
 use Tranquility\Data\BusinessObjects\UserBusinessObject                     as User;
 use Tranquility\Data\BusinessObjects\History\PersonHistoricalBusinessObject as PersonHistory;
+use Tranquility\Exceptions\BusinessObjectException                          as BusinessObjectException;
 
 class PersonBusinessObject extends EntityBusinessObject {
     use \Tranquility\Data\Traits\PropertyAccessorTrait;
@@ -61,7 +64,13 @@ class PersonBusinessObject extends EntityBusinessObject {
      */
     protected static $_historicalEntityClass = PersonHistory::class;
     
-    
+    /** 
+     * Type of entity represented by the business object
+     *
+     * @var string
+     * @static
+     */
+    protected static $_entityType = EnumEntityType::Person;
     
     /**
      * Retrieve formatted name for person
@@ -86,14 +95,28 @@ class PersonBusinessObject extends EntityBusinessObject {
     }
     
     /**
-     * Retreive a collection of physical addresses associated with this person
+     * Retreive a collection of addresses associated with this person
      *
+     * @var string $type  Type of address collection to return
      * @return mixed
      */
-    public function getPhysicalAddresses() {
+    public function getAddresses($type) {
         // Build criteria to ensure we only retrieve active address records
+        $addresses = array();
         $criteria = Criteria::create()->where(Criteria::expr()->eq("deleted", 0));
-        $addresses = $this->physicalAddresses->matching($criteria);
+        switch ($type) {
+            case EnumAddressType::Physical:
+                $addresses = $this->physicalAddresses->matching($criteria);
+                break;
+            case EnumAddressType::Phone:
+                $addresses = $this->phoneAddresses->matching($criteria);
+                break;
+            case EnumAddressType::Electronic:
+                $addresses = $this->electronicAddresses->matching($criteria);
+                break;
+            default:
+                throw new BusinessObjectException('Invalid address type was supplied: '.$type);
+        }
         return $addresses->toArray();
     }
     

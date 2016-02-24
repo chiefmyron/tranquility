@@ -6,7 +6,7 @@
 						{!! trans('administration.address_message_delete_address_confirmation') !!}
 					</div>
 					<div class="modal-footer">
-						{!! Form::open(array('action' => array('Administration\AddressController@delete', $id), 'class' => 'ajax-submit')) !!}
+						{!! Form::open(array('action' => array('Administration\AddressController@delete', $type, $id), 'class' => 'ajax-submit')) !!}
 						<button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
 						<button type="submit" class="btn btn-primary" id="dialog-submit">{{ trans('administration.common_command_delete_confirm') }}</button>
                         {!! Form::close() !!}

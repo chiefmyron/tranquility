@@ -27,6 +27,12 @@ return array(
     'message_10036_password_updated_successfully' => 'Password for :name has been updated successfully!',
     
     'message_10040_physical_address_record_created_successfully' => 'New address added to record',
-    'message_10041_physical_address_record_updated_successfully' => 'Physical address updated successfully',
-    'message_10042_physical_address_record_deleted_successfully' => 'Physical address deleted successfully',
+    'message_10041_physical_address_record_updated_successfully' => 'Address updated successfully',
+    'message_10042_physical_address_record_deleted_successfully' => 'Address deleted successfully',
+    'message_10043_phone_address_record_created_successfully' => 'New phone number added to record',
+    'message_10044_phone_address_record_updated_successfully' => 'Phone number updated successfully',
+    'message_10045_phone_address_record_deleted_successfully' => 'Phone number deleted successfully',
+    'message_10046_electronic_address_record_created_successfully' => 'New electronic address added to record',
+    'message_10047_electronic_address_record_updated_successfully' => 'Electronic address updated successfully',
+    'message_10048_electronic_address_record_deleted_successfully' => 'Electronic address deleted successfully',
 );

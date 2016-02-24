@@ -5,7 +5,8 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Tranquility\Data\BusinessObjects\PersonBusinessObject as Person;
+use Tranquility\Enums\System\EntityType                                    as EnumEntityType;
+use Tranquility\Data\BusinessObjects\PersonBusinessObject                  as Person;
 use Tranquility\Data\BusinessObjects\Extensions\UserTokens;
 use Tranquility\Data\BusinessObjects\History\UserHistoricalBusinessObject;
 
@@ -84,6 +85,14 @@ class UserBusinessObject extends EntityBusinessObject implements UserContract {
      * @static
      */
     protected static $_historicalEntityClass = UserHistoricalBusinessObject::class;
+    
+    /** 
+     * Type of entity represented by the business object
+     *
+     * @var string
+     * @static
+     */
+    protected static $_entityType = EnumEntityType::User;
     
     /**
      * Metadata used to define object relationship to database

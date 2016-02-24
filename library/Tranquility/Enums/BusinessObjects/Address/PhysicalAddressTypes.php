@@ -7,7 +7,7 @@
  * @author  Andrew Patterson <patto@live.com.au>
  */
 
-class PhysicalAddresstypes extends \Tranquility\Enums\Enum {
+class PhysicalAddressTypes extends \Tranquility\Enums\Enum {
 	const Home = 'home';
 	const Work = 'work';
 	const Billing = 'billing';

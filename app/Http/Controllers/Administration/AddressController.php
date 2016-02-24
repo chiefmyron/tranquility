@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers\Administration;
 
+use \Exception as Exception;
 use \Session as Session;
 use \Response as Response;
 use \Auth as Auth;
@@ -7,14 +8,15 @@ use Illuminate\Http\Request as Request;
 use App\Http\Controllers\Controller;
 
 use Carbon\Carbon;
-use Tranquility\View\AjaxResponse as AjaxResponse;
-use Tranquility\Services\AddressService as AddressService;
+use Tranquility\View\AjaxResponse                          as AjaxResponse;
+use Tranquility\Services\AddressPhysicalService            as AddressPhysicalService;
+use Tranquility\Services\AddressPhoneService               as AddressPhoneService;
+use Tranquility\Services\AddressElectronicService          as AddressElectronicService;
+
 use Tranquility\Enums\BusinessObjects\Address\AddressTypes as EnumAddressType;
-
-
-use Tranquility\Enums\System\EntityType as EnumEntityType;
-use Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
-use Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
+use Tranquility\Enums\System\EntityType                    as EnumEntityType;
+use Tranquility\Enums\System\TransactionSource             as EnumTransactionSource;
+use Tranquility\Enums\System\MessageLevel                  as EnumMessageLevel;
 
 class AddressController extends Controller {
 
@@ -30,9 +32,21 @@ class AddressController extends Controller {
 	
     /**
      * Address service used for the majority of operations
-     * @var \Tranquility\Services\AddressService
+     * @var \Tranquility\Services\AddressPhysicalService
      */
-	private $_service;
+	private $_physicalAddressService;
+    
+    /**
+     * Address service used for the majority of operations
+     * @var \Tranquility\Services\AddressPhoneService
+     */
+	private $_phoneAddressService;
+    
+    /**
+     * Address service used for the majority of operations
+     * @var \Tranquility\Services\AddressElectronicService
+     */
+	private $_electronicAddressService;
 
 	/**
      * Constructor
@@ -40,8 +54,10 @@ class AddressController extends Controller {
 	 *
 	 * @return void
 	 */
-	public function __construct(AddressService $service) {
-		$this->_service = $service;
+	public function __construct(AddressPhysicalService $physicalAddressService, AddressPhoneService $phoneAddressService, AddressElectronicService $electronicAddressService) {
+		$this->_physicalAddressService = $physicalAddressService;
+        $this->_phoneAddressService = $phoneAddressService;
+        $this->_electronicAddressService = $electronicAddressService;
 	}
 
 	/**
@@ -57,7 +73,7 @@ class AddressController extends Controller {
 		}
         
         // Retrieve address
-        $response = $this->_service->find($id);
+        $response = $this->_getService(EnumAddressType::Physical)->find($id);
         if ($response->containsErrors()) {
             $ajax->addMessages($result->getMessages());
             $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
@@ -117,7 +133,7 @@ class AddressController extends Controller {
      * @param int $id        Address entity ID
      * @return Response
      */
-    public function update($id, Request $request) {
+    public function update($type, $id, Request $request) {
         // Ensure this is received as an ajax request only
 		if (!$request->ajax()) {
 			// TODO: Proper error handling here
@@ -126,35 +142,17 @@ class AddressController extends Controller {
         
         // Retrieve address record
         $ajax = new \Tranquility\View\AjaxResponse();
-        $response = $this->_service->find($id);
+        $response = $this->_getService($type)->find($id);
         if ($response->containsErrors()) {
             $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
             return Response::json($ajax->toArray());
         }
         
-        // Get existing details from address
-        $address = $response->getFirstContentItem();
-        switch (get_class($address)) {
-            case 'Tranquility\Data\BusinessObjects\AddressPhysicalBusinessObject':
-                $entityType = EnumEntityType::AddressPhysical;
-                $type = EnumAddressType::Physical;
-                break;
-            case 'Tranquility\Data\BusinessObjects\AddressPhoneBusinessObject':
-                $entityType = EnumEntityType::AddressPhone;
-                $type = EnumAddressType::Phone;
-                break;
-            case 'Tranquility\Data\BusinessObjects\AddressElectronicBusinessObject':
-                $entityType = EnumEntityType::AddressElectronic;
-                $type = EnumAddressType::Electronic;
-            default:
-                $entityType = '';
-                $type = '';
-        }
-        
         // Render dialog
+        $address = $response->getFirstContentItem();
         $data = array(
             'parentId' => $address->getParentEntity()->id,
-            'type' => $entityType,
+            'type' => $address->getEntityType(),
             'address' => $address
         );
         $dialog = $this->_renderPartial('administration.addresses._partials.dialogs.update-address-'.$type, $data);
@@ -171,6 +169,7 @@ class AddressController extends Controller {
 		// Save details of address
 		$params = $request->all();
 		$id = $request->input('id', 0);
+        $type = $request->input('type', '');
         $parentId = $request->input('parentId', 0);
 		
 		// Add in additional audit trail details
@@ -179,7 +178,7 @@ class AddressController extends Controller {
 		$params['transactionSource'] = EnumTransactionSource::UIBackend;
         
         // Retrieve parent entity details
-        $response = $this->_service->findParentEntity($parentId);
+        $response = $this->_getService($type)->findParentEntity($parentId);
         if ($response->containsErrors()) {
             $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
             return Response::json($ajax->toArray());
@@ -190,12 +189,12 @@ class AddressController extends Controller {
 		if ($id != 0) {
             // Update existing record
             $params['updateReason'] = 'backend address update';
-			$response = $this->_service->update($id, $params);
+			$response = $this->_getService($type)->update($id, $params);
 		} else {
             // Create new address record
             $params['parent'] = $parentEntity;
             $params['updateReason'] = 'backend address create';
-			$response = $this->_service->create($params);
+			$response = $this->_getService($type)->create($params);
 		}
         
         // Set up response
@@ -209,7 +208,7 @@ class AddressController extends Controller {
 
         // Render address panel for person
         $address = $response->getFirstContentItem();
-        $ajax->addContent('physical-addresses-container', $this->_renderPartial('administration.addresses._partials.panels.physical-address', ['addresses' => $parentEntity->getPhysicalAddresses(), 'parentId' => $parentEntity->id]), 'attachCommonHandlers');
+        $ajax = $this->_refreshAddressList($parentEntity, $type);
         $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
         $ajax->addCallback('closeDialog');
         return Response::json($ajax->toArray());
@@ -221,7 +220,7 @@ class AddressController extends Controller {
      * @param $request Request
      * @return Response
      */
-    public function confirm($id, Request $request) {
+    public function confirm($type, $id, Request $request) {
 		// Ensure this is received as an ajax request only
 		if (!$request->ajax()) {
 			// TODO: Proper error handling here
@@ -229,19 +228,19 @@ class AddressController extends Controller {
 		}
         
 		// AJAX response
-        $dialog = $this->_renderPartial('administration.addresses._partials.dialogs.confirm-delete', ['id' => $id]);
+        $dialog = $this->_renderPartial('administration.addresses._partials.dialogs.confirm-delete', ['id' => $id, 'type' => $type]);
 		$ajax = new \Tranquility\View\AjaxResponse();
 		$ajax->addContent('modal-content', $dialog, 'displayDialog');
 		return Response::json($ajax->toArray());
 	}
     
-    public function delete($id, Request $request) {
+    public function delete($type, $id, Request $request) {
         // Save details of address
 		$params = $request->all();
         
         // Retrieve address record
         $ajax = new \Tranquility\View\AjaxResponse();
-        $response = $this->_service->find($id);
+        $response = $this->_getService($type)->find($id);
         if ($response->containsErrors()) {
             $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
             return Response::json($ajax->toArray());
@@ -257,18 +256,49 @@ class AddressController extends Controller {
         
 		// Delete address record
         $ajax = new \Tranquility\View\AjaxResponse();
-        $response = $this->_service->delete($id, $params);
+        $response = $this->_getService($type)->delete($id, $params);
         if ($response->containsErrors()) {
 			// Errors encountered - redisplay form with error messages
             $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
 			$ajax->addMessages($response->getMessages());
             return Response::json($ajax->toArray());
 		}
-
+        
         // Render address panel for person
-        $ajax->addContent('physical-addresses-container', $this->_renderPartial('administration.addresses._partials.panels.physical-address', ['addresses' => $parentEntity->getPhysicalAddresses(), 'parentId' => $parentEntity->id]), 'attachCommonHandlers');
+        $address = $response->getFirstContentItem();
+        $ajax = $this->_refreshAddressList($parentEntity, $type);
         $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
         $ajax->addCallback('closeDialog');
         return Response::json($ajax->toArray());
+    }
+    
+    private function _getService($type) {
+        switch ($type) {
+            case EnumAddressType::Phone:
+                return $this->_phoneAddressService;
+            case EnumAddressType::Electronic:
+                return $this->_electronicAddressService;
+            case EnumAddressType::Physical:
+                return $this->_physicalAddressService;
+            default:
+                throw new Exception('Invalid address type supplied: '.$type);
+        }   
+    }
+    
+    private function _refreshAddressList($parent, $type) {
+        if (is_int($parent)) {
+            // Retrieve parent entity details
+            $response = $this->_getService($type)->findParentEntity($parent);
+            if ($response->containsErrors()) {
+                $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+                return $ajax;
+            }
+            $parent = $response->getFirstContentItem();
+        }
+        
+        // Render refreshed address list panel
+        $ajax = new \Tranquility\View\AjaxResponse();
+        $ajax->addContent($type.'-addresses-container', $this->_renderPartial('administration.addresses._partials.panels.'.$type.'-address', ['addresses' => $parent->getAddresses($type), 'parentId' => $parent->id]), 'attachCommonHandlers');
+        return $ajax;
     }
 }

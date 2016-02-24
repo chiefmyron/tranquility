@@ -5,7 +5,11 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Tranquility\Enums\System\EntityType                                     as EnumEntityType;
+use Tranquility\Enums\BusinessObjects\Address\AddressType                   as EnumAddressType;
 use Tranquility\Data\BusinessObjects\AddressPhysicalBusinessObject          as AddressPhysical;
+use Tranquility\Data\BusinessObjects\AddressPhoneBusinessObject             as AddressPhone;
+use Tranquility\Data\BusinessObjects\AddressElectronicBusinessObject        as AddressElectronic;
 use Tranquility\Data\BusinessObjects\Extensions\AuditTrail                  as AuditTrail;
 use Tranquility\Exceptions\BusinessObjectException                          as BusinessObjectException;
 
@@ -20,6 +24,8 @@ abstract class EntityBusinessObject {
     
     // Related entities
     protected $physicalAddresses;
+    protected $phoneAddresses;
+    protected $electronicAddresses;
     
     /**
      * List of properties that can be accessed via getters and setters
@@ -68,6 +74,7 @@ abstract class EntityBusinessObject {
         
         // Initialise collections for related entities
         $this->physicalAddresses = new ArrayCollection();
+        $this->phoneAddresses = new ArrayCollection();
     }
     
     /**
@@ -146,9 +153,11 @@ abstract class EntityBusinessObject {
         // Define inheritence
         $builder->setJoinedTableInheritance();
         $builder->setDiscriminatorColumn('type');
-        $builder->addDiscriminatorMapClass('person', PersonBusinessObject::class);
-        $builder->addDiscriminatorMapClass('user', UserBusinessObject::class);
-        $builder->addDiscriminatorMapClass('addressPhysical', AddressPhysicalBusinessObject::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::Person, PersonBusinessObject::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::User, UserBusinessObject::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhysical, AddressPhysicalBusinessObject::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhone, AddressPhoneBusinessObject::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::AddressElectronic, AddressElectronicBusinessObject::class);
         
         // Define fields
         $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
@@ -158,6 +167,8 @@ abstract class EntityBusinessObject {
         // Add relationships
         $builder->createOneToOne('auditTrail', AuditTrail::class)->addJoinColumn('transactionId','transactionId')->build();
         $builder->createOneToMany('physicalAddresses', AddressPhysical::class)->mappedBy('parentEntity')->build();
+        $builder->createOneToMany('phoneAddresses', AddressPhone::class)->mappedBy('parentEntity')->build();
+        $builder->createOneToMany('electronicAddresses', AddressElectronic::class)->mappedBy('parentEntity')->build();
     }
     
     /**

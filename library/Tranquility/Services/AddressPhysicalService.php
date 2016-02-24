@@ -7,7 +7,7 @@ use \Tranquility\Enums\System\MessageLevel   as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode as EnumHttpStatusCode;
 use \Tranquility\Exceptions\ServiceException as Exception;
 
-class AddressService extends \Tranquility\Services\Service {
+class AddressPhysicalService extends \Tranquility\Services\Service {
     /**
      * Specify business object name
      *
@@ -17,17 +17,6 @@ class AddressService extends \Tranquility\Services\Service {
         return 'Tranquility\Data\BusinessObjects\AddressPhysicalBusinessObject';
     }
     
-    /**
-     * Use the address service to find the parent entity for an address
-     *
-     * @param int $parentId  ID of the parent entity
-     * @return \Tranquility\Services\ServiceResponse
-     */
-    public function findParentEntity($parentId) {
-        $entity = $this->_entityManager->find('\Tranquility\Data\BusinessObjects\EntityBusinessObject', $parentId);
-		return $this->_findResponse(array($entity));
-    }
-	
 	/**
 	 * Create a new Address record
 	 *
@@ -37,7 +26,8 @@ class AddressService extends \Tranquility\Services\Service {
 	public function create(array $data) {
         // Set up response object
 		$response = new ServiceResponse();
-				
+        $addressType = Utility::extractValue($data, 'type', '');
+        
 		// Perform input validation
 		$validation = $this->validateInputFields($data, true);
 		if ($validation !== true) {
@@ -48,13 +38,11 @@ class AddressService extends \Tranquility\Services\Service {
 		}
         
         // Perform geolocation for physical addresses
-        if ($data['type'] == EnumEntityType::AddressPhysical) {
-            $classname = $this->businessObject();
-            $address = new $classname($data);
-            $coordinates = $this->_callGeolocationService($address);
-            $data['latitude'] = $coordinates['latitude'];
-            $data['longitude'] = $coordinates['longitude'];
-        }
+        $classname = $this->businessObject();
+        $address = new $classname($data);
+        $coordinates = $this->_callGeolocationService($address);
+        $data['latitude'] = $coordinates['latitude'];
+        $data['longitude'] = $coordinates['longitude'];
 		
 		// Attempt to create the entity
         $entity = $this->_getRepository()->create($data);
@@ -79,6 +67,7 @@ class AddressService extends \Tranquility\Services\Service {
 	public function update($id, array $data) {
         // Set up response object
 		$response = new ServiceResponse();
+        $addressType = Utility::extractValue($data, 'type', '');
 				
 		// Perform input validation
 		$validation = $this->validateInputFields($data, false);
@@ -90,13 +79,11 @@ class AddressService extends \Tranquility\Services\Service {
 		}
         
         // Perform geolocation for physical addresses
-        if ($data['type'] == EnumEntityType::AddressPhysical) {
-            $classname = $this->businessObject();
-            $address = new $classname($data);
-            $coordinates = $this->_callGeolocationService($address);
-            $data['latitude'] = $coordinates['latitude'];
-            $data['longitude'] = $coordinates['longitude'];
-        }
+        $classname = $this->businessObject();
+        $address = new $classname($data);
+        $coordinates = $this->_callGeolocationService($address);
+        $data['latitude'] = $coordinates['latitude'];
+        $data['longitude'] = $coordinates['longitude'];
 		
 		// Attempt to create the entity
         $entity = $this->_getRepository()->update($id, $data);
@@ -129,33 +116,6 @@ class AddressService extends \Tranquility\Services\Service {
 		return $response;
     }
     
-	/**
-	 * Validate data for input fields - this includes checking mandatory fields and audit
-	 * trail fields
-	 * 
-	 * @param array   $inputs    Array of data field values
-	 * @param boolean $newRecord True if creating validating fields for a new record
-	 * @return mixed  True if valid input, array of messages if invalid input
-	 */
-	public function validateInputFields($inputs, $newRecord = false) {
-		$messages = array();
-		
-		// Perform mandatory field and audit trail field validation
-		$result = parent::validateInputFields($inputs, $newRecord);
-		if ($result !== true) {
-			$messages = $result;
-		}
-		
-		// TODO: Validate title code against reference data table
-		
-		// If there are one or more messages, then there are errors - return messages
-		if (count($messages) > 0) {
-			return $messages;
-		}
-		
-		return true;
-	}
-    
     /**
      * Performs geolocation of an address string. Content property of response
      * object will contain an array of geolocation data.
@@ -163,10 +123,6 @@ class AddressService extends \Tranquility\Services\Service {
      * @param string $address Address to perform geolocation on
      * @return \Tranquility_ServiceResponse
      */
-    public function performGeolocation($address) {
-        
-    }
-    
     protected function _callGeolocationService($address) {
         $classname = $this->businessObject();
         if (!($address instanceof $classname)) {

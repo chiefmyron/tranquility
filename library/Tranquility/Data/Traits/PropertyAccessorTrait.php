@@ -132,4 +132,14 @@ trait PropertyAccessorTrait {
     public static function getHistoricalEntityClass() {
         return self::$_historicalEntityClass;
     }
+    
+    /**
+     * Returns the entity type of the business object
+     *
+     * @static
+     * @return string
+     */
+    public static function getEntityType() {
+        return self::$_entityType;
+    }
 }
