@@ -30,19 +30,34 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
 	Route::get('/', 'Administration\HomeController@index');
 	
 	// People controller
-	Route::get('/people', 'Administration\PeopleController@index');
+	Route::get ('/people', 'Administration\PeopleController@index');
 	Route::post('/people', 'Administration\PeopleController@store');
-	Route::get('/people/create', 'Administration\PeopleController@create');
+	Route::get ('/people/create', 'Administration\PeopleController@create');
 	Route::post('/people/delete', 'Administration\PeopleController@delete');
-    Route::get('/people/confirm', 'Administration\PeopleController@confirmAction');
+    Route::get ('/people/confirm', 'Administration\PeopleController@confirmAction');
     Route::post('/people/confirm', 'Administration\PeopleController@confirmAction');
-	Route::get('/people/{id}', 'Administration\PeopleController@show');
-	Route::get('/people/{id}/update', 'Administration\PeopleController@update');
+	Route::get ('/people/{id}', 'Administration\PeopleController@show');
+	Route::get ('/people/{id}/update', 'Administration\PeopleController@update');
+    Route::get ('/people/{id}/user', 'Administration\PeopleController@showUser');
 	
 	// Users controller
-	Route::get('/users', 'Administration\UsersController@index');
-	Route::post('/users', 'Administration\UsersController@store');
+	Route::get('/users', 'Administration\UsersController@listPeopleUsers');
+	Route::post('/users', 'Administration\UsersController@storePersonUser');
 	Route::get('/users/create', 'Administration\UsersController@create');
-	Route::get('/users/{id}', 'Administration\UsersController@show');
-	Route::get('/users/{id}/update', 'Administration\UsersController@update');
+	Route::get('/users/{id}', 'Administration\UsersController@showPersonUser');
+	Route::get('/users/{id}/update', 'Administration\UsersController@updatePersonUser');
+    Route::get('/users/{id}/update/password', 'Administration\UsersController@changePassword');
+    Route::post('/users/{id}/update/password', 'Administration\UsersController@saveNewPassword');
+    
+    // Address controller
+    
+    Route::post('/address',                      'Administration\AddressController@store');
+    Route::get ('/address/create/{type}',        'Administration\AddressController@create');
+    Route::get ('/address/{type}/{id}/update',   'Administration\AddressController@update');
+    Route::get ('/address/{type}/{id}/confirm',  'Administration\AddressController@confirm');
+    Route::post('/address/{type}/{id}/delete',   'Administration\AddressController@delete');
+    Route::get ('/address/{id}/map',             'Administration\AddressController@displayMap');
+    
+    // Settings controller
+    Route::get('/settings', 'Administration\SettingsController@index');
 });

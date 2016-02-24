@@ -1,9 +1,9 @@
 /vendor
 /node_modules
 /nbproject
+/.vscode
+/.vagrant
 .env
 auth.json
+Homestead.yaml
 typings/jquery/jquery.d.ts
-nbproject/private/private.xml
-nbproject/private/private.xml
-/nbproject/private/private.xml

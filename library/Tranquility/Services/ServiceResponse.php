@@ -9,10 +9,10 @@
  */
 
 use \Tranquility\Utility                     as Utility;
-use \Tranquility\Services\ServiceException   as ServiceException;
 use \Tranquility\Enums\System\EntityType     as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel   as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode as EnumHttpStatusCode;
+use \Tranquility\Exceptions\ServiceException as ServiceException;
 
 class ServiceResponse {
 	/**
@@ -123,7 +123,11 @@ class ServiceResponse {
 	 * @return mixed
 	 */
 	public function getFirstContentItem() {
-		return $this->_content[0];
+        if (isset($this->_content[0])) {
+		  return $this->_content[0];
+        }
+        
+        return null;
 	}
 	
 	/**

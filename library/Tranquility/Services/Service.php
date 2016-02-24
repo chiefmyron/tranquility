@@ -4,19 +4,19 @@ use Doctrine\ORM\EntityManagerInterface;
 use Illuminate\Container\Container              as Container;
 
 use \Tranquility\Utility                        as Utility;
-use \Tranquility\Services\ServiceException      as ServiceException;
+use \Tranquility\Exceptions\ServiceException    as ServiceException;
 use \Tranquility\Enums\System\MessageLevel      as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode    as EnumHttpStatusCode;
 use \Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
 
 abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterface {
     // Doctrine entity manager
-    private $_entityManager;
+    protected $_entityManager;
 	
 	/**
 	 * Constructor
 	 *
-	 * @param Container $container Laravel IoC container
+	 * @param \Doctrine\ORM\EntityManagerInterface $em   Doctrine entity manager
 	 */
 	public function __construct(EntityManagerInterface $em) {
         $this->_entityManager = $em;
@@ -42,7 +42,37 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		$messages = array();
 		
 		// Validate that mandatory inputs have been provided
-		$mandatoryFieldNames = $this->_getMandatoryFields($newRecord);
+		$messages = $this->validateMandatoryFields($inputs, $newRecord);
+		
+		// Validate audit trail fields
+        $messages = array_merge($messages, $this->validateAuditTrailFields($inputs));
+
+		// If there are one or more messages, then there are errors - return messages
+		if (count($messages) > 0) {
+            // Add top level error message
+            $messages[] = array(
+				'code' => 10005,
+				'text' => 'message_10005_form_validation_errors',
+				'level' => EnumMessageLevel::Error,
+				'fieldId' => null
+            );
+			return $messages;
+		}
+		
+		return true;
+	}
+    
+    /**
+     * Validate that mandatory information has been supplied
+     * 
+     * @param array   $inputs     Array of data field values
+     * @param boolean $newRecord  Flag indicating whether we are validating for a new or existing record
+     * @return array              Error messages from validation. Empty if no errors.
+     */
+    public function validateMandatoryFields($inputs, $newRecord = false) {
+        $messages = array();
+        
+        $mandatoryFieldNames = $this->_getMandatoryFields($newRecord);
 		foreach ($mandatoryFieldNames as $field) {
 			if (!isset($inputs[$field]) || $inputs[$field] == null || (!is_object($inputs[$field]) && trim($inputs[$field]) == '')) {
 				// Mandatory field is missing
@@ -54,10 +84,21 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 				);
 			}
 		}
-		
-		// Check that audit trail field 'updateBy' is a valid user
+        return $messages;
+    }
+    
+    /**
+	 * Validate data for audit trail fields only 
+	 * 
+	 * @param array   $inputs    Array of data field values
+	 * @return array  Error messages from validation. Empty array if no errors.
+	 */
+    public function validateAuditTrailFields($inputs) {
+        $messages = array();
+        
+        // Check that audit trail field 'updateBy' is a valid user
 		$updateBy = Utility::extractValue($inputs, 'updateBy', 0);
-        if (!($updateBy instanceof \Tranquility\Data\BusinessObjects\User)) {
+        if (!($updateBy instanceof \Tranquility\Data\BusinessObjects\UserBusinessObject)) {
             $messages[] = array(
 				'code' => 10012,
 				'text' => 'message_10012_invalid_user_assigned_to_audit_trail',
@@ -85,21 +126,9 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 				'fieldId' => 'transactionSource'
 			);
 		}
-
-		// If there are one or more messages, then there are errors - return messages
-		if (count($messages) > 0) {
-            // Add top level error message
-            $messages[] = array(
-				'code' => 10005,
-				'text' => 'message_10005_form_validation_errors',
-				'level' => EnumMessageLevel::Error,
-				'fieldId' => null
-            );
-			return $messages;
-		}
-		
-		return true;
-	}
+        
+        return $messages;
+    }
 	
 	/**
 	 * Retrieve all entities of this type
@@ -167,6 +196,17 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		$entity = $this->_getRepository()->findBy($searchOptions);
 		return $this->_findResponse($entity);
 	}
+    
+    /**
+     * Use the address service to find the parent entity for an address
+     *
+     * @param int $parentId  ID of the parent entity
+     * @return \Tranquility\Services\ServiceResponse
+     */
+    public function findParentEntity($parentId) {
+        $entity = $this->_entityManager->find('\Tranquility\Data\BusinessObjects\EntityBusinessObject', $parentId);
+		return $this->_findResponse(array($entity));
+    }
 	
     /**
      * Create a new record for a business object

@@ -19,6 +19,7 @@ $.ajaxSetup({
 // Initial page setup
 $(document).ready(function() {
   attachCommonHandlers();
+  attachGlobalSearchHandlers();
 });
 
 // Every time a modal is shown, if it has an autofocus element, focus on it.
@@ -26,16 +27,25 @@ $('.modal').on('shown.bs.modal', function() {
   $(this).find('[autofocus]').focus();
 });
 
-// Attach event handlers to toolbar links
+/**
+ * Attach and/or refresh event handlers to common administration page elements 
+ * (e.g. toolbar, AJAX enalbed links, checkboxes in data tables).
+ */
 function attachCommonHandlers() {
     // Clear any existing handlers
     $("#toolbar-container li.ajax a").off('click.toolbarEvent');
+    $("a.ajax").off('click.ajaxLinkEvent');
     $("table th .selectAll").off('click.selectAllCheckbox');
     $(".page-header.navbar .search-form button").off('click.globalSearch');
     
     // Handle click event for enabled toolbar links
     $("#toolbar-container li.ajax a").on('click.toolbarEvent', function (e) {
-        toolbarItemEventHandler(this, e)
+        xhrItemEventHandler(this, e);
+    });
+    
+    // Handle click event for links throughout the UI
+    $("a.ajax").on('click.ajaxLinkEvent', function(e) {
+        xhrItemEventHandler(this, e);    
     });
     
     // Handle click event for a 'select all' checkbox in a table
@@ -49,7 +59,12 @@ function attachCommonHandlers() {
     $('table td input:checkbox.record-select').change(function () {
         changeToolbarLinkStatus();
     });
-    
+}
+
+/**
+ * Attach event handlers to search controls in administration page header
+ */
+function attachGlobalSearchHandlers() {
     // Handle click event for global search button in page header
     $('.page-header.navbar .search-form button').on('click.globalSearch', function(e) {
         $('.page-header.navbar form.search-form').addClass("open");
@@ -65,7 +80,10 @@ function attachCommonHandlers() {
     });
 }
 
-function toolbarItemEventHandler(context, e) {
+/**
+ * Event handler for AJAX enabled links
+ */
+function xhrItemEventHandler(context, e) {
     // Prevent link navigation
     e.preventDefault();
     
@@ -83,6 +101,55 @@ function toolbarItemEventHandler(context, e) {
     processAjaxResponse(response);   
 }
 
+/**
+ * Wrapper to handle AJAX calls to backend
+ */
+function ajaxCall( url, type, data, async, callback, datatype ) {
+    // Ensure call type is in uppercase
+    type = type.toUpperCase();
+    datatype = datatype.toLowerCase();
+    
+    // Perform AJAX call
+    var result = $.ajax({
+        url: url,
+        type: type,
+        data: data,
+        async: async,
+        dataType: datatype,
+        success: callback,
+        error: _ajaxErrorHandler
+    }); 
+    
+    // Determine what to do based on HTTP response code
+    switch (result.status) {
+        // Status OK
+        case 200:
+            // Parse responseText for a JSON object
+            var response = {};
+            try {
+                response = jQuery.parseJSON(result.responseText);
+            } catch (ex) {
+                // Setup response as an exception
+                response = {result: "exception", content: result.content};
+            }
+            return response;
+        // Unauthorised request
+        case 401:
+            return ajaxCall("/administration/auth", "GET", {}, false, null, "json");
+        // Server error
+        case 500:
+        default:
+            // Display error in modal dialog
+            $("#modal-dialog-container .modal-content").html(result.content);
+            $("#modal-dialog-container").modal('show');
+            return;
+    }
+}
+
+/**
+ * Callback function to process responses from a successful AJAX call to be backend.
+ * Expects response to be a serialised Tranquility\View\AjaxResponse object
+ */
 function processAjaxResponse(response) {
     // Update HTML areas with new content
     $.each(response.content, function(i, item) {
@@ -96,9 +163,35 @@ function processAjaxResponse(response) {
             executeFunctionByName(item.callback, window, item.callbackArgs);
         }
     });
+    
+    // Display inline error messages
+    $.each(response.messages, function(i, message) {
+        $("#" + message.fieldId).after('<span class="help-inline" style="display: none;">' + message.text + '</span>'); 
+        if (message.fieldId != null) {
+            console.log('[' + message.level + '] ' + message.text + '(Field ID: ' + message.fieldId + ')');
+        }
+    });
+    $("span.help-inline").slideDown();
 }
 
-// Enable toolbar links that interact with multiple selected items only if at least one item is selected
+/**
+ * Handles error scenarios from an AJAX call
+ */
+function _ajaxErrorHandler(xhr, ajaxOptions, errorDetails) {
+    // If the error is a HTTP 403 error, display a timeout dialog
+    if (xhr.status == 403) {
+        // Display timeout dialog
+        ajaxCall('/backoffice/auth/loginAjax', "get", {}, false, displayDialog, "json");
+    } else {
+        // Display generic error dialog
+        xhr.content = xhr.responseText;
+        displayDialog(xhr)
+    }
+}
+
+/**
+ * Enable toolbar links that interact with multiple selected items only if at least one item is selected
+ */
 function changeToolbarLinkStatus() {
     if ($('table td input.record-select').is(':checked')) {
         $("#toolbar-container li.multi-select").removeClass("disabled");
@@ -114,7 +207,9 @@ function changeToolbarLinkStatus() {
  * @link http://stackoverflow.com/questions/359788/how-to-execute-a-javascript-function-when-i-have-its-name-as-a-string
  */
 function executeFunctionByName(functionName, context) {
-    var args = [].slice.call(arguments).splice(2);
+    //var args = [].slice.call(arguments).splice(2);
+    
+    var args = arguments[2];
     var namespaces = functionName.split(".");
     var func = namespaces.pop();
     for(var i = 0; i < namespaces.length; i++) {
@@ -126,19 +221,45 @@ function executeFunctionByName(functionName, context) {
 /** 
  * Force display of the modal dialog
  */
-function displayDialog(modalContent) {
+function displayDialog() {
+    var modalContent = arguments[0];
+    var size = arguments[1];
+    
     // If modal content has been supplied, inject it now
     if ((typeof modalContent !== 'undefined') && (modalContent !== null) && (modalContent.length > 0))  {
 		$("#modal-dialog-container").html(modalContent);
 	}
     
     // Display dialog and attach default submit event handler
+    $("#modal-dialog-container form.ajax-submit").off("submit.dialogSubmit")
     $("#modal-dialog-container form.ajax-submit").on("submit.dialogSubmit", function (e) {
         defaultDialogSubmitEventHandler(this, e);
     });
+    
+    // Add class to change size of modal dialog
+    $("#modal-dialog-container .modal-dialog").removeClass("modal-lg modal-sm");
+    switch(size) {
+        case "large":
+            $("#modal-dialog-container .modal-dialog").addClass("modal-lg");
+            break;
+        case "small":
+            $("#modal-dialog-container .modal-dialog").addClass("modal-sm");
+            break;
+    }
     $("#modal-dialog-container").modal('show');
 }
 
+/**
+ * Force close the modal dialog
+ */
+function closeDialog() {
+    $("#modal-dialog-container").modal('hide');
+    return false;
+}
+
+/**
+ * Event handler for default dialog form submission action
+ */
 function defaultDialogSubmitEventHandler(context, e) {
     // Prevent default form behaviour
     e.preventDefault();
@@ -153,17 +274,15 @@ function defaultDialogSubmitEventHandler(context, e) {
 }
 
 /**
- * Force close the modal dialog
+ * Helper function to hide an element with the specified ID
  */
-function closeDialog() {
-    $("#modal-dialog-container").modal('hide');
-    return false;
-}
-
 function hideElement(target) {
     $("#" + target).collapse('hide');
 }
 
+/**
+ * Helper function to show an element with the specified ID
+ */
 function showElement(target) {
     $("#" + target).collapse('show');
 }
@@ -245,157 +364,18 @@ function displayMessages(messages, target) {
     $(inline_container + "span.help-inline").slideDown();
 }
 
-
-
-
-
-
 /**
- * Used to display dialogs (e.g. options dialogs, etc...)
- * 
- * serviceResponse: see library/Tranquility/ServiceResponse.php for structure
- * type: Type of dialog to display. Valid types are "wide", "dialog".   
+ * Attach datepicker control to input fields
  */
-//function displayDialog(serviceResponse) {
-    // If type is not defined, set default to "wide"
-    /*if (type === null || type === undefined) {
-        type = "wide";
-    }*/
-    /*
-    // Display dialog contents
-    if (serviceResponse.content == undefined) {
-        dialogContent = "";
-    } else if (serviceResponse.content.dialog == undefined) {
-        dialogContent = serviceResponse.content;
-    } else {
-        dialogContent = serviceResponse.content.dialog;
-    }
-    if (dialogContent != "" && dialogContent != null) {
-        //$('#modalDialog').removeClass('wide dialog').addClass('wide');
-        $('#modalDialog .modal-content').html(dialogContent);
-        $('#modalDialog').modal();
-    }
-
-    // If there are any messages in the service response, display them now
-    if (serviceResponse.messages != undefined && serviceResponse.messages != null && serviceResponse.messages.length > 0) {
-        displayMessages(serviceResponse.messageTarget, serviceResponse.messages);
-    }*/
-//}
-
-
-
-
-
-function getSelectedCheckboxValues( element_name ) {
-    var value_array = [];
-    $('input:checkbox[name=' + element_name + ']:checked').each(function (i) {
-        value_array[i] = $(this).val();
-    });
-
-    return value_array;
-}
-
-// Wrapper for JQuery $.ajax() call
-function ajaxCall( url, type, data, async, callback, datatype ) {
-    // Ensure call type is in uppercase
-    type = type.toUpperCase();
-    datatype = datatype.toLowerCase();
-    
-    // Perform AJAX call
-    var result = $.ajax({
-        url: url,
-        type: type,
-        data: data,
-        async: async,
-        dataType: datatype,
-        success: callback,
-        error: _ajaxErrorHandler
-    }); 
-    
-    // Determine what to do based on HTTP response code
-    switch (result.status) {
-        // Status OK
-        case 200:
-            // Parse responseText for a JSON object
-            var response = {};
-            try {
-                response = jQuery.parseJSON(result.responseText);
-            } catch (ex) {
-                // Setup response as an exception
-                response = {result: "exception", content: result.content};
-            }
-            return response;
-        // Unauthorised request
-        case 401:
-            return ajaxCall("/administration/auth", "GET", {}, false, null, "json");
-        // Server error
-        case 500:
-        default:
-            // Display error in modal dialog
-            $("#modal-dialog-container .modal-content").html(result.content);
-            $("#modal-dialog-container").modal('show');
-            return;
-    }
-}
-
-function _ajaxErrorHandler(xhr, ajaxOptions, errorDetails) {
-    // If the error is a HTTP 403 error, display a timeout dialog
-    if (xhr.status == 403) {
-        // Display timeout dialog
-        ajaxCall('/backoffice/auth/loginAjax', "get", {}, false, displayDialog, "json");
-    } else {
-        // Display generic error dialog
-        xhr.content = xhr.responseText;
-        displayDialog(xhr)
-    }
-}
-
 function attachDatePicker() {
     if ($(".date-input").length > 0) {
         $(".date-input").datepicker();
     }
 }
 
-function attachTabHandler() {
-    $('ul.nav-tabs a').click(function (e) {
-        e.preventDefault();
-        $(this).tab('show');
-    });
-}
-
-
-
-// Retrieves form inputs and returns as an array
-function _extractFormValues(formId) {
-    var inputs = {};
-    $("form#" + formId + " :input").each(function() {
-        var inputType = $(this).attr('type');
-        
-        switch (inputType) {
-            case 'checkbox':
-                if ($(this).is(':checked')) {
-                    inputs[this.name] = 1;
-                } else {
-                    inputs[this.name] = 0;
-                }
-                break;
-            case 'radio':
-                // Escape square brackets
-                var elementName = this.name;
-                elementName = elementName.replace("[", "\\[");
-                elementName = elementName.replace("]", "\\]");
-                inputs[this.name] = $('input:radio[name=' + elementName + ']:checked').val();
-                break;
-            default:
-                inputs[this.name] = $(this).val();
-                break;
-        }
-        
-    });
-    
-    return inputs;
-}
-
+/**
+ * Retrieve an array of all selected checkboxes with the specified name
+ */
 function _getSelectedListItems(inputName) {
     if (inputName == "" || inputName == undefined) {
         inputName = "id";

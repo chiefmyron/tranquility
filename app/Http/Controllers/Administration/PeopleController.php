@@ -7,7 +7,8 @@ use Illuminate\Http\Request as Request;
 use App\Http\Controllers\Controller;
 
 use Carbon\Carbon;
-use Tranquility\Services\Person as PersonService;
+use Tranquility\View\AjaxResponse as AjaxResponse;
+use Tranquility\Services\PersonService as PersonService;
 use Tranquility\Enums\System\EntityType as EnumEntityType;
 use Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
 
@@ -206,7 +207,7 @@ class PeopleController extends Controller {
         // Set up audit trail details
         $params = array();
         $params['updateBy'] = Auth::user();
-        $params['updateReason'] = 'who knows?';
+        $params['updateReason'] = 'backend user delete';
         $params['updateDateTime'] = Carbon::now();
         $params['transactionSource'] = EnumTransactionSource::UIBackend;
         if (count($inputIds) > 1) {
@@ -240,6 +241,33 @@ class PeopleController extends Controller {
             // No errors - return to list of people
             return redirect()->action('Administration\PeopleController@index');
         }
-		
+	}
+    
+    public function showUser($id, Request $request) {
+		// Ensure this is received as an ajax request only
+		if (!$request->ajax()) {
+			// TODO: Proper error handling here
+			throw new Exception('Access only via AJAX request!');
+		}
+        
+        // Get inputs from request and retrieve person record
+        $ajax = new AjaxResponse();
+        $response = $this->_person->find($id);
+        if ($response->containsErrors()) {
+            $ajax->addMessages($result->getMessages());
+            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            return $ajax;
+        }
+        
+        // Make sure person has a user account
+        $person = $response->getFirstContentItem();
+        if (!$person->getUserAccount()) {
+            throw new Exception('Person must have a user account');
+        }
+        
+        // Render dialog
+        $dialog = $this->_renderPartial('administration.users._partials.dialogs.view-details', $person->getUserAccount());
+        $ajax->addContent('modal-content', $dialog, 'displayDialog');
+		return Response::json($ajax->toArray());
 	}
 }

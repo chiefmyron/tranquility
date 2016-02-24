@@ -1,8 +1,8 @@
 <?php namespace Tranquility\Data\Traits;
 
-use Tranquility\Data\BusinessObjects\Entity as Entity;
+use Tranquility\Data\BusinessObjects\EntityBusinessObject as Entity;
 use Tranquility\Data\BusinessObjects\Extensions\AuditTrail as AuditTrail;
-use Tranquility\Data\Exceptions\BusinessObjectException as BusinessObjectException;
+use Tranquility\Exceptions\BusinessObjectException as BusinessObjectException;
 
 trait PropertyAccessorTrait {
     /**
@@ -10,7 +10,7 @@ trait PropertyAccessorTrait {
      * 
      * @param string $name  Property name
      * @param mixed $value  Property value
-     * @throws Tranquility\Data\Exceptions\BusinessObjectException 
+     * @throws Tranquility\Exceptions\BusinessObjectException 
      * @return void
      */
     public function __set($name, $value) {
@@ -30,7 +30,7 @@ trait PropertyAccessorTrait {
      * Retrieves the value for an object property
      * 
      * @param string $name  Property name
-     * @throws Tranquility\Data\Exceptions\BusinessObjectException
+     * @throws Tranquility\Exceptions\BusinessObjectException
      * @return mixed
      */
     public function __get($name) {
@@ -38,7 +38,7 @@ trait PropertyAccessorTrait {
         if (method_exists($this, $methodName)) {
             // Use custom function to retrieve value
             return $this->{$methodName}();
-        } elseif (in_array($name, self::getEntityFields())) {
+        } elseif (in_array($name, self::getEntityFields()) && !in_array($name, $this->_getHiddenFields())) {
             // Retrieve value directly
             return $this->$name;
         } else {
@@ -80,7 +80,7 @@ trait PropertyAccessorTrait {
     public function toArray() {
         $result = array();
         foreach (self::getEntityFields() as $fieldName) {
-            if (!in_array($fieldName, AuditTrail::getFields())) {
+            if (!in_array($fieldName, AuditTrail::getFields()) && !in_array($fieldName, $this->_getHiddenFields())) {
                 $result[$fieldName] = $this->$fieldName;
             }
         }
@@ -117,6 +117,13 @@ trait PropertyAccessorTrait {
         return $fields;
     }
     
+    protected function _getHiddenFields() {
+        if (!isset(self::$_hiddenFields)) {
+            return array();
+        }
+        return self::$_hiddenFields;
+    }
+    
     /**
      * Returns the name of the class used to model the historical records for this business object
      *
@@ -124,5 +131,15 @@ trait PropertyAccessorTrait {
      */
     public static function getHistoricalEntityClass() {
         return self::$_historicalEntityClass;
+    }
+    
+    /**
+     * Returns the entity type of the business object
+     *
+     * @static
+     * @return string
+     */
+    public static function getEntityType() {
+        return self::$_entityType;
     }
 }

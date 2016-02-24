@@ -1,6 +1,6 @@
 <?php namespace Tranquility\View;
 
-use \Tranquility\View\ViewException           as ViewException;
+use \Tranquility\Exceptions\ViewException     as ViewException;
 use \Tranquility\Enums\System\MessageLevel    as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode  as EnumHttpStatusCode;
 

@@ -11,8 +11,7 @@ class EventServiceProvider extends ServiceProvider {
 	 * @var array
 	 */
 	protected $listen = array(
-		'auth.login' => array('App\Listeners\LinkUserToSession'),
-		'auth.logout' => array('App\Listeners\UnlinkUserFromSession'),
+        'Illuminate\Auth\Events\Login' => array('App\Listeners\SetUserTimezoneAndLocale'),
 	);
 
 	/**

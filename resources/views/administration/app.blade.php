@@ -76,10 +76,9 @@
                                 
                                 <!-- Breadcrumbs -->
                                 @yield('breadcrumbs')
-                                <hr />
                                 
                                 <!-- Process messages -->
-                                @include('administration._partials.errors', ['messages' => Session::get('messages')])
+                                @include('administration._partials.errors', ['messages' => Session::pull('messages')])
                                 
                                 <div id="main-content-container">
                                     @yield('content')

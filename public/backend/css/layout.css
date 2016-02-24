@@ -56,6 +56,10 @@ h6 {
         margin-left: 235px;
         padding: 0px 0 0 20px;
     }
+    
+    .main-content {
+        border: 1px solid;
+    }
 }
 
 @media (max-width:991px) {
@@ -304,6 +308,7 @@ h6 {
         float: left;
         position: relative;
         margin-right: -100%;
+        border: 1px solid;
     }
     
     .page-sidebar,
@@ -440,6 +445,10 @@ input[type="color"],
           border-radius: 0px !important;
 }
 
+.radio {
+    margin-top: 0px;
+}
+
 /******************************************************************************
  * Buttons                                                                    *
  ******************************************************************************/
@@ -495,6 +504,54 @@ input[type="color"],
           border-bottom-right-radius: 0;
 }
 
+/******************************************************************************
+ * Tabs                                                                       *
+ ******************************************************************************/
+.nav-tabs li a {
+    border-radius: 0px;
+}
+
+.nav-tabs>li.active>a, 
+.nav-tabs>li.active>a:focus, 
+.nav-tabs>li.active>a:hover {
+    border-top: 3px solid;
+    border-left: 1px solid;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+    margin-top: -2px;
+}
+
+.tab-content {
+    padding: 15px;
+    border-left: 1px solid;
+}
+
+/******************************************************************************
+ * Discreet data item panels                                                  *
+ ******************************************************************************/
+.data-item {
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+
+.data-item .data-header {
+    border-bottom: 1px solid;
+    padding-bottom: 2px;
+    margin-bottom: 10px;
+}
+
+.data-item .data-header h4 {
+    display: inline;
+}
+
+.data-item .data-header span.action {
+    float: right;
+    text-transform: lowercase;
+}
 
 /******************************************************************************
  * Modal dialog                                                               *
@@ -511,14 +568,42 @@ input[type="color"],
      padding-bottom: 25px;
  }
  
+ .modal-body.full-bleed {
+     padding: 0px;
+     margin-bottom: -5px;
+ }
+ 
  .modal-footer {
      padding-top: 10px;
      padding-bottom: 10px;
  }
  
  /******************************************************************************
- * Modal dialog                                                               *
- ******************************************************************************/
+  * Process message                                                            *
+  ******************************************************************************/
  .alert {
      border-radius: 0px;
  }
+ 
+ .profile-picture {
+     width: 150px;
+     height: 150px;
+ }
+ 
+ dl.data-list dd {
+     margin-bottom: 20px;
+     font-size: 1.3em;
+ }
+ 
+ dl.data-list dt {
+     text-transform: lowercase;
+     font-style: italic;
+     font-weight: normal;
+ }
+ 
+ /******************************************************************************
+  * Microformats                                                               *
+  ******************************************************************************/
+  p.h-adr span {
+      display: block;
+  }

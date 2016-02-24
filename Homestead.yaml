@@ -1,0 +1,36 @@
+---
+ip: "192.168.10.10"
+memory: 2048
+cpus: 1
+hostname: tranquility
+name: tranquility
+provider: virtualbox
+
+authorize: ~/.ssh/patto-work-laptop.pub
+
+keys:
+    - ~/.ssh/patto-work-laptop
+
+folders:
+    - map: "C:/Development/Code/tranquility"
+      to: "/home/vagrant/tranquility"
+
+sites:
+    - map: homestead.app
+      to: "/home/vagrant/tranquility/public"
+
+databases:
+    - tranquility
+
+# blackfire:
+#     - id: foo
+#       token: bar
+#       client-id: foo
+#       client-token: bar
+
+# ports:
+#     - send: 50000
+#       to: 5000
+#     - send: 7777
+#       to: 777
+#       protocol: udp

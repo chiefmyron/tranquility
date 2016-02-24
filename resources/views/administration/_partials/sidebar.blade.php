@@ -1,3 +1,5 @@
+<?php if (!isset($active)) { $active = ''; } ?>                
+                
                 <div id="sidebar" class="page-sidebar navbar-collapse collapse" aria-expaned="false">
                     <ul class="page-sidebar-menu">
                         <li class="nav-item start{{ strtolower($active) == "dashboard" ? " active" : ""}}">

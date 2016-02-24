@@ -3,7 +3,7 @@
 use \Auth;
 use Tranquility\Auth\User;
 use Tranquility\Providers\UserServiceProvider;
-use Tranquility\Services\User as UserService;
+use Tranquility\Services\UserService as UserService;
 use Illuminate\Support\ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider {
