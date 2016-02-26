@@ -1,5 +1,6 @@
 @if ($toolbar)
     <div class="toolbar">
+        <a class="close hidden-lg hidden-md" href="#" aria-label="{{ trans('administration.common_cancel') }}" <span aria-hidden="true">&times;</span></a>
 <?php
     $output = '';
     $groupStarted = false;

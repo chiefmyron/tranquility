@@ -3,8 +3,8 @@
 $user = $person->getUserAccount();
 ?>
 
-@section('sidebar')
-	@include('administration._partials.sidebar', ['active' => 'people'])
+@section('menu')
+	@include('administration._partials.menu', ['active' => 'people'])
 @stop
 
 @section('content')
