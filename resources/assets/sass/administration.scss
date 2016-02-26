@@ -372,6 +372,35 @@ p.h-adr span {
     display: block;
 }
 
+// Modal dialog
+.full-bleed {
+    padding: 0px;
+}
+
+.full-bleed .row {
+    margin: 0;
+}
+
+.full-bleed iframe {
+    margin-bottom: -5px;
+}
+
+.full-bleed .content {
+    padding: $layout-padding-width;
+}
+
+// Profile pictures
+.profile-picture-container {
+    text-align: center;    
+}
+
+.profile-picture {
+    width: 150px;
+    height: auto;
+    margin-bottom: $layout-padding-width;
+    border-radius: 75px;
+}
+
 /******************************************************************************
  * Breakpoint-specific rules                                                  *
  *                                                                            *
@@ -381,7 +410,17 @@ p.h-adr span {
  
 // Small screen / tablet (768px)
 @media (min-width: $screen-sm-min) {
-
+    // Profile pictures
+    .profile-picture-container {
+        text-align: left;
+    }
+    
+    .profile-picture {
+        width: 100%;
+        margin-bottom: 0;
+        border-radius: 0;
+    }
+    
 }
 
 // Medium screen / desktop (992px)

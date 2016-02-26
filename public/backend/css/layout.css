@@ -6018,12 +6018,41 @@ dl.data-list dt {
 p.h-adr span {
   display: block; }
 
+.full-bleed {
+  padding: 0px; }
+
+.full-bleed .row {
+  margin: 0; }
+
+.full-bleed iframe {
+  margin-bottom: -5px; }
+
+.full-bleed .content {
+  padding: 15px; }
+
+.profile-picture-container {
+  text-align: center; }
+
+.profile-picture {
+  width: 150px;
+  height: auto;
+  margin-bottom: 15px;
+  border-radius: 75px; }
+
 /******************************************************************************
  * Breakpoint-specific rules                                                  *
  *                                                                            *
  * By default, styles are written for $screen-xs size, and are overridden by  *
  * larger breakpoint styles                                                   *
  ******************************************************************************/
+@media (min-width: 768px) {
+  .profile-picture-container {
+    text-align: left; }
+  .profile-picture {
+    width: 100%;
+    margin-bottom: 0;
+    border-radius: 0; } }
+
 @media (min-width: 992px) {
   .nav-container .branding {
     text-align: left; }

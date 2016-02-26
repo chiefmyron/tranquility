@@ -7,28 +7,32 @@ $user = $person->getUserAccount();
 	@include('administration._partials.menu', ['active' => 'people'])
 @stop
 
-@section('content')
-<div class="media">
-    <div class="media-left">
-        <a href="#"><img class="media-object profile-picture" src="/backend/images/user-avatar-default.png" alt="..."></a>
-    </div>
+@section('heading')
+	@include('administration._partials.heading', ['heading' => $person->getFullName(true)])
+@stop
 
-    <div class="media-body">
-        <h1 class="media-heading text-capitalize">{{ $person->getFullName(true) }}</h1>
-        <h4>{{ $person->position }}</h4>
-        <br />
-        @if ($user && $user->active)
-        <p>{!! trans('administration.people_message_has_active_user_account', ['name' => $person->firstName, 'registeredDateTime' => DateTimeFormatter::longDateTime($user->registeredDateTime)]) !!}<br />
-        <a href="{{ action('Administration\PeopleController@showUser', [$person->id]) }}" class="ajax">View details</a> | Suspend account | Delete account</p>
-        @elseif ($user && !$user->active)
-        <p>{{ trans('administration.people_message_has_suspended_user_account', ['name' => $person->firstName]) }}<br />
-        View details | Activate account | Delete account</p>    
-        @else
-        <p>{{ trans('administration.people_message_no_user_account', ['name' => $person->firstName]) }}<br />
-        Create new user account</p>
-        @endif
+@section('breadcrumbs', Breadcrumbs::render('admin.people.show', $person))
+
+@section('content')
+    <div class="row">
+        <div class="col-sm-2 profile-picture-container">
+            <a href="#"><img class="profile-picture" src="/backend/images/user-avatar-default.png" alt="..."></a>
+        </div>
+        
+        <div class="col-sm-5">
+            Name    
+        </div>
+        
+        <div class="col-sm-5">
+            Other stuff
+        </div>
+        
     </div>
-</div>
+    
+    
+    
+    <div class="clearfix"></div>
+
     <br />
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
