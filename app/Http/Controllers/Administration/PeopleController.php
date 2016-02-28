@@ -63,7 +63,7 @@ class PeopleController extends Controller {
 		if ($request->ajax()) {
 			// AJAX response
 			$ajax = new \Tranquility\View\AjaxResponse();
-			$ajax->addContent('main-content-container', $this->_renderPartial('administration.people._partials.index-'.$viewType, $responseArray));
+			$ajax->addContent('main-content-container', $this->_renderPartial('administration.people._partials.panels.list-'.$viewType, $responseArray));
 			$ajax->addContent('toolbar-container', $this->_renderPartial('administration.people._partials.toolbars.index-'.$viewType), 'attachCommonHandlers');
 			return Response::json($ajax->toArray());
 		}
@@ -126,14 +126,15 @@ class PeopleController extends Controller {
 		// Add in additional audit trail details
 		$params['type'] = EnumEntityType::Person;
 		$params['updateBy'] = Auth::user();
-		$params['updateReason'] = 'who knows?';
 		$params['updateDateTime'] = Carbon::now();
 		$params['transactionSource'] = EnumTransactionSource::UIBackend;
 		
 		// Create or update record		
 		if ($id != 0) {
+            $params['updateReason'] = 'backend person update';
 			$result = $this->_person->update($id, $params);
 		} else {
+            $params['updateReason'] = 'backend person create';
 			$result = $this->_person->create($params);
 		}
 		
@@ -225,7 +226,7 @@ class PeopleController extends Controller {
 			// AJAX response
 			$ajax = new \Tranquility\View\AjaxResponse();
             $ajax->addCallback('hideElement', array('process-message-container'));
-			$ajax->addContent('main-content-container', $this->_renderPartial('administration.people._partials.index-'.$responseArray['viewType'], $responseArray));
+			$ajax->addContent('main-content-container', $this->_renderPartial('administration.people._partials.panels.list-'.$responseArray['viewType'], $responseArray));
 			$ajax->addContent('toolbar-container', $this->_renderPartial('administration.people._partials.toolbars.index-'.$responseArray['viewType']), 'attachCommonHandlers');
             $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
             $ajax->addCallback('closeDialog');

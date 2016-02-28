@@ -40,6 +40,13 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	 */
 	public function validateInputFields($inputs, $newRecord = false) {
 		$messages = array();
+        
+        // Set any fields with empty string values to null
+        foreach ($inputs as $key => $value) {
+            if ($value == '') {
+                $inputs[$key] = null;
+            }
+        }
 		
 		// Validate that mandatory inputs have been provided
 		$messages = $this->validateMandatoryFields($inputs, $newRecord);

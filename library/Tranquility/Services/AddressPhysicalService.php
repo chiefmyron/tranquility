@@ -148,7 +148,7 @@ class AddressPhysicalService extends \Tranquility\Services\Service {
         if ($data == false) {
             // Error has occured in cURL call
             Log::warning('Call to external geolocation serivce failed - '.curl_error($ch).' (Error number: '.curl_errno($ch).')');
-            return false;
+            return array('latitude' => 0, 'longitude' => 0);
         }
         
         // Successful call
@@ -159,7 +159,7 @@ class AddressPhysicalService extends \Tranquility\Services\Service {
         if (!is_array($geolocationData) || !isset($geolocationData['status'])) {
             // Response is not in a recognised format
             Log::warning('Call to external geolocation was successful, but response was not in the expected format. Response text was: '.$geolocationData);
-            return false;
+            return array('latitude' => 0, 'longitude' => 0);
         }
         
         // Check the result code

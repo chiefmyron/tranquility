@@ -133,7 +133,7 @@ class PersonBusinessObject extends EntityBusinessObject {
         $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
         
         // Define fields
-        $builder->addField('title', 'string');
+        $builder->createField('title', 'string')->nullable()->build();
         $builder->addField('firstName', 'string');
         $builder->addField('lastName', 'string');
         $builder->addField('position', 'string');

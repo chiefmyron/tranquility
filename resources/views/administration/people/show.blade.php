@@ -8,7 +8,7 @@ $user = $person->getUserAccount();
 @stop
 
 @section('heading')
-	@include('administration._partials.heading', ['heading' => $person->getFullName(true)])
+	@include('administration._partials.heading', ['heading' => $person->getFullName(true), 'subheading' => $person->position])
 @stop
 
 @section('breadcrumbs', Breadcrumbs::render('admin.people.show', $person))
@@ -20,7 +20,16 @@ $user = $person->getUserAccount();
         </div>
         
         <div class="col-sm-5">
-            Name    
+            <dl class="data-list">
+                <dt>Title:</dt>
+                <dd>{{ $person->title or '<i>None</i>'}}</dd>
+                
+                <dt>First name:</dt>
+                <dd>{{ $person->firstName }}</dd>
+                
+                <dt>Last name:</dt>
+                <dd>{{ $person->lastName }}</dd>
+            </dl>
         </div>
         
         <div class="col-sm-5">

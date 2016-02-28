@@ -367,6 +367,10 @@ dl.data-list dt {
     border-bottom-color: #bbbbbb;
 }
 
+dl.data-list dd {
+    padding-bottom: $layout-padding-width;
+}
+
 // Microformats
 p.h-adr span {
     display: block;

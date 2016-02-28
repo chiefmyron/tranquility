@@ -11,10 +11,10 @@
             </div>
 @else 
     @for ($i = 0; $i < count($addresses); $i++)
-        @if ($i%3 == 0)
+        @if ($i%2 == 0)
             <div class="row">
         @endif
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="data-item">
                         <div class="data-header">
                             <h4>{{ trans('administration.address_label_'.$addresses[$i]->addressType.'_address') }}</h4>
@@ -44,15 +44,15 @@
                         </p>
                     </div>
                 </div>
-        @if ($i%3 == 2)
+        @if ($i%2 == 2)
             </div><!-- End of row -->
         @endif
     @endfor
 
-    @if (count($addresses)%3 == 0)
+    @if (count($addresses)%2 == 0)
             <div class="row">
     @endif
-                <div class="col-md-4 text-center">
+                <div class="col-md-6 text-center">
                     <div class="data-item">
                         <a href="{{ action('Administration\AddressController@create', ['type' => 'physical', 'parentId' => $parentId]) }}" class="ajax large">
                             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.address_command_add_another_address') }}

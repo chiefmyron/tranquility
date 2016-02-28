@@ -6015,6 +6015,9 @@ dl.data-list dt {
 .data-item .data-header {
   border-bottom-color: #bbbbbb; }
 
+dl.data-list dd {
+  padding-bottom: 15px; }
+
 p.h-adr span {
   display: block; }
 

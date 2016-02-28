@@ -4,7 +4,7 @@
 					</div>
 					<div class="modal-body">
                         @if (!is_null($person))
-						{!! trans('administration.people_message_delete_confirmation_single', ['name' => '<strong>'.$person->getName().'</strong>']) !!}
+						{!! trans('administration.people_message_delete_confirmation_single', ['name' => '<strong>'.$person->getFullName().'</strong>']) !!}
                         @else
                         {!! trans('administration.people_message_delete_confirmation_multiple', ['count' => '<strong>'.count($selectedIds).'</strong>']) !!}
                         @endif
