@@ -264,9 +264,41 @@ class AddressController extends Controller {
             return Response::json($ajax->toArray());
 		}
         
-        // Render address panel for person
-        $address = $response->getFirstContentItem();
+        // Render address panel for parent entity
         $ajax = $this->_refreshAddressList($parentEntity, $type);
+        $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+        $ajax->addCallback('closeDialog');
+        return Response::json($ajax->toArray());
+    }
+    
+    public function makePrimary($type, $id, Request $request) {
+        // Save details of address
+		$params = $request->all();
+        
+        // Add in additional audit trail details
+		$params['updateBy'] = Auth::user();
+		$params['updateReason'] = 'backend change primary contact';
+		$params['updateDateTime'] = Carbon::now();
+		$params['transactionSource'] = EnumTransactionSource::UIBackend;
+        
+        // Cannot flag physical records as primary contact
+        if ($type == EnumAddressType::Physical) {
+            throw new Exception("Cannot set primary contact flag for physical addresses");
+        } 
+        
+		// Update affected records
+        $ajax = new \Tranquility\View\AjaxResponse();
+        $response = $this->_getService($type)->makePrimary($id, $params);
+        if ($response->containsErrors()) {
+			// Errors encountered - redisplay form with error messages
+            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+			$ajax->addMessages($response->getMessages());
+            return Response::json($ajax->toArray());
+		}
+        
+        // Render address panel for parent entity
+        $address = $response->getFirstContentItem();
+        $ajax = $this->_refreshAddressList($address->getParentEntity(), $type);
         $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
         $ajax->addCallback('closeDialog');
         return Response::json($ajax->toArray());

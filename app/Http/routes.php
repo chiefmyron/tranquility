@@ -56,6 +56,7 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
     Route::get ('/address/{type}/{id}/update',   'Administration\AddressController@update');
     Route::get ('/address/{type}/{id}/confirm',  'Administration\AddressController@confirm');
     Route::post('/address/{type}/{id}/delete',   'Administration\AddressController@delete');
+    Route::get ('/address/{type}/{id}/primary',  'Administration\AddressController@makePrimary');
     Route::get ('/address/{id}/map',             'Administration\AddressController@displayMap');
     
     // Settings controller

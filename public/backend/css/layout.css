@@ -5994,6 +5994,9 @@ table.data-table td.footer {
   margin-top: 15px;
   background-color: #eeeeee; }
 
+.data-item.primary {
+  background-color: #fceedb; }
+
 .data-item .data-header {
   border-bottom: 1px solid;
   padding-bottom: 2px;

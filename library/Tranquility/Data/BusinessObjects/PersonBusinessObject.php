@@ -109,6 +109,7 @@ class PersonBusinessObject extends EntityBusinessObject {
                 $addresses = $this->physicalAddresses->matching($criteria);
                 break;
             case EnumAddressType::Phone:
+                $criteria = $criteria->orderBy(array("primaryContact" => Criteria::DESC));
                 $addresses = $this->phoneAddresses->matching($criteria);
                 break;
             case EnumAddressType::Electronic:

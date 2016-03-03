@@ -22,7 +22,7 @@ $user = $person->getUserAccount();
         <div class="col-sm-5">
             <dl class="data-list">
                 <dt>Title:</dt>
-                <dd>{{ $person->title or '<i>None</i>'}}</dd>
+                <dd>{!! $person->title or "<i>None</i>" !!}</dd>
                 
                 <dt>First name:</dt>
                 <dd>{{ $person->firstName }}</dd>

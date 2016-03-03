@@ -99,7 +99,7 @@ class InitialDatabaseSchema extends Migration {
         // Person or contact
         Schema::create('entity_people', function(Blueprint $table) {
             $table->bigInteger('id')->primary();
-            $table->string('title', 50);
+            $table->string('title', 50)->nullable();
             $table->string('firstName', 255);
             $table->string('lastName', 255);
             $table->string('position', 255)->nullable();
@@ -188,7 +188,7 @@ class InitialDatabaseSchema extends Migration {
         Schema::create('history_entity_people', function(Blueprint $table) {
             $table->bigInteger('id');
             $table->integer('version');
-            $table->string('title', 50);
+            $table->string('title', 50)->nullable();
             $table->string('firstName', 255);
             $table->string('lastName', 255);
             $table->string('position', 255)->nullable();

@@ -105,7 +105,7 @@ class AddressPhoneBusinessObject extends EntityBusinessObject {
         $builder = new ClassMetadataBuilder($metadata);
         // Define table name
         $builder->setTable('entity_addresses_phone');
-        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\AddressPhoneRepository');
         
         // Define fields
         $builder->addField('addressType', 'string');

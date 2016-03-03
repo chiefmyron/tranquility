@@ -20,7 +20,9 @@ trait PropertyAccessorTrait {
             $this->{$methodName}($value);
         } elseif (in_array($name, self::getEntityFields())) {
             // Store value directly
-            $this->$name = $value;
+            if ($value !== '') {
+                $this->$name = $value;
+            }
         } else {
             throw new BusinessObjectException('Cannot set property - class "'.get_class($this).'" does not have a property named "'.$name.'"');
         }

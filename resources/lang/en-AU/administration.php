@@ -97,6 +97,7 @@ return array(
     'address_message_delete_address_confirmation' => 'Are you sure you want to delete this address?',
     'address_command_add_another_address' => 'Add another address',
     'address_command_view_map' => 'View map',
+    'address_command_make_primary' => 'Make primary',
     
     // Search strings
     'search_heading_search' => 'Search',

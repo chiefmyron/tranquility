@@ -224,6 +224,13 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	public function create(array $data) {
 		// Set up response object
 		$response = new ServiceResponse();
+                
+        // Set any empty strings to nulls
+        foreach ($data as $key => $value) {
+            if ($value == '') {
+                $data[$key] = null;
+            }
+        }
 				
 		// Perform input validation
 		$validation = $this->validateInputFields($data, true);

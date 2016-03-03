@@ -340,6 +340,10 @@ table.data-table td.footer {
     background-color: $nav-tab-hover-bg;
 }
 
+.data-item.primary {
+    background-color: lighten($brand-warning, 30%);
+}
+
 .data-item .data-header {
     border-bottom: 1px solid;
     padding-bottom: 2px;
