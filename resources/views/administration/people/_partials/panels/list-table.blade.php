@@ -1,5 +1,5 @@
     	<div class="table-responsive">
-			<table class="table table-striped">
+			<table class="table table-striped data-table">
 				<tr>
 					<th class="checkboxcol">
 						<input type="checkbox" name="selectAll" id="selectAll" value="" class="selectAll checkbox" />
@@ -37,7 +37,7 @@
 				</tr>
 		@endforeach
 				<tr>
-					<td class="tablefooter" colspan="6"></td>
+					<td class="footer" colspan="6"></td>
 				</tr>
 			</table>
 		</div>

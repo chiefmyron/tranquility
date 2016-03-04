@@ -3,32 +3,63 @@
 $user = $person->getUserAccount();
 ?>
 
-@section('sidebar')
-	@include('administration._partials.sidebar', ['active' => 'people'])
+@section('menu')
+	@include('administration._partials.menu', ['active' => 'people'])
 @stop
 
-@section('content')
-<div class="media">
-    <div class="media-left">
-        <a href="#"><img class="media-object profile-picture" src="/backend/images/user-avatar-default.png" alt="..."></a>
-    </div>
+@section('heading')
+	@include('administration._partials.heading', ['heading' => $person->getFullName(true), 'subheading' => $person->position])
+@stop
 
-    <div class="media-body">
-        <h1 class="media-heading text-capitalize">{{ $person->getFullName(true) }}</h1>
-        <h4>{{ $person->position }}</h4>
-        <br />
-        @if ($user && $user->active)
-        <p>{!! trans('administration.people_message_has_active_user_account', ['name' => $person->firstName, 'registeredDateTime' => DateTimeFormatter::longDateTime($user->registeredDateTime)]) !!}<br />
-        <a href="{{ action('Administration\PeopleController@showUser', [$person->id]) }}" class="ajax">View details</a> | Suspend account | Delete account</p>
-        @elseif ($user && !$user->active)
-        <p>{{ trans('administration.people_message_has_suspended_user_account', ['name' => $person->firstName]) }}<br />
-        View details | Activate account | Delete account</p>    
-        @else
-        <p>{{ trans('administration.people_message_no_user_account', ['name' => $person->firstName]) }}<br />
-        Create new user account</p>
-        @endif
+@section('breadcrumbs', Breadcrumbs::render('admin.people.show', $person))
+
+@section('content')
+    <div class="row">
+        <div class="col-sm-2 profile-picture-container">
+            <a href="#"><img class="profile-picture" src="/backend/images/user-avatar-default.png" alt="..."></a>
+        </div>
+        
+        <div class="col-sm-5">
+            <dl class="data-list">
+                <dt>{{ trans('administration.people_label_title') }}</dt>
+                <dd>{{ $person->title or "&nbsp;" }}</dd>
+                
+                <dt>{{ trans('administration.people_label_first_name') }}</dt>
+                <dd>{{ $person->firstName }}</dd>
+                
+                <dt>{{ trans('administration.people_label_last_name') }}</dt>
+                <dd>{{ $person->lastName }}</dd>
+            </dl>
+        </div>
+        
+        <div class="col-sm-5">
+            <dl class="data-list">
+                <dt>{{ trans('administration.people_label_user_account') }}</dt>
+                @if(is_null($user))
+                <dd>
+                    No user account
+                    <p><a href="{{ action('Administration\UsersController@create') }}" class="ajax">{{ trans('administration.users_heading_create_user') }}</a></p>
+                </dd>
+                @else
+                <dd><a href="{{ action('Administration\UsersController@showPersonUser', ['id' => $user->id]) }}">{{ $user->username }}</a></dd>
+                
+                <dt>{{ trans('administration.users_label_account_status') }}</dt>
+                    @if($user->active)
+                <dd><strong class="text-success">{{ trans('administration.users_status_active') }}</strong></dd>    
+                    @else
+                <dd><strong class="text-warning">{{ trans('administration.users_status_suspended') }}</strong></dd>
+                    @endif
+                @endif
+                
+            </dl>
+        </div>
+        
     </div>
-</div>
+    
+    
+    
+    <div class="clearfix"></div>
+
     <br />
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
@@ -42,6 +73,7 @@ $user = $person->getUserAccount();
         <div role="tabpanel" class="tab-pane active" id="contact-details">
             @include('administration.addresses._partials.panels.physical-address', ['addresses' => $person->getAddresses('physical'), 'parentId' => $person->id])
             @include('administration.addresses._partials.panels.phone-address', ['addresses' => $person->getAddresses('phone'), 'parentId' => $person->id])
+            @include('administration.addresses._partials.panels.email-address', ['addresses' => $person->getAddresses('email'), 'parentId' => $person->id])
         </div>
         <div role="tabpanel" class="tab-pane" id="activity-feed">...</div>
         <div role="tabpanel" class="tab-pane" id="related-items">...</div>

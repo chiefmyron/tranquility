@@ -27,7 +27,7 @@
         
         <!-- Custom styles -->
         <link href="/backend/css/layout.css" rel="stylesheet" type="text/css" />
-        <link href="/backend/css/colours/blue.css" rel="stylesheet" type="text/css" />
+        <!-- <link href="/backend/css/colours/blue.css" rel="stylesheet" type="text/css" /> -->
         
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -38,58 +38,34 @@
     </head>
     
     <body>
-        
-        <!-- Start page header -->
-        @include('administration._partials.menu')
-        <!-- End page header -->
-        
-        <!-- Separator between header and content -->
-        <div class="clearfix"></div>
-        
-        <!-- Page container -->
-        <div class="page-container">
-            
-            <!-- Start of sidebar menu -->
-            <div class="page-sidebar-wrapper">
-                @yield('sidebar')
-            </div>  
-            <!-- End of sidebar menu -->
-            
-            <!-- Beginning of main page content -->
-            <div class="page-content-wrapper">
-                <div class="page-content">
-                    <div class="main-content">
-                        <div class="row">
-                            <!-- Toolbar -->
-                            <div class="col-md-3 col-md-push-9">
-                                <div id="toolbar-container">
-                                    @yield('toolbar')  
-                                </div>
-                            </div>
-                            <!-- End of toolbar -->
-                            
-                            <!-- Main content panel -->
-                            <div class="col-md-9 col-md-pull-3">
-                                
-                                <!-- Page heading and subheading -->
-                                @yield('heading')
-                                
-                                <!-- Breadcrumbs -->
-                                @yield('breadcrumbs')
-                                
-                                <!-- Process messages -->
-                                @include('administration._partials.errors', ['messages' => Session::pull('messages')])
-                                
-                                <div id="main-content-container">
-                                    @yield('content')
-                                </div>
-                            </div>
-                            <!-- End of main content panel -->
-                        </div>
-                        <!-- End of row for main content and toolbar -->
+        <div class="admin-container">
+            <div class="fluid-container">
+                <!-- Start navigation  -->
+                @yield('menu')  
+                <!-- End navigation --> 
+                
+                <!-- Toolbar -->
+                <div id="toolbar-container" class="toolbar-container">
+                    @yield('toolbar')  
+                </div>
+                <!-- End of toolbar -->
+           
+                <!-- Beginning of main page content -->
+                <div class="content-container">
+                    <!-- Page heading and subheading -->
+                    @yield('heading')
+                    
+                    <!-- Breadcrumbs -->
+                    @yield('breadcrumbs')
+                    
+                    <!-- Process messages -->
+                    @include('administration._partials.errors', ['messages' => Session::pull('messages')])
+                    
+                    <div id="main-content-container">
+                        @yield('content')
                     </div>
                 </div>
-            </div> 
+            </div>
         </div>
         
         <!-- Container for modal dialog -->

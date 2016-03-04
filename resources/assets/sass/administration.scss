@@ -1,0 +1,622 @@
+/******************************************************************************
+ * Bootstrap variable overrides                                               *
+ ******************************************************************************/
+
+// Colors
+$body-bg:                    #ffffff;//#e9ecf3;      // Page background
+$brand-primary:              #6698c8;      // Hyperlinks
+$brand-success:              #5cb85c;
+$brand-info:                 #5bc0de;
+$brand-warning:              #f0ad4e;
+$brand-danger:               #d9534f;
+$brand-error:                #a94442;
+$brand-navigation:           #303e4d;      // Base colour for navigation elements
+
+// Navbar
+$nav-link-hover:                           #ABB1B7;
+$nav-link-hover-bg:                        #4A5664;
+$nav-tab-hover-bg:                         #eeeeee;
+$navbar-default-toggle-hover-bg:           $brand-navigation;
+$navbar-width:                             250px;
+$dropdown-link-hover-bg:                   $brand-primary;
+$dropdown-link-hover-color:                #ffffff;
+
+
+$navbar-default-toggle-icon-bar-bg:        #888 !default;
+$navbar-default-toggle-border-color:       $brand-navigation;
+$navbar-default-link-active-color:         #ffffff;
+$navbar-default-link-active-bg:            $brand-primary;
+$navbar-default-toggle-icon-bar-bg:        #888 !default;
+$navbar-default-toggle-border-color:       #ddd !default;
+$navigation-heading:                       #ABB1B7;
+$navigation-link:                          #ABB1B7;
+
+// Typography
+@import url("http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all");
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+$font-family-heading:        "Open Sans", Arial, Helvetica, sans-serif;
+$font-family-sans-serif:     "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$headings-font-weight:       300;
+$text-size-large:            1.5em;
+
+// Components
+$border-radius-base:         0px;            // Remove round corners from all elements
+$border-radius-large:        0px;            // Remove round corners from all elements
+$border-radius-small:        0px;            // Remove round corners from all elements
+
+// Layout
+$layout-padding-width:       15px;
+
+// Import Bootstrap default stylings
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+/******************************************************************************
+ * Start backend specific styles                                              *
+ ******************************************************************************/
+
+// Typography
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $font-family-heading;
+  text-transform: lowercase;
+  margin: 0;
+}
+
+.large {
+    font-size: $text-size-large;
+}
+
+// Page layout
+body {
+    padding-top: $layout-padding-width;
+    padding-bottom: $layout-padding-width;
+    font-weight: 300;
+    letter-spacing: 0;
+}
+
+.admin-container {
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: $layout-padding-width;
+    padding-right: $layout-padding-width;
+}
+
+.admin-container .fluid-container {
+    margin-left: ($layout-padding-width * -1);
+    margin-right: ($layout-padding-width * -1);
+}
+
+// Navigation
+.nav-container {
+    position: relative;
+    min-height: 1px;
+    margin-top: ($layout-padding-width * -1);
+    padding-top: $layout-padding-width;
+    padding-left: $layout-padding-width;
+    padding-right: $layout-padding-width;
+    background-color: $brand-navigation;
+}
+
+.nav-container .branding {
+    position: relative;
+    padding-bottom: $layout-padding-width;
+    text-align: center;
+}
+
+.nav-container .branding a {
+    color: $navigation-heading;
+    font-size: $font-size-h3;
+    font-family: $font-family-heading;
+}
+
+.nav-container .branding .nav-toggle {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    display: block;
+    width: 40px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid;
+    background-color: $brand-navigation;
+    color: $nav-link-hover;
+}
+
+.nav-container .branding .nav-toggle:before {
+    display: block;
+    color: $nav-link-hover;
+    content: "";
+    width: 100%;
+    padding-bottom: 0.125em;
+    border-top: 0.375em double;
+    border-bottom: 0.125em solid;
+}
+
+.nav-container .site-search {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.nav-container .site-search .submit-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 9px 10px;
+    color: #b7bcc8;
+    background-color: transparent;
+    border: 0;
+    line-height: 0;
+}
+
+.nav-container .profile-button {
+    display: inline-block;
+    position: absolute;
+    top: $layout-padding-width;
+    right: $layout-padding-width;
+}
+
+.nav-container .dropdown-user {
+    background: transparent;
+    border: 0;
+    padding: 0;
+}
+
+.nav-container .dropdown-user > img {
+    display: inline-block;
+    height: 35px;
+    width: 35px;
+}
+
+.nav-container .dropdown-menu {
+    right: 0;
+    left: auto;
+}
+
+.nav-container .dropdown-toggle {
+    color: $nav-link-hover;
+}
+
+.nav-container .nav-items {
+    padding-bottom: $layout-padding-width;
+}
+
+.nav-container .nav-items ul.nav.nav-stacked li a {
+    color: $navigation-link;
+}
+.nav-container .nav-items ul.nav.nav-stacked li a i {
+    padding-right: 5px;
+}
+
+.nav-container .nav-items ul.nav.nav-stacked > li.start a {
+    padding-left: 5px;
+}
+
+.nav-container .nav-items ul.nav.nav-stacked > li.active a {
+    background-color: $navbar-default-link-active-bg;
+    color: $navbar-default-link-active-color;
+    font-weight: 500;
+}
+
+.nav-container .nav-items ul.nav.nav-stacked > li.heading {
+    padding: 10px 0 10px;
+}
+
+.nav-container .nav-items ul.nav.nav-stacked > li.heading > h3 {
+    font-size: 13px;
+    padding: 0;
+    margin: 0;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: $navigation-heading;
+}
+
+// Main content panel
+.content-container {
+    padding-left: $layout-padding-width;
+    padding-right: $layout-padding-width;
+    padding-top: $layout-padding-width;
+}
+
+.content-container hr {
+    margin-top: 5px;
+}
+
+// Breadcrumbs
+.breadcrumb-container {
+    //position: relative;
+    //top: -65px;
+    //margin-bottom: -20px;
+}
+
+.breadcrumb {
+    display: inline;
+    padding-left: 0px;
+    padding-top: 10px;
+    background-color: transparent;
+}
+
+.breadcrumb li {
+    display: none;
+}
+
+.breadcrumb li.previous {
+    display: inline;
+    font-size: 1.2em;
+}
+
+.breadcrumb li.previous:before {
+    content: none;
+}
+
+.page-title {
+    margin-bottom: $layout-padding-width;
+}
+
+// Toolbar
+#toolbar-container {
+    position: absolute;
+    right: 0;
+    width: $navbar-width;
+    top: 0;
+    bottom: 0;
+    box-shadow: 0px 0px 6px black;
+    background: $body-bg;
+    padding: $layout-padding-width;
+            transform-origin: 100% 50%;
+    -webkit-transform-origin: 100% 50%;
+            transform: scaleX(0.00001);
+    -webkit-transform: scaleX(0.00001);
+            transition: transform 0.2s ease-in-out;
+    -webkit-transition: -webkit-transform 0.2s ease-in-out;
+    outline: 0;
+    z-index: 1000;
+}
+
+#toolbar-container:target {
+            transform: scaleX(1);
+    -webkit-transform: scaleX(1);
+}
+
+.toolbar {
+    box-shadow: none;
+    border: 0px;
+}
+
+.toolbar .list-group-item {
+    border: 0px;
+    padding: 5px 0px;
+    background-color: transparent;
+}
+
+.toolbar .list-group-item .glyphicon {
+    color: $brand-primary;
+}
+
+.toolbar .list-group-item.disabled,
+.toolbar .list-group-item.disabled a,
+.toolbar .list-group-item.disabled .glyphicon {
+    cursor: not-allowed;
+    color: #959595;
+}
+
+.toolbar .list-group-item.disabled a:hover {
+    text-decoration: none;
+}
+
+.toolbar .list-group-item.divider {
+    border-top-width: 1px;
+    border-top-style: solid;
+    margin-top: 5px;
+    border-top-color: $gray-lighter;
+}
+
+.toolbar h3 {
+    font-size: 13px;
+    padding: 0;
+    margin: 10px 0;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: $brand-navigation;
+}
+
+#toggle-toolbar {
+    //position: relative;
+    float: right;
+    font-size: 1.2em;
+    padding: 0;
+    color: $brand-primary;
+}
+
+// Data tables
+table.data-table th {
+    background-color: $brand-primary;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+table.data-table td.footer {
+    padding: 1px;
+    border-top: 0px;
+    background-color: $brand-primary;
+}
+
+// Tabs
+.nav-tabs>li.active>a, 
+.nav-tabs>li.active>a:focus, 
+.nav-tabs>li.active>a:hover {
+    border-top: 3px solid;
+    margin-top: -2px;
+    border-top-color: $brand-navigation;
+}
+
+.nav-tabs>li>a:focus,
+.nav-tabs>li>a:hover {
+    background-color: $nav-tab-hover-bg;
+}
+
+.tab-content {
+    padding: 15px;
+    border-left: 1px solid $gray-lighter;
+}
+
+.tab-content h3 {
+    margin-bottom: $layout-padding-width;
+}
+
+// Data panels
+.data-item {
+    padding: $layout-padding-width;
+    padding-bottom: 5px;
+    margin-bottom: $layout-padding-width;
+    background-color: #efefef;
+}
+
+.data-item.primary {
+    background-color: lighten($brand-warning, 30%);
+}
+
+.data-item .data-header {
+    border-bottom: 1px solid;
+    padding-bottom: 2px;
+    margin-bottom: 10px;
+}
+
+.data-item .data-header h4 {
+    display: inline;
+}
+
+.data-item .data-header span.action {
+    float: right;
+    text-transform: lowercase;
+}
+
+dl.data-list {
+    margin-bottom: 0;
+}
+
+dl.data-list dt {
+    color: #555555;
+}
+
+.data-item .data-header {
+    border-bottom-color: #bbbbbb;
+}
+
+dl.data-list dd {
+    padding-bottom: $layout-padding-width;
+    //font-size: $text-size-large;
+}
+
+// Microformats
+p.h-adr span {
+    display: block;
+}
+
+// Modal dialog
+.full-bleed {
+    padding: 0px;
+}
+
+.full-bleed .row {
+    margin: 0;
+}
+
+.full-bleed iframe {
+    margin-bottom: -5px;
+}
+
+.full-bleed .content {
+    padding: $layout-padding-width;
+}
+
+// Profile pictures
+.profile-picture-container {
+    text-align: center;    
+}
+
+.profile-picture {
+    width: 150px;
+    height: auto;
+    margin-bottom: $layout-padding-width;
+    border-radius: 75px;
+}
+
+/******************************************************************************
+ * Breakpoint-specific rules                                                  *
+ *                                                                            *
+ * By default, styles are written for $screen-xs size, and are overridden by  *
+ * larger breakpoint styles                                                   *
+ ******************************************************************************/
+ 
+// Small screen / tablet (768px)
+@media (min-width: $screen-sm-min) {
+    // Profile pictures
+    .profile-picture-container {
+        text-align: left;
+    }
+    
+    .profile-picture {
+        width: 100%;
+        margin-bottom: 0;
+        border-radius: 0;
+    }
+    
+}
+
+// Medium screen / desktop (992px)
+@media (min-width: $screen-md-min) {
+    // Fixed header nav
+    .nav-container .branding {
+        text-align: left;    
+    }
+    
+    .nav-container .branding a {
+        margin-left: 50px;
+    }
+    
+    // Breadcrumbs
+    .breadcrumb-container {
+        position: relative;
+        top: auto;
+        margin-bottom: 0px;
+    }
+
+    .breadcrumb {
+        position: relative;
+        display: block;
+        top: auto;
+        padding-left: 0px;
+        padding-top: 10px;
+        margin-bottom: 0px;
+        background-color: transparent;
+    }
+
+    .breadcrumb li {
+        display: inline;
+    }
+
+    .breadcrumb li.previous {
+        display: inline;
+        font-size: 1em;
+    }
+
+    .breadcrumb > li + li.previous:before {
+        content: "/ ";
+    }
+
+    .page-title {
+        margin-bottom: 0px;
+    }
+    
+    // Right-hand toolbar
+    #toolbar-container {
+        position: inherit;
+        width: $navbar-width;
+        box-shadow: none;
+        transform: scaleX(1);
+        padding-left: 0;
+        float: right;
+        width: $navbar-width;
+    }
+    
+    // Main content container
+    .content-container {
+        margin-right: $navbar-width;
+        padding-left: $layout-padding-width;
+        padding-right: $layout-padding-width;
+        padding-top: $layout-padding-width;
+    }  
+    
+}
+
+// Large screen / wide desktop (1200px)
+@media (min-width: $screen-lg-min) {
+    // Fixed left hand nav
+    .nav-container {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 250px;
+        margin-top: 0;
+        margin-bottom: 0;
+        overflow-y: auto;
+    }
+    
+    .nav-container .collapse {
+        display: block;
+    }
+    
+    .nav-container .branding {
+        text-align: left;
+    }
+    
+    .nav-container .branding a {
+        margin-left: 0;
+    }
+    
+    .nav-container .branding .nav-toggle {
+        display: none;
+    }
+    
+    .nav-container .profile-button {
+        bottom: $layout-padding-width;
+        left: $layout-padding-width;
+        right: auto;
+        top: auto;
+        width: ($navbar-width - ($layout-padding-width * 2));
+    }
+    
+    .nav-container .profile-button button {
+        width: 100%;
+    }
+    
+    .nav-container .profile-button .caret {
+        border-top: 0;
+        border-bottom: $caret-width-base dashed;
+        border-bottom: $caret-width-base solid \9; // IE8
+        content: "";
+    }
+    
+    .nav-container .profile-button .dropdown-toggle {
+        padding-top: 5px;
+        padding-bottom: 5px;    
+        padding-left: 5px;
+        text-align: left;
+    }
+    
+    .nav-container .profile-button .dropdown-toggle span.username {
+        padding-left: 5px;    
+    }
+    
+    .nav-container .profile-button .dropdown-toggle:hover,
+    .nav-container .profile-button .dropdown-toggle:focus {
+        background-color: $nav-link-hover-bg;
+    }
+   
+    .nav-container .profile-button .dropdown-menu {
+        top: auto;
+        bottom: 100%;
+        margin-bottom: 2px;
+        width: 100%;
+    }
+    
+    // Main content container
+    .content-container {
+        margin-left: $navbar-width;
+        margin-right: $navbar-width;
+        padding-left: $layout-padding-width;
+        padding-right: $layout-padding-width;
+        padding-top: 0;
+    }    
+    
+    // Toolbar
+    #toolbar-container {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}

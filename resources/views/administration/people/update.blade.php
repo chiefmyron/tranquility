@@ -1,14 +1,14 @@
 @extends('administration.app')
 
+@section('menu')
+	@include('administration._partials.menu', ['active' => 'people'])
+@stop
+
 @section('heading')
 	@include('administration._partials.heading', ['heading' => trans('administration.people_heading_update', ['name' => $person->getFullName()])])
 @stop
 
 @section('breadcrumbs', Breadcrumbs::render('admin.people.update', $person))
-
-@section('sidebar')
-	@include('administration._partials.sidebar', ['active' => 'people'])
-@stop
 
 @section('content')
 	{!! Form::model($person, ['action' => 'Administration\PeopleController@store']) !!}
