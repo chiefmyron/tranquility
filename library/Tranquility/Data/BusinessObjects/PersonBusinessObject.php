@@ -104,18 +104,11 @@ class PersonBusinessObject extends EntityBusinessObject {
         // Build criteria to ensure we only retrieve active address records
         $addresses = array();
         $criteria = Criteria::create()->where(Criteria::expr()->eq("deleted", 0));
-        switch ($type) {
-            case EnumAddressType::Physical:
-                $addresses = $this->physicalAddresses->matching($criteria);
-                break;
-            case EnumAddressType::Phone:
-                $addresses = $this->phoneAddresses->matching($criteria);
-                break;
-            case EnumAddressType::Electronic:
-                $addresses = $this->electronicAddresses->matching($criteria);
-                break;
-            default:
-                throw new BusinessObjectException('Invalid address type was supplied: '.$type);
+        if ($type == EnumAddressType::Physical) {
+            $addresses = $this->physicalAddresses->matching($criteria);
+        } else {
+            $criteria = $criteria->andWhere(Criteria::expr()->eq("category", $type))->orderBy(array("primaryContact" => Criteria::DESC));
+            $addresses = $this->addresses->matching($criteria);
         }
         return $addresses->toArray();
     }

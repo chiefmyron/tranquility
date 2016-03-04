@@ -128,9 +128,8 @@ abstract class EntityHistoricalBusinessObject {
         $builder->setDiscriminatorColumn('type');
         $builder->addDiscriminatorMapClass(EnumEntityType::Person, PersonHistoricalBusinessObject::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::User, UserHistoricalBusinessObject::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::Address, AddressHistoricalBusinessObject::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhysical, AddressPhysicalHistoricalBusinessObject::class);
-        $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhone, AddressPhoneHistoricalBusinessObject::class);
-        $builder->addDiscriminatorMapClass(EnumEntityType::AddressElectronic, AddressElectronicHistoricalBusinessObject::class);
         
         // Define fields
         $builder->createField('id', 'integer')->isPrimaryKey()->build();

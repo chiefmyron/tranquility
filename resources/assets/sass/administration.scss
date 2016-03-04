@@ -37,6 +37,7 @@ $navigation-link:                          #ABB1B7;
 $font-family-heading:        "Open Sans", Arial, Helvetica, sans-serif;
 $font-family-sans-serif:     "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $headings-font-weight:       300;
+$text-size-large:            1.5em;
 
 // Components
 $border-radius-base:         0px;            // Remove round corners from all elements
@@ -63,6 +64,10 @@ h6 {
   font-family: $font-family-heading;
   text-transform: lowercase;
   margin: 0;
+}
+
+.large {
+    font-size: $text-size-large;
 }
 
 // Page layout
@@ -221,10 +226,29 @@ body {
 
 // Breadcrumbs
 .breadcrumb {
+    position: absolute;
+    top: 65px;
     padding-left: 0px;
     padding-top: 10px;
     margin-bottom: 0px;
     background-color: transparent;
+}
+
+.breadcrumb li {
+    display: none;
+}
+
+.breadcrumb li.previous {
+    display: inline;
+    font-size: 1.2em;
+}
+
+.breadcrumb li.previous:before {
+    content: none;
+}
+
+.page-title {
+    margin-top: 20px;
 }
 
 // Toolbar
@@ -244,6 +268,7 @@ body {
             transition: transform 0.2s ease-in-out;
     -webkit-transition: -webkit-transform 0.2s ease-in-out;
     outline: 0;
+    z-index: 1000;
 }
 
 #toolbar-container:target {
@@ -294,9 +319,12 @@ body {
 }
 
 #toggle-toolbar {
-    border: 1px solid $brand-primary;
+    position: absolute;
+    right: 0;
+    top: 65px;
+    font-size: 1.2em;
+    padding-top: 10px;
     color: $brand-primary;
-    float: right;
 }
 
 // Data tables
@@ -331,13 +359,20 @@ table.data-table td.footer {
     border-left: 1px solid $gray-lighter;
 }
 
+.tab-content h3 {
+    margin-bottom: $layout-padding-width;
+}
+
 // Data panels
 .data-item {
     padding: $layout-padding-width;
     padding-bottom: 5px;
     margin-bottom: $layout-padding-width;
-    margin-top: $layout-padding-width;
-    background-color: $nav-tab-hover-bg;
+    background-color: #efefef;
+}
+
+.data-item.primary {
+    background-color: lighten($brand-warning, 30%);
 }
 
 .data-item .data-header {
@@ -355,8 +390,8 @@ table.data-table td.footer {
     text-transform: lowercase;
 }
 
-.data-item {
-    background-color: #e9ecf3;
+dl.data-list {
+    margin-bottom: 0;
 }
 
 dl.data-list dt {
@@ -369,6 +404,7 @@ dl.data-list dt {
 
 dl.data-list dd {
     padding-bottom: $layout-padding-width;
+    //font-size: $text-size-large;
 }
 
 // Microformats
@@ -436,6 +472,33 @@ p.h-adr span {
     
     .nav-container .branding a {
         margin-left: 50px;
+    }
+    
+    // Breadcrumbs
+    .breadcrumb {
+        position: relative;
+        top: auto;
+        padding-left: 0px;
+        padding-top: 10px;
+        margin-bottom: 0px;
+        background-color: transparent;
+    }
+
+    .breadcrumb li {
+        display: inline;
+    }
+
+    .breadcrumb li.previous {
+        display: inline;
+        font-size: 1em;
+    }
+
+    .breadcrumb > li + li.previous:before {
+        content: "/ ";
+    }
+
+    .page-title {
+        margin-top: 0px;
     }
     
     // Right-hand toolbar

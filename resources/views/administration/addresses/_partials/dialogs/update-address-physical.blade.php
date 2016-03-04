@@ -9,7 +9,8 @@
 </div>
 <div class="modal-footer">
     {!! Form::hidden('id', $address->id) !!}
-    {!! Form::hidden('parentId', $parentId) !!}
+    {!! Form::hidden('parentId', $address->getParentEntity()->id) !!}
+    {!! Form::hidden('category', 'physical') !!}
     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
     <button type="submit" class="btn btn-primary" id="dialog-submit">{{ trans('administration.address_heading_update_address') }}</button>
 </div>

@@ -9,10 +9,8 @@
 
 class EntityType extends \Tranquility\Enums\Enum {
 	const Person  = 'person';
-	const Address = 'address';
 	const Content = 'content';
 	const User    = 'user';
+    const Address = 'address';
     const AddressPhysical = 'addressPhysical';
-    const AddressPhone = 'addressPhone';
-    const AddressElectronic = 'addressElectronic';
 }

@@ -5,13 +5,14 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Tranquility\Enums\System\EntityType                                                as EnumEntityType;
-use Tranquility\Data\BusinessObjects\EntityBusinessObject                              as Entity;
-use Tranquility\Data\BusinessObjects\History\AddressElectronicHistoricalBusinessObject as AddressElectronicHistory;
+use Tranquility\Enums\System\EntityType                                       as EnumEntityType;
+use Tranquility\Data\BusinessObjects\EntityBusinessObject                     as Entity;
+use Tranquility\Data\BusinessObjects\History\AddressHistoricalBusinessObject  as AddressHistory;
 
-class AddressElectronicBusinessObject extends EntityBusinessObject {
+class AddressBusinessObject extends EntityBusinessObject {
     use \Tranquility\Data\Traits\PropertyAccessorTrait;
     
+    protected $category;
     protected $addressType;
     protected $addressText;
     protected $primaryContact;
@@ -26,6 +27,7 @@ class AddressElectronicBusinessObject extends EntityBusinessObject {
      * @static
      */
     protected static $_fields = array(
+        'category',
         'addressType',
         'addressText',
         'primaryContact',
@@ -38,6 +40,7 @@ class AddressElectronicBusinessObject extends EntityBusinessObject {
      * @static
      */
     protected static $_mandatoryFields = array(
+        'category',
 		'addressType',
         'addressText',
     );
@@ -58,7 +61,7 @@ class AddressElectronicBusinessObject extends EntityBusinessObject {
      * @var string
      * @static
      */
-    protected static $_historicalEntityClass = AddressElectronicHistory::class;
+    protected static $_historicalEntityClass = AddressHistory::class;
     
     /** 
      * Type of entity represented by the business object
@@ -66,7 +69,7 @@ class AddressElectronicBusinessObject extends EntityBusinessObject {
      * @var string
      * @static
      */
-    protected static $_entityType = EnumEntityType::AddressElectronic;
+    protected static $_entityType = EnumEntityType::Address;
     
     /**
      * Sets values for object properties, based on the inputs provided
@@ -104,15 +107,16 @@ class AddressElectronicBusinessObject extends EntityBusinessObject {
     public static function loadMetadata(ClassMetadata $metadata) {
         $builder = new ClassMetadataBuilder($metadata);
         // Define table name
-        $builder->setTable('entity_addresses_electronic');
-        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
+        $builder->setTable('entity_addresses');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\AddressRepository');
         
         // Define fields
+        $builder->addField('category', 'string');
         $builder->addField('addressType', 'string');
         $builder->addField('addressText', 'string');
         $builder->addField('primaryContact', 'boolean');
         
         // Add relationships
-        $builder->createManyToOne('parentEntity', Entity::class)->addJoinColumn('parentId', 'id')->inversedBy('electronicAddresses')->build();
+        $builder->createManyToOne('parentEntity', Entity::class)->addJoinColumn('parentId', 'id')->inversedBy('addresses')->build();
     }
 }

@@ -35,4 +35,6 @@ return array(
     'message_10046_electronic_address_record_created_successfully' => 'New electronic address added to record',
     'message_10047_electronic_address_record_updated_successfully' => 'Electronic address updated successfully',
     'message_10048_electronic_address_record_deleted_successfully' => 'Electronic address deleted successfully',
+    'message_10049_phone_address_primary_contact_updated' => 'Primary phone number updated to :addressText',
+    'message_10050_electronic_address_primary_contact_updated' => 'Primary email address updated to :addressText',
 );
