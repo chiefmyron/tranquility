@@ -1,3 +1,4 @@
+<div class="breadcrumb-container">
 @if ($breadcrumbs)
     <?php $counter = 0; ?>
 	<ol class="breadcrumb">
@@ -13,4 +14,8 @@
 		@endforeach
 	</ol>
 @endif
-    <hr />
+    
+    <a class="btn hidden-lg hidden-md" id="toggle-toolbar" href="#toolbar-container">{{ trans('administration.common_actions') }}...</a>
+</div>
+
+<hr />

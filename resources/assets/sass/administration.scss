@@ -123,11 +123,12 @@ body {
     font-size: 16px;
     border: 1px solid;
     background-color: $brand-navigation;
+    color: $nav-link-hover;
 }
 
 .nav-container .branding .nav-toggle:before {
     display: block;
-    color: #fff;
+    color: $nav-link-hover;
     content: "";
     width: 100%;
     padding-bottom: 0.125em;
@@ -225,12 +226,16 @@ body {
 }
 
 // Breadcrumbs
+.breadcrumb-container {
+    //position: relative;
+    //top: -65px;
+    //margin-bottom: -20px;
+}
+
 .breadcrumb {
-    position: absolute;
-    top: 65px;
+    display: inline;
     padding-left: 0px;
     padding-top: 10px;
-    margin-bottom: 0px;
     background-color: transparent;
 }
 
@@ -248,7 +253,7 @@ body {
 }
 
 .page-title {
-    margin-top: 20px;
+    margin-bottom: $layout-padding-width;
 }
 
 // Toolbar
@@ -319,11 +324,10 @@ body {
 }
 
 #toggle-toolbar {
-    position: absolute;
-    right: 0;
-    top: 65px;
+    //position: relative;
+    float: right;
     font-size: 1.2em;
-    padding-top: 10px;
+    padding: 0;
     color: $brand-primary;
 }
 
@@ -475,8 +479,15 @@ p.h-adr span {
     }
     
     // Breadcrumbs
+    .breadcrumb-container {
+        position: relative;
+        top: auto;
+        margin-bottom: 0px;
+    }
+
     .breadcrumb {
         position: relative;
+        display: block;
         top: auto;
         padding-left: 0px;
         padding-top: 10px;
@@ -498,7 +509,7 @@ p.h-adr span {
     }
 
     .page-title {
-        margin-top: 0px;
+        margin-bottom: 0px;
     }
     
     // Right-hand toolbar

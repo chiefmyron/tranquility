@@ -5814,11 +5814,12 @@ body {
   padding: 10px;
   font-size: 16px;
   border: 1px solid;
-  background-color: #303e4d; }
+  background-color: #303e4d;
+  color: #ABB1B7; }
 
 .nav-container .branding .nav-toggle:before {
   display: block;
-  color: #fff;
+  color: #ABB1B7;
   content: "";
   width: 100%;
   padding-bottom: 0.125em;
@@ -5899,11 +5900,9 @@ body {
   margin-top: 5px; }
 
 .breadcrumb {
-  position: absolute;
-  top: 65px;
+  display: inline;
   padding-left: 0px;
   padding-top: 10px;
-  margin-bottom: 0px;
   background-color: transparent; }
 
 .breadcrumb li {
@@ -5917,7 +5916,7 @@ body {
   content: none; }
 
 .page-title {
-  margin-top: 20px; }
+  margin-bottom: 15px; }
 
 #toolbar-container {
   position: absolute;
@@ -5977,11 +5976,9 @@ body {
   color: #303e4d; }
 
 #toggle-toolbar {
-  position: absolute;
-  right: 0;
-  top: 65px;
+  float: right;
   font-size: 1.2em;
-  padding-top: 10px;
+  padding: 0;
   color: #6698c8; }
 
 table.data-table th {
@@ -6088,8 +6085,13 @@ p.h-adr span {
     text-align: left; }
   .nav-container .branding a {
     margin-left: 50px; }
+  .breadcrumb-container {
+    position: relative;
+    top: auto;
+    margin-bottom: 0px; }
   .breadcrumb {
     position: relative;
+    display: block;
     top: auto;
     padding-left: 0px;
     padding-top: 10px;
@@ -6103,7 +6105,7 @@ p.h-adr span {
   .breadcrumb > li + li.previous:before {
     content: "/ "; }
   .page-title {
-    margin-top: 0px; }
+    margin-bottom: 0px; }
   #toolbar-container {
     position: inherit;
     width: 250px;
