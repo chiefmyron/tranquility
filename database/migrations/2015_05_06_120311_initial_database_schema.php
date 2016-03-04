@@ -61,21 +61,13 @@ class InitialDatabaseSchema extends Migration {
             $table->bigInteger('transactionId');
         });
         
-        // Address details - electronic
-        Schema::create('entity_addresses_electronic', function(Blueprint $table) {
+        // Address details - electronic, social, phone
+        Schema::create('entity_addresses', function(Blueprint $table) {
             $table->bigInteger('id')->primary();
             $table->bigInteger('parentId');
+            $table->string('category', 25);
             $table->string('addressType', 25);
-            $table->string('addressText', 25);
-            $table->boolean('primaryContact');
-        });
-        
-        // Address details - phone
-        Schema::create('entity_addresses_phone', function(Blueprint $table) {
-            $table->bigInteger('id')->primary();
-            $table->bigInteger('parentId');
-            $table->string('addressType', 25);
-            $table->string('addressText', 25);
+            $table->string('addressText', 255);
             $table->boolean('primaryContact');
         });
         
@@ -143,24 +135,14 @@ class InitialDatabaseSchema extends Migration {
             $table->primary(['id', 'version']);
         });
         
-        // Address details - electronic
-        Schema::create('history_entity_addresses_electronic', function(Blueprint $table) {
+        // Address details - electronic, social, phone
+        Schema::create('history_entity_addresses', function(Blueprint $table) {
             $table->bigInteger('id');
             $table->bigInteger('parentId');
             $table->integer('version');
+            $table->string('category', 25);
             $table->string('addressType', 25);
-            $table->string('addressText', 25);
-            $table->boolean('primaryContact');
-            $table->primary(['id', 'version']);
-        });
-        
-        // Address details - phone
-        Schema::create('history_entity_addresses_phone', function(Blueprint $table) {
-            $table->bigInteger('id');
-            $table->bigInteger('parentId');
-            $table->integer('version');
-            $table->string('addressType', 25);
-            $table->string('addressText', 25);
+            $table->string('addressText', 255);
             $table->boolean('primaryContact');
             $table->primary(['id', 'version']);
         });

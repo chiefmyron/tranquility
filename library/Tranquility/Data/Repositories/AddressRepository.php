@@ -3,10 +3,10 @@
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Tranquility\Data\BusinessObjects\Extensions\AuditTrail;
 
-class AddressPhoneRepository extends EntityRepository {
+class AddressRepository extends EntityRepository {
     
     /**
-     * Marks a phone address record as the primary contact mechanism. Any existing primary
+     * Marks an electronic address record as the primary contact mechanism. Any existing primary
      * phone records will have the flag removed.
      *
      * @param int   $id    ID for existing phone address record
@@ -24,7 +24,10 @@ class AddressPhoneRepository extends EntityRepository {
         $this->_em->persist($auditTrail);
         
         // Get a list of any existing addresses that have the primary contact flag set
-        $filters = array(['primaryContact', '=', '1']);
+        $filters = array(
+            ['primaryContact', '=', '1'],
+            ['category', '=', $entity->category]    
+        );
         $primaryContactAddresses = $this->all($filters);
         foreach ($primaryContactAddresses as $address) {
             // Create historical version of entity

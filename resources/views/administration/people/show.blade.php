@@ -21,19 +21,37 @@ $user = $person->getUserAccount();
         
         <div class="col-sm-5">
             <dl class="data-list">
-                <dt>Title:</dt>
-                <dd>{!! $person->title or "<i>None</i>" !!}</dd>
+                <dt>{{ trans('administration.people_label_title') }}</dt>
+                <dd>{{ $person->title or "&nbsp;" }}</dd>
                 
-                <dt>First name:</dt>
+                <dt>{{ trans('administration.people_label_first_name') }}</dt>
                 <dd>{{ $person->firstName }}</dd>
                 
-                <dt>Last name:</dt>
+                <dt>{{ trans('administration.people_label_last_name') }}</dt>
                 <dd>{{ $person->lastName }}</dd>
             </dl>
         </div>
         
         <div class="col-sm-5">
-            Other stuff
+            <dl class="data-list">
+                <dt>{{ trans('administration.people_label_user_account') }}</dt>
+                @if(is_null($user))
+                <dd>
+                    No user account
+                    <p><a href="{{ action('Administration\UsersController@create') }}" class="ajax">{{ trans('administration.users_heading_create_user') }}</a></p>
+                </dd>
+                @else
+                <dd><a href="{{ action('Administration\UsersController@showPersonUser', ['id' => $user->id]) }}">{{ $user->username }}</a></dd>
+                
+                <dt>{{ trans('administration.users_label_account_status') }}</dt>
+                    @if($user->active)
+                <dd><strong class="text-success">{{ trans('administration.users_status_active') }}</strong></dd>    
+                    @else
+                <dd><strong class="text-warning">{{ trans('administration.users_status_suspended') }}</strong></dd>
+                    @endif
+                @endif
+                
+            </dl>
         </div>
         
     </div>
@@ -55,6 +73,7 @@ $user = $person->getUserAccount();
         <div role="tabpanel" class="tab-pane active" id="contact-details">
             @include('administration.addresses._partials.panels.physical-address', ['addresses' => $person->getAddresses('physical'), 'parentId' => $person->id])
             @include('administration.addresses._partials.panels.phone-address', ['addresses' => $person->getAddresses('phone'), 'parentId' => $person->id])
+            @include('administration.addresses._partials.panels.email-address', ['addresses' => $person->getAddresses('email'), 'parentId' => $person->id])
         </div>
         <div role="tabpanel" class="tab-pane" id="activity-feed">...</div>
         <div role="tabpanel" class="tab-pane" id="related-items">...</div>

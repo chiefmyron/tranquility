@@ -303,7 +303,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		$messages = array();
 		
 		// If no entity was found, set the appropriate error message
-		if (is_null($entities) || $entities === false) {
+		if (is_null($entities) || $entities === false || count($entities) == 0 || is_null($entities[0])) {
 			$messages[] = array(
 				'code' => 10001,
 				'text' => 'message_10001_record_not_found',

@@ -5767,6 +5767,9 @@ h6 {
   text-transform: lowercase;
   margin: 0; }
 
+.large {
+  font-size: 1.5em; }
+
 body {
   padding-top: 15px;
   padding-bottom: 15px;
@@ -5896,10 +5899,25 @@ body {
   margin-top: 5px; }
 
 .breadcrumb {
+  position: absolute;
+  top: 65px;
   padding-left: 0px;
   padding-top: 10px;
   margin-bottom: 0px;
   background-color: transparent; }
+
+.breadcrumb li {
+  display: none; }
+
+.breadcrumb li.previous {
+  display: inline;
+  font-size: 1.2em; }
+
+.breadcrumb li.previous:before {
+  content: none; }
+
+.page-title {
+  margin-top: 20px; }
 
 #toolbar-container {
   position: absolute;
@@ -5916,7 +5934,8 @@ body {
   -webkit-transform: scaleX(0.00001);
   transition: transform 0.2s ease-in-out;
   -webkit-transition: -webkit-transform 0.2s ease-in-out;
-  outline: 0; }
+  outline: 0;
+  z-index: 1000; }
 
 #toolbar-container:target {
   transform: scaleX(1);
@@ -5958,9 +5977,12 @@ body {
   color: #303e4d; }
 
 #toggle-toolbar {
-  border: 1px solid #6698c8;
-  color: #6698c8;
-  float: right; }
+  position: absolute;
+  right: 0;
+  top: 65px;
+  font-size: 1.2em;
+  padding-top: 10px;
+  color: #6698c8; }
 
 table.data-table th {
   background-color: #6698c8;
@@ -5987,12 +6009,14 @@ table.data-table td.footer {
   padding: 15px;
   border-left: 1px solid #eeeeee; }
 
+.tab-content h3 {
+  margin-bottom: 15px; }
+
 .data-item {
   padding: 15px;
   padding-bottom: 5px;
   margin-bottom: 15px;
-  margin-top: 15px;
-  background-color: #eeeeee; }
+  background-color: #efefef; }
 
 .data-item.primary {
   background-color: #fceedb; }
@@ -6009,8 +6033,8 @@ table.data-table td.footer {
   float: right;
   text-transform: lowercase; }
 
-.data-item {
-  background-color: #e9ecf3; }
+dl.data-list {
+  margin-bottom: 0; }
 
 dl.data-list dt {
   color: #555555; }
@@ -6064,6 +6088,22 @@ p.h-adr span {
     text-align: left; }
   .nav-container .branding a {
     margin-left: 50px; }
+  .breadcrumb {
+    position: relative;
+    top: auto;
+    padding-left: 0px;
+    padding-top: 10px;
+    margin-bottom: 0px;
+    background-color: transparent; }
+  .breadcrumb li {
+    display: inline; }
+  .breadcrumb li.previous {
+    display: inline;
+    font-size: 1em; }
+  .breadcrumb > li + li.previous:before {
+    content: "/ "; }
+  .page-title {
+    margin-top: 0px; }
   #toolbar-container {
     position: inherit;
     width: 250px;

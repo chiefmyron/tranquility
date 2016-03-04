@@ -51,13 +51,13 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
     
     // Address controller
     
-    Route::post('/address',                      'Administration\AddressController@store');
-    Route::get ('/address/create/{type}',        'Administration\AddressController@create');
-    Route::get ('/address/{type}/{id}/update',   'Administration\AddressController@update');
-    Route::get ('/address/{type}/{id}/confirm',  'Administration\AddressController@confirm');
-    Route::post('/address/{type}/{id}/delete',   'Administration\AddressController@delete');
-    Route::get ('/address/{type}/{id}/primary',  'Administration\AddressController@makePrimary');
-    Route::get ('/address/{id}/map',             'Administration\AddressController@displayMap');
+    Route::post('/address',                          'Administration\AddressController@store');
+    Route::get ('/address/create/{category}',        'Administration\AddressController@create');
+    Route::get ('/address/{category}/{id}/update',   'Administration\AddressController@update');
+    Route::get ('/address/{category}/{id}/confirm',  'Administration\AddressController@confirm');
+    Route::post('/address/{category}/{id}/delete',   'Administration\AddressController@delete');
+    Route::get ('/address/{category}/{id}/primary',  'Administration\AddressController@makePrimary');
+    Route::get ('/address/{id}/map',                 'Administration\AddressController@displayMap');
     
     // Settings controller
     Route::get('/settings', 'Administration\SettingsController@index');

@@ -7,9 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 use Tranquility\Data\BusinessObjects\EntityBusinessObject as Entity;
 
-class AddressElectronicHistoricalBusinessObject extends EntityHistoricalBusinessObject {
+class AddressHistoricalBusinessObject extends EntityHistoricalBusinessObject {
     use \Tranquility\Data\Traits\PropertyAccessorTrait;
     
+    protected $category;
     protected $addressType;
     protected $addressText;
     protected $primaryContact;
@@ -24,6 +25,7 @@ class AddressElectronicHistoricalBusinessObject extends EntityHistoricalBusiness
      * @static
      */
     protected static $_fields = array(
+        'category',
         'addressType',
         'addressText',
         'primaryContact',
@@ -62,15 +64,16 @@ class AddressElectronicHistoricalBusinessObject extends EntityHistoricalBusiness
     public static function loadMetadata(ClassMetadata $metadata) {
         $builder = new ClassMetadataBuilder($metadata);
         // Define table name
-        $builder->setTable('history_entity_addresses_electronic');
+        $builder->setTable('history_entity_addresses');
         $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
         
         // Define fields
+        $builder->addField('category', 'string');
         $builder->addField('addressType', 'string');
         $builder->addField('addressText', 'string');
         $builder->addField('primaryContact', 'boolean');
         
         // Add relationships
-        $builder->createManyToOne('parentEntity', Entity::class)->addJoinColumn('parentId', 'id')->inversedBy('electronicAddresses')->build();
+        $builder->createManyToOne('parentEntity', Entity::class)->addJoinColumn('parentId', 'id')->inversedBy('addresses')->build();
     }
 }

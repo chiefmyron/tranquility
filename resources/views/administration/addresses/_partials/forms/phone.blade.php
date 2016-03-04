@@ -21,4 +21,4 @@ $addressTypes = array(
 	{!! FormError::inline('addressText', Session::get('messages')) !!}
 </div>
 
-{!! Form::hidden('type', \Tranquility\Enums\BusinessObjects\Address\AddressTypes::Phone) !!}
+{!! Form::hidden('category', \Tranquility\Enums\BusinessObjects\Address\AddressTypes::Phone) !!}

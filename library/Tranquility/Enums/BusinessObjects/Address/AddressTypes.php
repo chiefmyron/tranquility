@@ -10,5 +10,7 @@
 class AddressTypes extends \Tranquility\Enums\Enum {
 	const Physical = 'physical';
 	const Phone = 'phone';
-	const Electronic = 'electronic';
+	const Email = 'email';
+    const Social = 'social';
+    const Web = 'web';
 }

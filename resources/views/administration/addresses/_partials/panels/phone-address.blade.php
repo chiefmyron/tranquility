@@ -5,7 +5,7 @@
                 <div class="col-md-12">
                 <div class="data-item text-center">
                     <p class="large">{{ trans('administration.address_message_no_phone_addresses') }}</p>
-                    <p class="large"><a href="{{ action('Administration\AddressController@create', ['type' => 'phone', 'parentId' => $parentId]) }}" class="ajax"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.address_heading_add_new_phone_number') }}</a></p>
+                    <p class="large"><a href="{{ action('Administration\AddressController@create', ['type' => 'phone', 'parentId' => $parentId]) }}" class="ajax"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.address_heading_add_new_phone') }}</a></p>
                 </div>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                 <div class="col-md-6 text-center">
                     <div class="data-item">
                         <a href="{{ action('Administration\AddressController@create', ['type' => 'phone', 'parentId' => $parentId]) }}" class="ajax large">
-                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.address_heading_add_new_phone_number') }}
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.address_heading_add_new_phone') }}
                         </a>    
                     </div>
                 </div>

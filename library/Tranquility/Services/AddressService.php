@@ -5,20 +5,20 @@ use \Tranquility\Enums\System\EntityType        as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel      as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode    as EnumHttpStatusCode;
 
-class AddressPhoneService extends \Tranquility\Services\Service {
+class AddressService extends \Tranquility\Services\Service {
     /**
      * Specify business object name
      *
      * @return string
      */
     public function businessObject() {
-        return 'Tranquility\Data\BusinessObjects\AddressPhoneBusinessObject';
+        return 'Tranquility\Data\BusinessObjects\AddressBusinessObject';
     }
 	
 	/**
-	 * Create a new phone address record
+	 * Create a new address record
 	 *
-	 * @param array Data for creating a new phone address record
+	 * @param array Data for creating a new address record
 	 * @return \Tranquility\Services\ServiceResponse
 	 */
 	public function create(array $data) {
@@ -33,10 +33,10 @@ class AddressPhoneService extends \Tranquility\Services\Service {
 	}
 	
 	/**
-	 * Updates an existing phone address record
+	 * Updates an existing address record
 	 *
-	 * @param int   $id    ID for existing phone address record
-	 * @param array $data  Data for updating an existing phone address record
+	 * @param int   $id    ID for existing address record
+	 * @param array $data  Data for updating an existing address record
 	 * @return \Tranquility\Services\ServiceResponse
 	 */
 	public function update($id, array $data) {
@@ -51,9 +51,9 @@ class AddressPhoneService extends \Tranquility\Services\Service {
 	}
     
     /** 
-     * Deletes an existing phone address record
+     * Deletes an existing address record
      *
-     * @param int   $id                ID for existing phone address record
+     * @param int   $id                ID for existing address record
      * @param array $auditTrailFields  Array containing audit trail information
      * @return \Tranquility\Services\ServiceResponse
      */
@@ -70,10 +70,10 @@ class AddressPhoneService extends \Tranquility\Services\Service {
     }
     
     /**
-     * Marks a phone address record as the primary contact mechanism. Any existing primary
-     * phone records will have the flag removed.
+     * Marks an address record as the primary contact mechanism. Any existing primary
+     * address records will have the flag removed.
      *
-     * @param int   $id                ID for existing phone address record
+     * @param int   $id                ID for existing address record
      * @param array $auditTrailFields  Array containing audit trail information
      * @return \Tranquility\Services\ServiceResponse
      */
@@ -94,8 +94,7 @@ class AddressPhoneService extends \Tranquility\Services\Service {
         $entity = $this->_getRepository()->makePrimary($id, $auditTrailFields);
 		$response->setContent($entity);
 		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
+        $response->addMessage(10049, EnumMessageLevel::Success, 'message_10049_phone_address_primary_contact_updated', ['addressText' => $entity->addressText]);
 		return $response;
-        
-        
     }
 }	
