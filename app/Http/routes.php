@@ -50,7 +50,6 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
     Route::post('/users/{id}/update/password', 'Administration\UsersController@saveNewPassword');
     
     // Address controller
-    
     Route::post('/address',                          'Administration\AddressController@store');
     Route::get ('/address/create/{category}',        'Administration\AddressController@create');
     Route::get ('/address/{category}/{id}/update',   'Administration\AddressController@update');
@@ -58,6 +57,11 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
     Route::post('/address/{category}/{id}/delete',   'Administration\AddressController@delete');
     Route::get ('/address/{category}/{id}/primary',  'Administration\AddressController@makePrimary');
     Route::get ('/address/{id}/map',                 'Administration\AddressController@displayMap');
+    
+    // Tags controller
+    Route::get ('/tags/{parentId}',                  'Administration\TagsController@index');
+    Route::post('/tags/{parentId}',                  'Administration\TagsController@store');
+    Route::get ('/tags/{parentId}/update',           'Administration\TagsController@update');
     
     // Settings controller
     Route::get('/settings', 'Administration\SettingsController@index');

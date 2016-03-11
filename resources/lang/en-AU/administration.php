@@ -13,6 +13,7 @@ return array(
     'common_go_back' => 'Go back',
     'common_actions' => 'Actions',
     'common_tips' => 'Tips',
+    'common_tags' => 'Tags',
 	'common_heading_delete_confirm' => 'Delete these records?',
 	'common_command_delete_confirm' => 'Delete records',
 	
@@ -111,6 +112,10 @@ return array(
     'address_command_add_another_address' => 'Add another address',
     'address_command_view_map' => 'View map',
     'address_command_make_primary' => 'Make primary',
+    
+    // Tagging strings
+    'tags_heading_update' => 'Update tags',
+    'tags_label_tags' => 'Tags',
     
     // Search strings
     'search_heading_search' => 'Search',

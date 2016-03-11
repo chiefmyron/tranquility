@@ -10,6 +10,7 @@ use Tranquility\Enums\BusinessObjects\Address\AddressType                   as E
 use Tranquility\Data\BusinessObjects\AddressBusinessObject                  as Address;
 use Tranquility\Data\BusinessObjects\AddressPhysicalBusinessObject          as AddressPhysical;
 use Tranquility\Data\BusinessObjects\Extensions\AuditTrail                  as AuditTrail;
+use Tranquility\Data\BusinessObjects\Extensions\Tags                        as Tag;
 use Tranquility\Exceptions\BusinessObjectException                          as BusinessObjectException;
 
 abstract class EntityBusinessObject {
@@ -24,6 +25,7 @@ abstract class EntityBusinessObject {
     // Related entities
     protected $addresses;
     protected $physicalAddresses;
+    protected $tags;
     
     /**
      * List of properties that can be accessed via getters and setters
@@ -69,6 +71,7 @@ abstract class EntityBusinessObject {
         }
         
         // Initialise collections for related entities
+        $this->tags = new ArrayCollection();
         $this->addresses = new ArrayCollection();
         $this->physicalAddresses = new ArrayCollection();
     }
@@ -99,6 +102,15 @@ abstract class EntityBusinessObject {
         }
         
         return $this;
+    }
+    
+    /**
+     * Retreive a collection of tags associated with this entity
+     *
+     * @return mixed
+     */
+    public function getTags() {
+        return $this->tags->toArray();
     }
     
     /**
@@ -163,6 +175,7 @@ abstract class EntityBusinessObject {
         $builder->createOneToOne('auditTrail', AuditTrail::class)->addJoinColumn('transactionId','transactionId')->build();
         $builder->createOneToMany('addresses', Address::class)->mappedBy('parentEntity')->build();
         $builder->createOneToMany('physicalAddresses', AddressPhysical::class)->mappedBy('parentEntity')->build();
+        $builder->createManyToMany('tags', Tag::class)->setJoinTable('entity_tags_xref')->addJoinColumn('entityId', 'id')->addInverseJoinColumn('tagId', 'id')->build();
     }
     
     /**

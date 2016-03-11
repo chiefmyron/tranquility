@@ -71,7 +71,7 @@
         <!-- Container for modal dialog -->
         <div id="modal-dialog-container" class="modal fade" tabindex="-1" role="dialog" aria-labelledBy="modal-dialog-title">
             <div class="modal-dialog" role="document">
-				<div id="modal-content" class="modal-content"></div>
+                <div id="modal-content" class="modal-content"></div>
             </div>
         </div>
         <!-- End of modal dialog -->
@@ -84,7 +84,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
         @endif
+        <script src="/backend/js/jquery.tagsinput.js"></script>
         <script src="/backend/js/core.js"></script>
-        
     </body>
 </html>   

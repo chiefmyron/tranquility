@@ -51,6 +51,10 @@ $user = $person->getUserAccount();
                     @endif
                 @endif
                 
+                <dt>{{ trans('administration.common_tags') }}</dt>
+                <dd>
+                    <div class="tag-container">Tags go here<a href="{{ action('Administration\TagsController@update', ['parentId' => $person->id]) }}" class="ajax">Add tag</a></div>
+                </dd>
             </dl>
         </div>
         
