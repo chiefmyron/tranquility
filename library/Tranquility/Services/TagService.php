@@ -16,9 +16,9 @@ class TagService extends \Tranquility\Services\Service {
     }
 	
 	/**
-	 * Create a new address record
+	 * Create a new tag
 	 *
-	 * @param array Data for creating a new address record
+	 * @param array Data for creating a new tag
 	 * @return \Tranquility\Services\ServiceResponse
 	 */
 	public function create(array $data) {
@@ -33,10 +33,10 @@ class TagService extends \Tranquility\Services\Service {
 	}
 	
 	/**
-	 * Updates an existing address record
+	 * Updates an existing tag
 	 *
-	 * @param int   $id    ID for existing address record
-	 * @param array $data  Data for updating an existing address record
+	 * @param int   $id    ID for existing tag record
+	 * @param array $data  Data for updating an existing tag record
 	 * @return \Tranquility\Services\ServiceResponse
 	 */
 	public function update($id, array $data) {
@@ -51,9 +51,9 @@ class TagService extends \Tranquility\Services\Service {
 	}
     
     /** 
-     * Deletes an existing address record
+     * Deletes an existing tag record
      *
-     * @param int   $id                ID for existing address record
+     * @param int   $id                ID for existing tag record
      * @param array $auditTrailFields  Array containing audit trail information
      * @return \Tranquility\Services\ServiceResponse
      */
@@ -69,32 +69,25 @@ class TagService extends \Tranquility\Services\Service {
 		return $response;
     }
     
-    /**
-     * Marks an address record as the primary contact mechanism. Any existing primary
-     * address records will have the flag removed.
-     *
-     * @param int   $id                ID for existing address record
-     * @param array $auditTrailFields  Array containing audit trail information
-     * @return \Tranquility\Services\ServiceResponse
-     */
-    public function makePrimary($id, array $auditTrailFields) {
-        // Set up response object
-		$response = new ServiceResponse();
-		
-		// Perform input validation
-		$validation = $this->validateAuditTrailFields($auditTrailFields);
-		if (count($validation) > 0) {
-			// Send error response back immediately
-			$response->addMessages($validation);
-			$response->setHttpResponseCode(EnumHttpStatusCode::BadRequest);
-			return $response;
+    public function setEntityTags($entityId, $tagValues, array $auditTrailFields) {
+        // Get the set of tags already created
+        $this->all(...);
+        
+        // Create new tags for those that don't already exist
+        $tags = array();
+        
+        // Get parent entity
+        $entity = $this->findParentEntity($entityId);
+        
+        // Update tags for entity
+        $entity->setTags($tags);
+        
+        // Add entity specific success code
+        if (!$response->containsErrors()) {
+			$response->addMessage(10045, EnumMessageLevel::Success, 'message_10045_phone_address_record_deleted_successfully');
 		}
-		
-		// Attempt to update the entity
-        $entity = $this->_getRepository()->makePrimary($id, $auditTrailFields);
-		$response->setContent($entity);
-		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
-        $response->addMessage(10049, EnumMessageLevel::Success, 'message_10049_phone_address_primary_contact_updated', ['addressText' => $entity->addressText]);
+        
 		return $response;
+        
     }
 }	

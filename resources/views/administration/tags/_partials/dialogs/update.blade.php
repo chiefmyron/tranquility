@@ -8,7 +8,7 @@
     
     <div class="form-group">
         {!! Form::label('tags', trans('administration.tags_label_tags')) !!}
-        {!! Form::text('tags', null, ['class' => 'form-control']) !!}	
+        {!! Form::text('tags', implode(',', $tags), ['class' => 'form-control', 'data-role' => 'tagsinput']) !!}	
         {!! FormError::inline('tags', Session::get('messages')) !!}
     </div>
 </div>

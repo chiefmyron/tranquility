@@ -18,13 +18,17 @@ $.ajaxSetup({
 
 // Initial page setup
 $(document).ready(function() {
-  attachCommonHandlers();
-  attachGlobalSearchHandlers();
+    attachCommonHandlers();
+    attachGlobalSearchHandlers();
 });
 
-// Every time a modal is shown, if it has an autofocus element, focus on it.
+// Event - fires whenever dialog is displayed
 $('.modal').on('shown.bs.modal', function() {
-  $(this).find('[autofocus]').focus();
+    // Set autofocus for elements in dialog
+    $(this).find('[autofocus]').focus();
+    
+    // Attach tagging
+    $(this).find('[data-role="tagsinput"]').tagsinput();
 });
 
 /**

@@ -84,37 +84,18 @@ class TagsController extends Controller {
 	public function store(Request $request) {
 		// Save details of address
 		$params = $request->all();
-		$id = $request->input('id', 0);
-        $category = $request->input('category', '');
         $parentId = $request->input('parentId', 0);
-		
-		// Add in additional audit trail details
-		$params['updateBy'] = Auth::user();
-		$params['updateDateTime'] = Carbon::now();
-		$params['transactionSource'] = EnumTransactionSource::UIBackend;
+        $tagString = $request->input('tags', null);
         
-        // Retrieve parent entity details
-        $response = $this->_getService($category)->findParentEntity($parentId);
-        if ($response->containsErrors()) {
-            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
-            return Response::json($ajax->toArray());
+        // Extract individual tags
+        $tags = array();
+        if (!is_null($tagString)) {
+            $tags = explode(',', $tagString);
         }
-        $parentEntity = $response->getFirstContentItem();
-        		
-		// Create or update record		
-		if ($id != 0) {
-            // Update existing record
-            $params['updateReason'] = 'backend address update';
-			$response = $this->_getService($category)->update($id, $params);
-		} else {
-            // Create new address record
-            $params['parent'] = $parentEntity;
-            $params['updateReason'] = 'backend address create';
-			$response = $this->_getService($category)->create($params);
-		}
-        
-        // Set up response
+		
+        // Set tags for the parent entity
         $ajax = new \Tranquility\View\AjaxResponse();
+        $response = $this->_service->setEntityTags($parentId, $tags);
         if ($response->containsErrors()) {
 			// Errors encountered - redisplay form with error messages
             $ajax->addContent('modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('modal-dialog-container #process-message-container'));
@@ -123,8 +104,7 @@ class TagsController extends Controller {
 		}
 
         // Render address panel for person
-        $address = $response->getFirstContentItem();
-        $ajax = $this->_refreshAddressList($parentEntity, $category);
+        $entity = $response->getFirstContentItem();
         $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
         $ajax->addCallback('closeDialog');
         return Response::json($ajax->toArray());
