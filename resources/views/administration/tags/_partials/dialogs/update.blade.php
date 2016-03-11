@@ -13,7 +13,7 @@
     </div>
 </div>
 <div class="modal-footer">
-    {!! Form::hidden('parentId', $address->getParentEntity()->id) !!}
+    {!! Form::hidden('parentId', $parentId) !!}
     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
     <button type="submit" class="btn btn-primary" id="dialog-submit">{{ trans('administration.tags_heading_update') }}</button>
 </div>

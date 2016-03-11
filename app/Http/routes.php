@@ -59,8 +59,8 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
     Route::get ('/address/{id}/map',                 'Administration\AddressController@displayMap');
     
     // Tags controller
+    Route::post('/tags',                             'Administration\TagsController@store');
     Route::get ('/tags/{parentId}',                  'Administration\TagsController@index');
-    Route::post('/tags/{parentId}',                  'Administration\TagsController@store');
     Route::get ('/tags/{parentId}/update',           'Administration\TagsController@update');
     
     // Settings controller

@@ -175,7 +175,7 @@ abstract class EntityBusinessObject {
         $builder->createOneToOne('auditTrail', AuditTrail::class)->addJoinColumn('transactionId','transactionId')->build();
         $builder->createOneToMany('addresses', Address::class)->mappedBy('parentEntity')->build();
         $builder->createOneToMany('physicalAddresses', AddressPhysical::class)->mappedBy('parentEntity')->build();
-        $builder->createManyToMany('tags', Tag::class)->setJoinTable('entity_tags_xref')->addJoinColumn('entityId', 'id')->addInverseJoinColumn('tagId', 'id')->build();
+        $builder->createManyToMany('tags', Tag::class)->inversedBy('entities')->setJoinTable('entity_tags_xref')->addJoinColumn('entityId', 'id')->addInverseJoinColumn('tagId', 'id')->build();
     }
     
     /**

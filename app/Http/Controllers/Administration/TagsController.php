@@ -71,7 +71,7 @@ class TagsController extends Controller {
         
 		// AJAX response
 		$ajax = new \Tranquility\View\AjaxResponse();
-		$dialog = $this->_renderPartial('administration.tags._partials.dialogs.update', ['tags' => $tags, 'entityTypes' => $entityTypes]);
+		$dialog = $this->_renderPartial('administration.tags._partials.dialogs.update', ['tags' => $tags, 'entityTypes' => $entityTypes, 'parentId' => $parentId]);
         $ajax->addContent('modal-content', $dialog, 'displayDialog', [null, "large"]);
 		return Response::json($ajax->toArray());
 	}
