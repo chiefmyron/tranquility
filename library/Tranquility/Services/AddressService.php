@@ -12,7 +12,7 @@ class AddressService extends \Tranquility\Services\Service {
      * @return string
      */
     public function businessObject() {
-        return 'Tranquility\Data\BusinessObjects\AddressBusinessObject';
+        return 'Tranquility\Data\Objects\BusinessObjects\AddressBusinessObject';
     }
 	
 	/**

@@ -1,19 +1,28 @@
-<?php namespace Tranquility\Data\BusinessObjects;
+<?php namespace Tranquility\Data\Objects\BusinessObjects;
 
+// Doctrine 2 libraries
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
+// Tranquility libraries
 use Tranquility\Enums\System\EntityType                                     as EnumEntityType;
-use Tranquility\Enums\BusinessObjects\Address\AddressType                   as EnumAddressType;
-use Tranquility\Data\BusinessObjects\AddressBusinessObject                  as Address;
-use Tranquility\Data\BusinessObjects\AddressPhysicalBusinessObject          as AddressPhysical;
-use Tranquility\Data\BusinessObjects\Extensions\AuditTrail                  as AuditTrail;
-use Tranquility\Data\BusinessObjects\Extensions\Tags                        as Tag;
+use Tranquility\Data\Objects\DataObject                                     as DataObject;
 use Tranquility\Exceptions\BusinessObjectException                          as BusinessObjectException;
 
-abstract class EntityBusinessObject {
+// Tranquility related business objects
+use Tranquility\Data\Objects\BusinessObjects\PersonBusinessObject           as Person;
+use Tranquility\Data\Objects\BusinessObjects\UserBusinessObject             as User;
+use Tranquility\Data\Objects\BusinessObjects\AddressBusinessObject          as Address;
+use Tranquility\Data\Objects\BusinessObjects\AddressPhysicalBusinessObject  as AddressPhysical;
+
+// Tranquility extension data objects
+use Tranquility\Data\Objects\ExtensionObjects\AuditTrail                    as AuditTrail;
+use Tranquility\Data\Objects\ExtensionObjects\Tag                           as Tag;
+
+abstract class BusinessObject extends DataObject {
+    // Entity properties
     protected $id;
     protected $version;
     protected $type;
@@ -25,6 +34,8 @@ abstract class EntityBusinessObject {
     // Related entities
     protected $addresses;
     protected $physicalAddresses;
+    
+    // Related extension data objects
     protected $tags;
     
     /**
@@ -48,6 +59,14 @@ abstract class EntityBusinessObject {
      * @var array
      */
     protected static $_mandatoryFields = array();
+    
+    /**
+     * List of properties that are not publically accessible
+     *
+     * @static
+     * @var array
+     */
+     protected static $_hiddenFields = array();
     
     /**
      * Create a new instance of the Business Object
@@ -79,9 +98,9 @@ abstract class EntityBusinessObject {
     /**
      * Sets values for object properties, based on the inputs provided
      * 
-     * @param mixed $data  May be an array or an instance of BusinessObject
-     * @throws Tranquility\Exceptions\BusinessObjectException
-     * @return Tranquility\Data\BusinessObjects\Entity
+     * @abstract
+     * @param mixed $data  May be an array or an instance of DataObject
+     * @return Tranquility\Data\DataObject
      */
     public function populate($data) {
         if ($data instanceof Entity) {
@@ -94,7 +113,7 @@ abstract class EntityBusinessObject {
         }
         
         // Assign relevant data to object properties
-        $entityFields = $this->getEntityFields();
+        $entityFields = $this->getFields();
         foreach ($entityFields as $field) {
             if (isset($data[$field])) {
                 $this->$field = $data[$field];
@@ -107,10 +126,65 @@ abstract class EntityBusinessObject {
     /**
      * Retreive a collection of tags associated with this entity
      *
-     * @return mixed
+     * @return array
      */
     public function getTags() {
         return $this->tags->toArray();
+    }
+    
+    /**
+     * Remove a tag from the tag collection for the entity
+     *
+     * @param Tag $tag   Tag to be removed
+     * @return Tranquility\Data\BusinessObjects\Entity
+     */
+    public function removeTag(Tag $tag) {
+        if ($this->tags->contains($tag) === false) {
+            return $this;
+        }
+        
+        $this->tags->removeElement($tag);
+        $tag->removeRelatedEntity($this);
+        return $this;
+    }
+    
+    /**
+     * Add a new tag to the tag collection for the entity
+     *
+     * @param Tag $tag   New tag to add to the entity
+     * @return Tranquility\Data\BusinessObjects\Entity
+     */
+    public function addTag(Tag $tag) {
+        if ($this->tags->contains($tag) === true) {
+            return $this;
+        }
+        
+        $this->tags->add($tag);
+        $tag->addRelatedEntity($this);
+        return $this;
+    }
+    
+    /**
+     * Clears any existing tags and sets the new collection
+     *
+     * @param array $tags   Array of Tag objects
+     * @return Tranquility\Data\BusinessObjects\Entity
+     */
+    public function setTags(array $tags) {
+        // Clear existing tags
+        $existingTags = $this->getTags();
+        foreach ($existingTags as $tag) {
+            $this->removeTag($tag);
+            $tag->removeRelatedEntity($this);
+        }
+        
+        // Add new tags
+        foreach ($tags as $tag) {
+            $this->addTag($tag);
+            $tag->addRelatedEntity($this);
+        }
+        
+        return $this;
     }
     
     /**
@@ -143,7 +217,7 @@ abstract class EntityBusinessObject {
      *
      * @return \Tranquility\Data\BusinessObjects\Extensions\AuditTrail
      */
-    public function getAuditTrailDetails() {
+    public function getAuditTrail() {
         return $this->auditTrail;
     }
      
@@ -157,14 +231,15 @@ abstract class EntityBusinessObject {
         $builder = new ClassMetadataBuilder($metadata);
         // Define table name
         $builder->setTable('entity');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
         
         // Define inheritence
         $builder->setJoinedTableInheritance();
         $builder->setDiscriminatorColumn('type');
-        $builder->addDiscriminatorMapClass(EnumEntityType::Person, PersonBusinessObject::class);
-        $builder->addDiscriminatorMapClass(EnumEntityType::User, UserBusinessObject::class);
-        $builder->addDiscriminatorMapClass(EnumEntityType::Address, AddressBusinessObject::class);
-        $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhysical, AddressPhysicalBusinessObject::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::Person, Person::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::User, User::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::Address, Address::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhysical, AddressPhysical::class);
         
         // Define fields
         $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
@@ -184,7 +259,7 @@ abstract class EntityBusinessObject {
      * @static
      * @return array
      */
-    public static function getEntityFields() {
+    public static function getFields() {
         return array_merge(self::$_fields, AuditTrail::getFields());
     }
     
@@ -195,13 +270,23 @@ abstract class EntityBusinessObject {
      * @var boolean $newRecord  Adjusts the set of mandatory fields based on whether a record is being created or updated
      * @return array
      */
-    public static function getMandatoryEntityFields($newRecord = false) {
+    public static function getMandatoryFields($newRecord = false) {
         if (!$newRecord) {
             // ID will be mandatory for any updates to records
             $mandatoryFields = self::$_mandatoryFields;
             array_unshift($mandatoryFields, 'id');
             return $mandatoryFields;
         }
-        return array_merge(self::$_mandatoryFields, AuditTrail::getMandatoryFields());
+        return array_merge(self::$_mandatoryFields, AuditTrail::getMandatoryFields($newRecord));
+    }
+    
+    /**
+     * Returns a list of fields that will not be exposed publically
+     *
+     * @static
+     * @return array
+     */
+    protected static function _getHiddenFields() {
+        return self::$_hiddenFields;
     }
 }

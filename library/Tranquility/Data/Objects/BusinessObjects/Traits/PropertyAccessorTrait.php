@@ -1,8 +1,8 @@
-<?php namespace Tranquility\Data\Traits;
+<?php namespace Tranquility\Data\Objects\BusinessObjects\Traits;
 
-use Tranquility\Data\BusinessObjects\EntityBusinessObject as Entity;
-use Tranquility\Data\BusinessObjects\Extensions\AuditTrail as AuditTrail;
-use Tranquility\Exceptions\BusinessObjectException as BusinessObjectException;
+use Tranquility\Data\Objects\BusinessObjects\BusinessObject        as Entity;
+use Tranquility\Data\Objects\ExtensionObjects\AuditTrail           as AuditTrail;
+use Tranquility\Exceptions\BusinessObjectException                 as BusinessObjectException;
 
 trait PropertyAccessorTrait {
     /**
@@ -18,7 +18,7 @@ trait PropertyAccessorTrait {
         if (method_exists($this, $methodName)) {
             // Use custom function to set value
             $this->{$methodName}($value);
-        } elseif (in_array($name, self::getEntityFields())) {
+        } elseif (in_array($name, self::getFields())) {
             // Store value directly
             if ($value !== '') {
                 $this->$name = $value;
@@ -40,7 +40,7 @@ trait PropertyAccessorTrait {
         if (method_exists($this, $methodName)) {
             // Use custom function to retrieve value
             return $this->{$methodName}();
-        } elseif (in_array($name, self::getEntityFields()) && !in_array($name, $this->_getHiddenFields())) {
+        } elseif (in_array($name, self::getFields()) && !in_array($name, self::_getHiddenFields())) {
             // Retrieve value directly
             return $this->$name;
         } else {
@@ -55,7 +55,7 @@ trait PropertyAccessorTrait {
      * @return boolean
      */
     public function __isset($name) {
-        if (in_array($name, self::getEntityFields())) {
+        if (in_array($name, self::getFields())) {
             return isset($this->$name);
         } else {
             return false;
@@ -81,14 +81,14 @@ trait PropertyAccessorTrait {
      */
     public function toArray() {
         $result = array();
-        foreach (self::getEntityFields() as $fieldName) {
+        foreach (self::getFields() as $fieldName) {
             if (!in_array($fieldName, AuditTrail::getFields()) && !in_array($fieldName, $this->_getHiddenFields())) {
                 $result[$fieldName] = $this->$fieldName;
             }
         }
         
         // Add in audit trail details
-        $auditTrail = $this->getAuditTrailDetails();
+        $auditTrail = $this->getAuditTrail();
         $result['auditTrail'] = $auditTrail;
         
         return $result;
@@ -100,8 +100,8 @@ trait PropertyAccessorTrait {
      * @static
      * @return array
      */
-    public static function getEntityFields() {
-        return array_merge(Entity::getEntityFields(), self::$_fields);
+    public static function getFields() {
+        return array_merge(Entity::getFields(), self::$_fields);
     }
     
     /**
@@ -111,15 +111,22 @@ trait PropertyAccessorTrait {
      * @var boolean $newRecord  Adjusts the set of mandatory fields based on whether a record is being created or updated
      * @return array
      */
-    public static function getMandatoryEntityFields($newRecord = false) {
-        $fields = array_merge(Entity::getMandatoryEntityFields($newRecord), self::$_mandatoryFields);
+    public static function getMandatoryFields($newRecord = false) {
+        $fields = array_merge(Entity::getMandatoryFields($newRecord), self::$_mandatoryFields);
         if ($newRecord) {
             $fields = array_merge($fields, self::$_mandatoryFieldsNewEntity);
         }
         return $fields;
     }
     
-    protected function _getHiddenFields() {
+    /**
+     * Returns a list of fields that will not be exposed publically
+     *
+     * @static
+     * @abstract
+     * @return array
+     */
+    protected static function _getHiddenFields() {
         if (!isset(self::$_hiddenFields)) {
             return array();
         }

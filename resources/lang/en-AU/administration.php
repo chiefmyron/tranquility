@@ -16,6 +16,10 @@ return array(
     'common_tags' => 'Tags',
 	'common_heading_delete_confirm' => 'Delete these records?',
 	'common_command_delete_confirm' => 'Delete records',
+    'common_entity_type_person' => 'Person',
+    'common_entity_type_user' => 'User',
+    'common_entity_type_address' => 'Address',
+    
 	
 	// Login text
 	'login_heading_login' => 'Login',
@@ -116,6 +120,7 @@ return array(
     // Tagging strings
     'tags_heading_update' => 'Update tags',
     'tags_label_tags' => 'Tags',
+    'tags_command_add_tag' => 'Add tag',
     
     // Search strings
     'search_heading_search' => 'Search',

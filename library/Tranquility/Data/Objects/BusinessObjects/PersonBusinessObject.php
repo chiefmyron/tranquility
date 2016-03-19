@@ -1,19 +1,25 @@
-<?php namespace Tranquility\Data\BusinessObjects;
+<?php namespace Tranquility\Data\Objects\BusinessObjects;
 
-use Doctrine\ORM\Mapping as ORM;
+// Doctrine 2 libraries
+use Doctrine\ORM\Mapping                                                            as ORM;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Tranquility\Enums\System\EntityType                                     as EnumEntityType;
-use Tranquility\Enums\BusinessObjects\Address\AddressTypes                  as EnumAddressType;
-use Tranquility\Data\BusinessObjects\UserBusinessObject                     as User;
-use Tranquility\Data\BusinessObjects\History\PersonHistoricalBusinessObject as PersonHistory;
-use Tranquility\Exceptions\BusinessObjectException                          as BusinessObjectException;
+// Tranquility libraries
+use Tranquility\Enums\System\EntityType                                             as EnumEntityType;
+use Tranquility\Enums\BusinessObjects\Address\AddressTypes                          as EnumAddressType;
+use Tranquility\Exceptions\BusinessObjectException                                  as BusinessObjectException;
 
-class PersonBusinessObject extends EntityBusinessObject {
-    use \Tranquility\Data\Traits\PropertyAccessorTrait;
+// Tranquility historical version of business object
+use Tranquility\Data\Objects\BusinessObjects\History\PersonHistoricalBusinessObject as PersonHistory;
+
+// Tranquility related business objects
+use Tranquility\Data\Objects\BusinessObjects\UserBusinessObject                     as User;
+
+class PersonBusinessObject extends BusinessObject {
+    use \Tranquility\Data\Objects\BusinessObjects\Traits\PropertyAccessorTrait;
     
     // Object properties
     protected $title;
@@ -25,7 +31,7 @@ class PersonBusinessObject extends EntityBusinessObject {
     protected $user;
     
     /**
-     * Array of properties that are specific to a business object of a particular entity type
+     * Array of properties that are specific to the Person entity
      * 
      * @var array
      * @static
@@ -38,7 +44,7 @@ class PersonBusinessObject extends EntityBusinessObject {
     );
     
     /**
-     * Array of properties that are mandatory when creating or updating a business object
+     * Array of properties that are mandatory when creating or updating a Person entity
      * 
      * @var array
      * @static
@@ -49,7 +55,7 @@ class PersonBusinessObject extends EntityBusinessObject {
     );
     
     /**
-     * Array of properties that are additionally mandatory only when creating a business object
+     * Array of properties that are additionally mandatory only when creating a new Person entity
      * 
      * @var array
      * @static
@@ -57,7 +63,15 @@ class PersonBusinessObject extends EntityBusinessObject {
     protected static $_mandatoryFieldsNewEntity = array();
     
     /**
-     * Name of the class responsible for representing historical versions of this business entity
+     * Array of properties that will not be displayed externally
+     *
+     * @static
+     * @var array
+     */
+    protected static $_hiddenFields = array();
+    
+    /**
+     * Name of the class responsible for representing historical versions of a Person entity
      * 
      * @var string
      * @static

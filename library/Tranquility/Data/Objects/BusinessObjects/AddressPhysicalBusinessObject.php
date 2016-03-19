@@ -1,14 +1,23 @@
-<?php namespace Tranquility\Data\BusinessObjects\History;
+<?php namespace Tranquility\Data\Objects\BusinessObjects;
 
-use Doctrine\ORM\Mapping as ORM;
+// Doctrine 2 libraries
+use Doctrine\ORM\Mapping                                                                     as ORM;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Tranquility\Data\BusinessObjects\EntityBusinessObject as Entity;
+// Tranquility libraries
+use Tranquility\Enums\System\EntityType                                                      as EnumEntityType;
+use Tranquility\Exceptions\BusinessObjectException                                           as BusinessObjectException;
 
-class AddressPhysicalHistoricalBusinessObject extends EntityHistoricalBusinessObject {
-    use \Tranquility\Data\Traits\PropertyAccessorTrait;
+// Tranquility historical version of business object
+use Tranquility\Data\Objects\BusinessObjects\History\AddressPhysicalHistoricalBusinessObject as AddressHistory;
+
+// Tranquility related business objects
+use Tranquility\Data\Objects\BusinessObjects\BusinessObject                                  as Entity;
+
+class AddressPhysicalBusinessObject extends Entity {
+    use \Tranquility\Data\Objects\BusinessObjects\Traits\PropertyAccessorTrait;
     
     protected $addressType;
     protected $addressLine1;
@@ -26,7 +35,7 @@ class AddressPhysicalHistoricalBusinessObject extends EntityHistoricalBusinessOb
     protected $parentEntity;
     
     /**
-     * Array of properties that are specific to a business object of a particular entity type
+     * Array of properties that are specific to the Physical Address entity
      * 
      * @var array
      * @static
@@ -46,18 +55,77 @@ class AddressPhysicalHistoricalBusinessObject extends EntityHistoricalBusinessOb
     );
     
     /**
+     * Array of properties that are mandatory when creating or updating a Physical Address entity
+     * 
+     * @var array
+     * @static
+     */
+    protected static $_mandatoryFields = array(
+		'addressType',
+        'addressLine1',
+        'city',
+        'country',
+    );
+    
+    /**
+     * Array of properties that are additionally mandatory only when creating a new Physical Address entity
+     * 
+     * @var array
+     * @static
+     */
+    protected static $_mandatoryFieldsNewEntity = array(
+        'parent'
+    );
+    
+    /**
+     * Array of properties that will not be displayed externally
+     *
+     * @static
+     * @var array
+     */
+    protected static $_hiddenFields = array();
+    
+    /**
+     * Name of the class responsible for representing historical versions of this business entity
+     * 
+     * @var string
+     * @static
+     */
+    protected static $_historicalEntityClass = AddressHistory::class;
+    
+    /** 
+     * Type of entity represented by the business object
+     *
+     * @var string
+     * @static
+     */
+    protected static $_entityType = EnumEntityType::AddressPhysical;
+    
+    /**
      * Sets values for object properties, based on the inputs provided
      * 
      * @param mixed $data  May be an array or an instance of BusinessObject
      * @throws Tranquility\Exceptions\BusinessObjectException
-     * @return Tranquility\Data\BusinessObjects\Entity
+     * @return Tranquility\Data\Objects\BusinessObjects\BusinessObject
      */
     public function populate($data) {
         parent::populate($data);
         
-        // Get parent ID from original address record
-        $this->parentEntity = $data->getParentEntity();
+        // If entity ID is not set, and parent object is present, set it now
+        if (!isset($this->id) && isset($data['parent'])) {
+            $this->parentEntity = $data['parent'];
+        }
+        
         return $this;
+    }
+    
+    /**
+     * Returns the parent entity for the address
+     *
+     * @return Tranquility\Data\Objects\BusinessObjects\BusinessObject
+     */
+    public function getParentEntity() {
+        return $this->parentEntity;
     }
     
     /**
@@ -72,14 +140,22 @@ class AddressPhysicalHistoricalBusinessObject extends EntityHistoricalBusinessOb
         );
     }
     
-    public function getParentEntity() {
-        return $this->parentEntity;
-    }
-    
+    /**
+     * Get URL encoded, single line string of address
+     *
+     * @return string
+     */
     public function urlEncodedAddress() {
         return urlencode($this->_joinAddressParts(","));
     }
 
+    /*
+     * Returns full address as a string, with each segment joined using 
+     * the supplied separator character
+     *
+     * @param string $separator   String used to join address lines together
+     * @return string
+     */
     private function _joinAddressParts($separator) {
         $addressParts = array();
         if (isset($this->addressLine1) && $this->addressLine1 != '') {
@@ -116,7 +192,7 @@ class AddressPhysicalHistoricalBusinessObject extends EntityHistoricalBusinessOb
     public static function loadMetadata(ClassMetadata $metadata) {
         $builder = new ClassMetadataBuilder($metadata);
         // Define table name
-        $builder->setTable('history_entity_addresses_physical');
+        $builder->setTable('entity_addresses_physical');
         $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
         
         // Define fields

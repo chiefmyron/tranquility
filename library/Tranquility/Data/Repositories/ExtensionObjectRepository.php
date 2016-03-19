@@ -2,10 +2,10 @@
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
-use Tranquility\Data\Objects\ExtensionObjects\Tags       as Tag;
-use Tranquility\Data\Objects\ExtensionObjects\AuditTrail as AuditTrail;
+use Tranquility\Data\BusinessObjects\Extensions\Tags       as Tag;
+use Tranquility\Data\BusinessObjects\Extensions\AuditTrail as AuditTrail;
 
-class EntityRepository extends \Doctrine\ORM\EntityRepository {
+class ExtensionObjectRepository extends \Doctrine\ORM\EntityRepository {
     
     public function all($filterConditions = array(), $orderConditions = array(), $resultsPerPage = 0, $startRecordIndex = 0) {
         // Start creation of query
@@ -27,21 +27,15 @@ class EntityRepository extends \Doctrine\ORM\EntityRepository {
     }
     
     /**
-     * Creates a new entity record
+     * Creates a new record
      * 
      * @param array $data  Input data to create the record
-     * @return \Tranquility\Data\BusinessObjects\Entity
+     * @return mixed
      */
     public function create(array $data) {
-		// Create new audit trail record
-		$auditTrail = new AuditTrail($data);
-        $this->_em->persist($auditTrail);
-        
-        // Create new entity record, with the audit trail attached
+        // Create new record
         $entityName = $this->getEntityName();
         $entity = new $entityName($data);
-        $entity->version = 1; // Force version for new records to be 1
-        $entity->setAuditTrail($auditTrail);
         $this->_em->persist($entity);
         $this->_em->flush();
 		
@@ -50,34 +44,19 @@ class EntityRepository extends \Doctrine\ORM\EntityRepository {
     }
     
     /**
-     * Updates an existing entity record, and moves the old version of the record
-     * into a historical table
+     * Updates an existing record
      *
      * @param int   $id    Business object entity ID
      * @param array $data  Updated values to apply to the entity
-     * @return \Tranquility\Data\BusinessObjects\Entity
+     * @return mixed
      */ 
     public function update($id, array $data) {
         // Retrieve existing record
         $entity = $this->find($id);
         $entityName = $this->getEntityName();
         
-        // Create historical version of entity
-        $historyClassName = call_user_func($entityName.'::getHistoricalEntityClass');
-        $historicalEntity = new $historyClassName($entity);
-        $historicalEntity->setAuditTrail($entity->getAuditTrail());
-        $this->_em->persist($historicalEntity);
-        
-        // Create new audit trail record
-		$auditTrail = new AuditTrail($data);
-        $this->_em->persist($auditTrail);
-        
-        // Update existing entity record with new details, incremented version number
-        // and new audit trail details
-        unset($data['version']);  // Ensure passed data does not override internal versioning
+        // Update existing record with new details
         $entity->populate($data);
-        $entity->version = ($entity->version + 1);
-        $entity->setAuditTrail($auditTrail);
         $this->_em->persist($entity);
         $this->_em->flush();
         
@@ -86,7 +65,7 @@ class EntityRepository extends \Doctrine\ORM\EntityRepository {
     }
     
     /**
-	 * Logically delete an existing entity record
+	 * Logically delete an existing record
 	 *
 	 * @param int   $id    Entity ID of the record to delete
 	 * @param array 
@@ -96,49 +75,6 @@ class EntityRepository extends \Doctrine\ORM\EntityRepository {
         $data['deleted'] = 1;
         return $this->update($id, $data);
 	}
-    
-    public function addTag($id, $tag) {
-        // Retrieve existing record
-        $entity = $this->find($id);
-        $entity->addTag($tag);
-        $this->_em->flush();
-        
-        // Return updated entity
-        return $entity;
-    }
-    
-    public function removeTag($id, $tag) {
-        // Retrieve existing record
-        $entity = $this->find($id);
-        $entity->removeTag($tag);
-        $this->_em->flush();
-        
-        // Return updated entity
-        return $entity;
-    }
-    
-    public function setTags($id, array $tagCollection) {
-        // Retrieve existing record
-        $entity = $this->find($id);
-        
-        // Get existing tag collection for entity
-        $existingTags = $entity->getTags();
-        
-        // Determine which tags need to be added
-        $adds = array_diff($tagCollection, $existingTags);
-        foreach($adds as $addTag) {
-            $entity = $this->addTag($id, $addTag);
-        }
-        
-        // Determine which tags need to be removed from the collection
-        $removes = array_diff($existingTags, $tagCollection);
-        foreach ($removes as $removeTag) {
-            $entity = $this->removeTag($id, $removeTag);
-        }
-        
-        // Return updated entity
-        return $entity;
-    }
     
     /**
 	 * Used to add additional query conditions, ordering and set limits to a selection query

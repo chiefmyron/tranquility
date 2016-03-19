@@ -44,7 +44,7 @@ class TagsController extends Controller {
 	}
 
 	/**
-	 * Display a dialog containing a Google map iframe
+	 * Display a dialog to allow tags to be added or removed for a parent entity
 	 *
 	 * @return Response
 	 */
@@ -77,11 +77,17 @@ class TagsController extends Controller {
 	}
     
     /**
-	 * Store details of a new or updated address
+	 * Store updated list of tags
 	 *
 	 * @return Response
 	 */
 	public function store(Request $request) {
+        // Ensure this is received as an ajax request only
+		if (!$request->ajax()) {
+			// TODO: Proper error handling here
+			throw new Exception('Access only via AJAX request!');
+		}
+        
 		// Save details of address
 		$params = $request->all();
         $parentId = $request->input('parentId', 0);
@@ -103,47 +109,39 @@ class TagsController extends Controller {
             return Response::json($ajax->toArray());
 		}
 
-        // Render address panel for person
+        // Render updated tag list
         $entity = $response->getFirstContentItem();
-        $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+        $ajax->addContent('tag-container', $this->_renderPartial('administration.tags._partials.panels.entity-tag-list', ['entity' => $entity, 'tags' => $entity->getTags()]), 'attachCommonHandlers');
         $ajax->addCallback('closeDialog');
         return Response::json($ajax->toArray());
 	}
     
-    
-    public function delete($type, $id, Request $request) {
-        // Save details of address
-		$params = $request->all();
+    /**
+     * Remove a tag from the specified entity
+     * Note: Does not delete the tag entirely - just the association with the entity
+     *
+     * @return Response
+     */
+    public function remove($parentId, $id, Request $request) {
+        // Ensure this is received as an ajax request only
+		if (!$request->ajax()) {
+			// TODO: Proper error handling here
+			throw new Exception('Access only via AJAX request!');
+		}
         
-        // Retrieve address record
+        // Remove tag from entity
         $ajax = new \Tranquility\View\AjaxResponse();
-        $response = $this->_getService($type)->find($id);
-        if ($response->containsErrors()) {
-            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
-            return Response::json($ajax->toArray());
-        }
-        $address = $response->getFirstContentItem();
-        $parentEntity = $address->getParentEntity();
-		
-		// Add in additional audit trail details
-		$params['updateBy'] = Auth::user();
-		$params['updateReason'] = 'backend address delete';
-		$params['updateDateTime'] = Carbon::now();
-		$params['transactionSource'] = EnumTransactionSource::UIBackend;
-        
-		// Delete address record
-        $ajax = new \Tranquility\View\AjaxResponse();
-        $response = $this->_getService($type)->delete($id, $params);
+        $response = $this->_service->removeTag($parentId, $id);
         if ($response->containsErrors()) {
 			// Errors encountered - redisplay form with error messages
             $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
 			$ajax->addMessages($response->getMessages());
             return Response::json($ajax->toArray());
 		}
-        
-        // Render address panel for parent entity
-        $ajax = $this->_refreshAddressList($parentEntity, $type);
-        $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+
+        // Render updated tag list
+        $entity = $response->getFirstContentItem();
+        $ajax->addContent('tag-container', $this->_renderPartial('administration.tags._partials.panels.entity-tag-list', ['entity' => $entity, 'tags' => $entity->getTags()]), 'attachCommonHandlers');
         $ajax->addCallback('closeDialog');
         return Response::json($ajax->toArray());
     }

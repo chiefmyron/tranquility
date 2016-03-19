@@ -1,14 +1,14 @@
-<?php namespace Tranquility\Data\BusinessObjects\History;
+<?php namespace Tranquility\Data\Objects\BusinessObjects\History;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Tranquility\Data\BusinessObjects\EntityBusinessObject as Entity;
+use Tranquility\Data\Objects\BusinessObjects\BusinessObject as Entity;
 
-class AddressHistoricalBusinessObject extends EntityHistoricalBusinessObject {
-    use \Tranquility\Data\Traits\PropertyAccessorTrait;
+class AddressHistoricalBusinessObject extends HistoricalBusinessObject {
+    use \Tranquility\Data\Objects\BusinessObjects\Traits\PropertyAccessorTrait;
     
     protected $category;
     protected $addressType;

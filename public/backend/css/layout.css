@@ -243,8 +243,8 @@ th {
 
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url("../fonts/bootstrap/glyphicons-halflings-regular.eot");
-  src: url("../fonts/bootstrap/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/bootstrap/glyphicons-halflings-regular.woff2") format("woff2"), url("../fonts/bootstrap/glyphicons-halflings-regular.woff") format("woff"), url("../fonts/bootstrap/glyphicons-halflings-regular.ttf") format("truetype"), url("../fonts/bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg"); }
+  src: url("../fonts/local/glyphicons-halflings-regular.eot");
+  src: url("../fonts/local/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/local/glyphicons-halflings-regular.woff2") format("woff2"), url("../fonts/local/glyphicons-halflings-regular.woff") format("woff"), url("../fonts/local/glyphicons-halflings-regular.ttf") format("truetype"), url("../fonts/local/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg"); }
 
 .glyphicon {
   position: relative;
@@ -6066,6 +6066,20 @@ p.h-adr span {
   margin-bottom: 15px;
   border-radius: 75px; }
 
+span.tag {
+  background-color: #708296;
+  color: #ffffff;
+  display: inline-block;
+  padding: 2px 5px;
+  margin-bottom: 4px;
+  text-transform: lowercase; }
+
+span.tag a {
+  color: #ffffff; }
+
+p.tag-list {
+  margin-bottom: 0; }
+
 .bootstrap-tagsinput {
   background-color: #fff;
   border: 1px solid #ccc;
@@ -6075,6 +6089,12 @@ p.h-adr span {
   max-width: 100%;
   line-height: 30px;
   cursor: text; }
+
+.bootstrap-tagsinput .label {
+  font-size: 100%;
+  font-weight: normal;
+  line-height: 1.428571429;
+  border-radius: 0px; }
 
 .bootstrap-tagsinput input {
   border: none;
@@ -6109,7 +6129,7 @@ p.h-adr span {
   cursor: pointer; }
 
 .bootstrap-tagsinput .tag [data-role="remove"]:after {
-  content: "x";
+  content: "| x";
   padding: 0px 2px; }
 
 .bootstrap-tagsinput .tag [data-role="remove"]:hover {
@@ -6117,6 +6137,12 @@ p.h-adr span {
 
 .bootstrap-tagsinput .tag [data-role="remove"]:hover:active {
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125); }
+
+.label-entity-person {
+  background-color: #6a1b9a !important; }
+
+.label-entity-user {
+  background-color: #e53935 !important; }
 
 /******************************************************************************
  * Breakpoint-specific rules                                                  *

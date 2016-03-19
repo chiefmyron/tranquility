@@ -109,20 +109,7 @@ class InitialDatabaseSchema extends Migration {
             $table->dateTime('registeredDateTime');
         });
         
-        // Tags
-        Schema::create('entity_tags', function(Blueprint $table) {
-            $table->bigInteger('id')->primary();
-            $table->string('text');    
-        });
-        
-        // Business object cross-reference table
-        Schema::create('entity_xref', function(Blueprint $table) {
-            $table->bigInteger('parentId');
-            $table->bigInteger('childId');
-            $table->primary(['parentId', 'childId']);
-        });
-        
-        // Tagging cross-reference table
+        // Entity cross-referencing for tags
         Schema::create('entity_tags_xref', function(Blueprint $table) {
             $table->bigInteger('entityId');
             $table->bigInteger('tagId');
@@ -205,10 +192,23 @@ class InitialDatabaseSchema extends Migration {
         });
         
         /*************************************************************************
+         * Entity data extension tables                                          *
+         *                                                                       *
+         * Used to extend entity objects, but are not actual entities themselves *
+         * e.g. Tags, etc...                                                     *
+         *************************************************************************/
+        // Tags
+        Schema::create('ext_tags', function(Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('text');    
+        });
+        
+        /*************************************************************************
          * System tables                                                         *
          *                                                                       *
          * Used for audit trail details, system configuration and security roles *
          *************************************************************************/
+        // Audit trail
         Schema::create('sys_trans_audit', function(Blueprint $table) {
             $table->bigIncrements('transactionId');
             $table->string('transactionSource', 100);
@@ -217,12 +217,14 @@ class InitialDatabaseSchema extends Migration {
             $table->string('updateReason', 100);
         });
         
+        // Entity locking
         Schema::create('sys_entity_locks', function(Blueprint $table) {
             $table->bigInteger('entityId')->primary();
             $table->bigInteger('lockedBy');
             $table->dateTime('lockedDateTime');
         });
         
+        // Server side session data storage
         Schema::create('sys_sessions', function(Blueprint $table) {
             $table->string('sessionId')->primary();
             $table->text('payload');    
@@ -232,10 +234,12 @@ class InitialDatabaseSchema extends Migration {
             $table->text('userAgent');
         });
         
+        // User account tokens (e.g. remember me, password reset, etc...)
         Schema::create('sys_user_tokens', function(Blueprint $table) {
-            $table->bigInteger('userId')->primary();
-            $table->string('sessionId')->nullable();
-            $table->string('rememberToken')->nullable();
+            $table->bigInteger('userId');
+            $table->string('type');
+            $table->string('tokenText')->nullable();
+            $table->primary(['userId', 'type']);
         });
     }
 
@@ -250,14 +254,13 @@ class InitialDatabaseSchema extends Migration {
         Schema::dropIfExists('sys_sessions');
         Schema::dropIfExists('sys_entity_locks');
         Schema::dropIfExists('sys_trans_audit');
+        Schema::dropIfExists('ext_tags');
         Schema::dropIfExists('history_entity_users');
         Schema::dropIfExists('history_entity_people');
         Schema::dropIfExists('history_entity_addresses_physical');
         Schema::dropIfExists('history_entity_addresses');
         Schema::dropIfExists('history_entity');
         Schema::dropIfExists('entity_tags_xref');
-        Schema::dropIfExists('entity_tags');
-        Schema::dropIfExists('entity_xref');
         Schema::dropIfExists('entity_users');
         Schema::dropIfExists('entity_people');
         Schema::dropIfExists('entity_addresses_physical');

@@ -62,6 +62,7 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
     Route::post('/tags',                             'Administration\TagsController@store');
     Route::get ('/tags/{parentId}',                  'Administration\TagsController@index');
     Route::get ('/tags/{parentId}/update',           'Administration\TagsController@update');
+    Route::get ('/tags/{parentId}/remove/{id}',      'Administration\TagsController@remove');
     
     // Settings controller
     Route::get('/settings', 'Administration\SettingsController@index');

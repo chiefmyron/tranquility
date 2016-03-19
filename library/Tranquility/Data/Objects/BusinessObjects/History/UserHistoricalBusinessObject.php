@@ -1,12 +1,12 @@
-<?php namespace Tranquility\Data\BusinessObjects\History;
+<?php namespace Tranquility\Data\Objects\BusinessObjects\History;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
-class UserHistoricalBusinessObject extends EntityHistoricalBusinessObject  {
-    use \Tranquility\Data\Traits\PropertyAccessorTrait;
+class UserHistoricalBusinessObject extends HistoricalBusinessObject  {
+    use \Tranquility\Data\Objects\BusinessObjects\Traits\PropertyAccessorTrait;
     
     protected $username;
     protected $password;
@@ -32,6 +32,16 @@ class UserHistoricalBusinessObject extends EntityHistoricalBusinessObject  {
     );
     
     /**
+     * Set the password for the user.
+     *
+     * @param  string  $password
+     * @return void
+     */
+    public function setAuthPassword($password) {
+        $this->password = $password;
+    }
+    
+    /**
      * Metadata used to define object relationship to database
      *
      * @var \Doctrine\ORM\Mapping\ClassMetadata $metadata  Metadata to be passed to Doctrine
@@ -50,15 +60,5 @@ class UserHistoricalBusinessObject extends EntityHistoricalBusinessObject  {
         $builder->addField('active', 'boolean');
         $builder->addField('securityGroupId', 'integer');
         $builder->addField('registeredDateTime', 'datetime');
-    }
-    
-    /**
-     * Set the password for the user.
-     *
-     * @param  string  $password
-     * @return void
-     */
-    public function setAuthPassword($password) {
-        $this->password = $password;
     }
 }

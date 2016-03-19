@@ -4,7 +4,6 @@ use Illuminate\Contracts\Hashing\Hasher         as HasherContract;
 use Illuminate\Contracts\Auth\UserProvider      as UserProviderInterface;
 use Illuminate\Contracts\Auth\Authenticatable   as Authenticatable;
 
-use Tranquility\Data\BusinessObjects\User       as User;
 use Tranquility\Utility                         as Utility;
 use Tranquility\Services\UserService            as UserService;
 

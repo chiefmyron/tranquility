@@ -1,7 +1,9 @@
 <?php namespace Tranquility\Data\Repositories;
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Tranquility\Data\BusinessObjects\Extensions\AuditTrail;
+
+use Tranquility\Data\Objects\ExtensionObjects\UserToken;
+use Tranquility\Data\Objects\ExtensionObjects\AuditTrail;
 
 class UserRepository extends EntityRepository {
     
@@ -23,7 +25,7 @@ class UserRepository extends EntityRepository {
         // Create historical version of entity
         $historyClassName = call_user_func($entityName.'::getHistoricalEntityClass');
         $historicalEntity = new $historyClassName($entity);
-        $historicalEntity->setAuditTrail($entity->getAuditTrailDetails());
+        $historicalEntity->setAuditTrail($entity->getAuditTrail());
         $historicalEntity->setAuthPassword($entity->getAuthPassword());
         $this->_em->persist($historicalEntity);
         
@@ -48,15 +50,19 @@ class UserRepository extends EntityRepository {
      * Update the "remember me" token for the given user in storage.
      *
      * @param  int     $id
-     * @param  string  $token
+     * @param  string  $tokenString
      * @return void
      */
-	public function updateRememberToken($id, $token) {
+	public function updateRememberToken($id, $tokenString) {
         // Load existing user record
         $user = $this->find($id);
+        $user->setRememberToken($tokenString);
         
-        // Set new token
-        $user->setRememberToken($token);
+        // Retrieve token to persist
+        $token = $user->getUserToken($user->getRememberTokenName());
+        
+        // Pesist token and user
+        $this->_em->persist($token);
         $this->_em->persist($user);
         $this->_em->flush();
 	}
@@ -69,14 +75,16 @@ class UserRepository extends EntityRepository {
 	 * @return \Tranquility\Data\BusinessObjects\User
 	 */
     public function findByToken($id, $token) {
-        // Start creation of query
-        $queryString  = "SELECT u from ".$entityName." u ";
-        $queryString .= "  JOIN u.userTokens t ";
-        $queryString .= " WHERE u.id = :id ";
-        $queryString .= "   AND u.deleted = 0 ";
-        $queryString .= "   AND t.rememberToken = :token";
-        $query = $this->_em->createQuery($queryString);
-        return $query->getResult();
+        // Find user
+        $user = $this->find($id);
+        
+        // Check the user's remember token value
+        $existingToken = $user->getRememberToken();
+        if ($token != $existingToken) {
+            return null;
+        }
+        
+        return $user;
     }
     
     /**

@@ -15,19 +15,18 @@
         <!-- Linked fonts and icons -->
         @if(App::environment('local'))
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
-        <link href="/backend/css/local/bootstrap.3.3.5.min.css" rel="stylesheet" type="text/css" />
+        <link href="/backend/css/local/bootstrap.3.3.6.min.css" rel="stylesheet" type="text/css" />
         <link href="/backend/css/local/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="/backend/css/local/simple-line-icons.css" rel="stylesheet" type="text/css" />
         @else
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.2.3/css/simple-line-icons.css" rel="stylesheet" type="text/css" />
-        <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         @endif
         
         <!-- Custom styles -->
         <link href="/backend/css/layout.css" rel="stylesheet" type="text/css" />
-        <!-- <link href="/backend/css/colours/blue.css" rel="stylesheet" type="text/css" /> -->
         
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -78,11 +77,11 @@
         
         <!-- Add JavaScript at the bottom to prevent page load blocking -->
         @if(App::environment('local'))
-        <script src="/backend/js/local/jquery.1.11.1.min.js"></script>
-        <script src="/backend/js/local/bootstrap.3.3.5.min.js"></script>
+        <script src="/backend/js/local/jquery.1.12.1.min.js"></script>
+        <script src="/backend/js/local/bootstrap.3.3.6.min.js"></script>
         @else
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         @endif
         <script src="/backend/js/bootstrap-tagsinput.js"></script>
         <script src="/backend/js/core.js"></script>

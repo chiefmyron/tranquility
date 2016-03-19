@@ -1,16 +1,27 @@
-<?php namespace Tranquility\Data\BusinessObjects\History;
+<?php namespace Tranquility\Data\Objects\BusinessObjects\History;
 
+// Doctrine 2 libraries
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Tranquility\Enums\System\EntityType                    as EnumEntityType;
-use Tranquility\Data\BusinessObjects\Extensions\AuditTrail as AuditTrail;
-use Tranquility\Data\BusinessObjects\EntityBusinessObject  as Entity;
-use Tranquility\Exceptions\BusinessObjectException         as BusinessObjectException;
+// Tranquility libraries
+use Tranquility\Enums\System\EntityType                                                       as EnumEntityType;
+use Tranquility\Data\Objects\DataObject                                                       as DataObject;
+use Tranquility\Exceptions\BusinessObjectException                                            as BusinessObjectException;
 
-abstract class EntityHistoricalBusinessObject {
+// Tranquility related business objects
+use Tranquility\Data\Objects\BusinessObjects\BusinessObject                                   as Entity;
+use Tranquility\Data\Objects\BusinessObjects\History\PersonHistoricalBusinessObject           as HistoricalPerson;
+use Tranquility\Data\Objects\BusinessObjects\History\UserHistoricalBusinessObject             as HistoricalUser;
+use Tranquility\Data\Objects\BusinessObjects\History\AddressHistoricalBusinessObject          as HistoricalAddress;
+use Tranquility\Data\Objects\BusinessObjects\History\AddressPhysicalHistoricalBusinessObject  as HistoricalAddressPhysical;
+
+// Tranquility extension data objects
+use Tranquility\Data\Objects\ExtensionObjects\AuditTrail                                      as AuditTrail;
+
+abstract class HistoricalBusinessObject {
     protected $id;
     protected $version;
     protected $type;
@@ -55,7 +66,7 @@ abstract class EntityHistoricalBusinessObject {
      * 
      * @param mixed $data  May be an array or an instance of BusinessObject
      * @throws Tranquility\Exceptions\BusinessObjectException
-     * @return Tranquility\Data\BusinessObjects\Entity
+     * @return Tranquility\Data\Objects\BusinessObjects\BusinessObject
      */
     public function populate($data) {
         if ($data instanceof Entity) {
@@ -68,7 +79,7 @@ abstract class EntityHistoricalBusinessObject {
         }
         
         // Assign relevant data to object properties
-        $entityFields = $this->getEntityFields();
+        $entityFields = $this->getFields();
         foreach ($entityFields as $field) {
             if (isset($data[$field])) {
                 $this->$field = $data[$field];
@@ -108,8 +119,8 @@ abstract class EntityHistoricalBusinessObject {
      *
      * @return array
      */
-    public function getAuditTrailDetails() {
-        return $this->auditTrail->getAuditTrailDetails();
+    public function getAuditTrail() {
+        return $this->auditTrail;
     }
      
     /**
@@ -126,10 +137,10 @@ abstract class EntityHistoricalBusinessObject {
         // Define inheritence
         $builder->setJoinedTableInheritance();
         $builder->setDiscriminatorColumn('type');
-        $builder->addDiscriminatorMapClass(EnumEntityType::Person, PersonHistoricalBusinessObject::class);
-        $builder->addDiscriminatorMapClass(EnumEntityType::User, UserHistoricalBusinessObject::class);
-        $builder->addDiscriminatorMapClass(EnumEntityType::Address, AddressHistoricalBusinessObject::class);
-        $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhysical, AddressPhysicalHistoricalBusinessObject::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::Person, HistoricalPerson::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::User, HistoricalUser::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::Address, HistoricalAddress::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhysical, HistoricalAddressPhysical::class);
         
         // Define fields
         $builder->createField('id', 'integer')->isPrimaryKey()->build();
@@ -146,7 +157,7 @@ abstract class EntityHistoricalBusinessObject {
      * @static
      * @return array
      */
-    public static function getEntityFields() {
+    public static function getFields() {
         return array_merge(self::$_fields, AuditTrail::getFields());
     }
     
@@ -157,7 +168,7 @@ abstract class EntityHistoricalBusinessObject {
      * @var boolean $newRecord  Adjusts the set of mandatory fields based on whether a record is being created or updated
      * @return array
      */
-    public static function getMandatoryEntityFields($newRecord = false) {
+    public static function getMandatoryFields($newRecord = false) {
         if (!$newRecord) {
             // ID will be mandatory for any updates to records
             $mandatoryFields = self::$_mandatoryFields;

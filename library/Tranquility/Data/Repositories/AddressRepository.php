@@ -1,7 +1,7 @@
 <?php namespace Tranquility\Data\Repositories;
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Tranquility\Data\BusinessObjects\Extensions\AuditTrail;
+use Tranquility\Data\Objects\ExtensionObjects\AuditTrail;
 
 class AddressRepository extends EntityRepository {
     
@@ -33,7 +33,7 @@ class AddressRepository extends EntityRepository {
             // Create historical version of entity
             $historyClassName = call_user_func($entityName.'::getHistoricalEntityClass');
             $historicalEntity = new $historyClassName($address);
-            $historicalEntity->setAuditTrail($address->getAuditTrailDetails());
+            $historicalEntity->setAuditTrail($address->getAuditTrail());
             $this->_em->persist($historicalEntity);
             
             // Set primary contact flag to false

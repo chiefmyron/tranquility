@@ -218,7 +218,7 @@ class AddressController extends Controller {
 		}
         
 		// AJAX response
-        $dialog = $this->_renderPartial('administration.addresses._partials.dialogs.confirm-delete', ['id' => $id, 'type' => $type]);
+        $dialog = $this->_renderPartial('administration.addresses._partials.dialogs.confirm-delete', ['id' => $id, 'type' => $category]);
 		$ajax = new \Tranquility\View\AjaxResponse();
 		$ajax->addContent('modal-content', $dialog, 'displayDialog');
 		return Response::json($ajax->toArray());

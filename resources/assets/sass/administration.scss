@@ -12,6 +12,9 @@ $brand-danger:               #d9534f;
 $brand-error:                #a94442;
 $brand-navigation:           #303e4d;      // Base colour for navigation elements
 
+$brand-entity-person:        #6a1b9a;
+$brand-entity-user:          #e53935;
+
 // Navbar
 $nav-link-hover:                           #ABB1B7;
 $nav-link-hover-bg:                        #4A5664;
@@ -20,7 +23,6 @@ $navbar-default-toggle-hover-bg:           $brand-navigation;
 $navbar-width:                             250px;
 $dropdown-link-hover-bg:                   $brand-primary;
 $dropdown-link-hover-color:                #ffffff;
-
 
 $navbar-default-toggle-icon-bar-bg:        #888 !default;
 $navbar-default-toggle-border-color:       $brand-navigation;
@@ -31,6 +33,10 @@ $navbar-default-toggle-border-color:       #ddd !default;
 $navigation-heading:                       #ABB1B7;
 $navigation-link:                          #ABB1B7;
 
+// Tags
+$tags-color:                               #ffffff;
+$tags-default-bg:                          #708296;
+
 // Typography
 @import url("http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all");
 @import url(https://fonts.googleapis.com/css?family=Roboto);
@@ -38,6 +44,9 @@ $font-family-heading:        "Open Sans", Arial, Helvetica, sans-serif;
 $font-family-sans-serif:     "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $headings-font-weight:       300;
 $text-size-large:            1.5em;
+
+// Iconography
+$icon-font-path: "../fonts/local/";
 
 // Components
 $border-radius-base:         0px;            // Remove round corners from all elements
@@ -446,6 +455,23 @@ p.h-adr span {
 }
 
 // Tags
+span.tag {
+    background-color: $tags-default-bg;
+    color: $tags-color;
+    display: inline-block;
+    padding: 2px 5px;
+    margin-bottom: 4px;
+    text-transform: lowercase;
+}
+
+span.tag a {
+    color: $tags-color;
+}
+
+p.tag-list {
+    margin-bottom: 0;
+}
+
 .bootstrap-tagsinput {
     background-color: #fff;
     border: 1px solid #ccc;
@@ -455,6 +481,13 @@ p.h-adr span {
     max-width: 100%;
     line-height: 30px;
     cursor: text;
+}
+
+.bootstrap-tagsinput .label {
+    font-size: 100%;
+    font-weight: normal;
+    line-height: $line-height-base;
+    border-radius: $border-radius-base;
 }
 
 .bootstrap-tagsinput input {
@@ -491,7 +524,7 @@ p.h-adr span {
     cursor: pointer;
 }
 .bootstrap-tagsinput .tag [data-role="remove"]:after {
-    content: "x";
+    content: "| x";
     padding: 0px 2px;
 }
 .bootstrap-tagsinput .tag [data-role="remove"]:hover {
@@ -499,6 +532,15 @@ p.h-adr span {
 }
 .bootstrap-tagsinput .tag [data-role="remove"]:hover:active {
     box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+// Entity labels
+.label-entity-person {
+    background-color: $brand-entity-person !important;
+}
+
+.label-entity-user {
+    background-color: $brand-entity-user !important;
 }
 
 /******************************************************************************

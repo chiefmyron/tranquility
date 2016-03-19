@@ -8,13 +8,13 @@
     
     <div class="form-group">
         {!! Form::label('tags', trans('administration.tags_label_tags')) !!}
-        {!! Form::text('tags', implode(',', $tags), ['class' => 'form-control', 'data-role' => 'tagsinput']) !!}	
+        {!! Form::text('tags', implode(',', $tags), ['class' => 'form-control', 'data-role' => 'tagsinput', 'autofocus']) !!}	
         {!! FormError::inline('tags', Session::get('messages')) !!}
     </div>
 </div>
 <div class="modal-footer">
     {!! Form::hidden('parentId', $parentId) !!}
-    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
     <button type="submit" class="btn btn-primary" id="dialog-submit">{{ trans('administration.tags_heading_update') }}</button>
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
 </div>
 {!! Form::close() !!}

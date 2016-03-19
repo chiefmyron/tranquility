@@ -12,7 +12,7 @@ class UserService extends \Tranquility\Services\Service {
      * @return string
      */
     public function businessObject() {
-        return 'Tranquility\Data\BusinessObjects\UserBusinessObject';
+        return 'Tranquility\Data\Objects\BusinessObjects\UserBusinessObject';
     }
     
     /**
@@ -155,7 +155,7 @@ class UserService extends \Tranquility\Services\Service {
 	 */
 	public function findByToken($id, $token) {
         $entity = $this->_getRepository()->findByToken($id, $token);
-		return $this->_findResponse($entity);
+		return $this->_findResponse(array($entity));
 	}
 	
     /**

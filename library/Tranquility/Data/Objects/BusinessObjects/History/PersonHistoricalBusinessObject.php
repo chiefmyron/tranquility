@@ -1,12 +1,12 @@
-<?php namespace Tranquility\Data\BusinessObjects\History;
+<?php namespace Tranquility\Data\Objects\BusinessObjects\History;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
-class PersonHistoricalBusinessObject extends EntityHistoricalBusinessObject {
-    use \Tranquility\Data\Traits\PropertyAccessorTrait;
+class PersonHistoricalBusinessObject extends HistoricalBusinessObject {
+    use \Tranquility\Data\Objects\BusinessObjects\Traits\PropertyAccessorTrait;
     
     protected $title;
     protected $firstName;
@@ -25,14 +25,6 @@ class PersonHistoricalBusinessObject extends EntityHistoricalBusinessObject {
         'lastName',
         'position'
     );
-    
-    /**
-     * Name of the class responsible for representing historical versions of this business entity
-     * 
-     * @var string
-     * @static
-     */
-    protected static $_historicalEntityClass = PersonHistory::class;
     
     /**
      * Retrieve formatted name for person

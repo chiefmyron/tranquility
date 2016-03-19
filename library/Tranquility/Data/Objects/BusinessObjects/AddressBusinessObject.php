@@ -1,16 +1,23 @@
-<?php namespace Tranquility\Data\BusinessObjects;
+<?php namespace Tranquility\Data\Objects\BusinessObjects;
 
-use Doctrine\ORM\Mapping as ORM;
+// Doctrine 2 libraries
+use Doctrine\ORM\Mapping                                                             as ORM;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Tranquility\Enums\System\EntityType                                       as EnumEntityType;
-use Tranquility\Data\BusinessObjects\EntityBusinessObject                     as Entity;
-use Tranquility\Data\BusinessObjects\History\AddressHistoricalBusinessObject  as AddressHistory;
+// Tranquility libraries
+use Tranquility\Enums\System\EntityType                                              as EnumEntityType;
+use Tranquility\Exceptions\BusinessObjectException                                   as BusinessObjectException;
 
-class AddressBusinessObject extends EntityBusinessObject {
-    use \Tranquility\Data\Traits\PropertyAccessorTrait;
+// Tranquility historical version of business object
+use Tranquility\Data\Objects\BusinessObjects\History\AddressHistoricalBusinessObject as AddressHistory;
+
+// Tranquility related business objects
+use Tranquility\Data\Objects\BusinessObjects\BusinessObject                          as Entity;
+
+class AddressBusinessObject extends Entity {
+    use \Tranquility\Data\Objects\BusinessObjects\Traits\PropertyAccessorTrait;
     
     protected $category;
     protected $addressType;
@@ -21,7 +28,7 @@ class AddressBusinessObject extends EntityBusinessObject {
     protected $parentEntity;
     
     /**
-     * Array of properties that are specific to a business object of a particular entity type
+     * Array of properties that are specific to the Address entity
      * 
      * @var array
      * @static
@@ -34,7 +41,7 @@ class AddressBusinessObject extends EntityBusinessObject {
     );
     
     /**
-     * Array of properties that are mandatory when creating or updating a business object
+     * Array of properties that are mandatory when creating or updating an Address entity
      * 
      * @var array
      * @static
@@ -46,7 +53,7 @@ class AddressBusinessObject extends EntityBusinessObject {
     );
     
     /**
-     * Array of properties that are additionally mandatory only when creating a business object
+     * Array of properties that are additionally mandatory only when creating a new Address entity
      * 
      * @var array
      * @static
@@ -54,6 +61,14 @@ class AddressBusinessObject extends EntityBusinessObject {
     protected static $_mandatoryFieldsNewEntity = array(
         'parent'
     );
+    
+    /**
+     * Array of properties that will not be displayed externally
+     *
+     * @static
+     * @var array
+     */
+    protected static $_hiddenFields = array();
     
     /**
      * Name of the class responsible for representing historical versions of this business entity
@@ -76,7 +91,7 @@ class AddressBusinessObject extends EntityBusinessObject {
      * 
      * @param mixed $data  May be an array or an instance of BusinessObject
      * @throws Tranquility\Exceptions\BusinessObjectException
-     * @return Tranquility\Data\BusinessObjects\Entity
+     * @return Tranquility\Data\Objects\BusinessObjects\BusinessObject
      */
     public function populate($data) {
         parent::populate($data);
@@ -92,7 +107,7 @@ class AddressBusinessObject extends EntityBusinessObject {
     /**
      * Returns the parent entity for the address
      *
-     * @return Tranquility\Data\BusinessIbjects\Entity
+     * @return Tranquility\Data\Objects\BusinessObjects\BusinessObject
      */
     public function getParentEntity() {
         return $this->parentEntity;
