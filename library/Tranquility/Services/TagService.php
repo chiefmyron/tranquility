@@ -100,6 +100,14 @@ class TagService extends \Tranquility\Services\Service {
         // Set up response object
 		$response = new ServiceResponse();
         
+        // Remove any tags that are set to an empty string
+        for ($i = 0; $i < count($tagValues); $i++) {
+            if (trim($tagValues[$i]) == "") {
+                unset($tagValues[$i]);
+            }
+        }
+        $tagValues = array_merge($tagValues); // Reset array indexes
+        
         // Get the set of tags already created
         $tagValues = array_map('strtolower', $tagValues);
         $filter = array(['text', 'IN', $tagValues]);

@@ -97,6 +97,7 @@ class TagsController extends Controller {
         $tags = array();
         if (!is_null($tagString)) {
             $tags = explode(',', $tagString);
+            $tags = array_map('trim', $tags);
         }
 		
         // Set tags for the parent entity
