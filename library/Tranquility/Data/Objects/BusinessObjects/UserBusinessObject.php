@@ -242,7 +242,6 @@ class UserBusinessObject extends BusinessObject implements UserContract {
         $builder->addField('registeredDateTime', 'datetime');
         
         // Add relationships
-        //$builder->createOneToOne('userTokens', UserToken::class)->addJoinColumn('id','userId')->build();
         $builder->createOneToOne('person', Person::class)->mappedBy('user')->build();
         $builder->createOneToMany('userTokens', UserToken::class)->mappedBy('user')->build();
     }

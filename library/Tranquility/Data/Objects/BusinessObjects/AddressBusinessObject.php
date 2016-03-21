@@ -113,6 +113,10 @@ class AddressBusinessObject extends Entity {
         return $this->parentEntity;
     }
     
+    public function toString() {
+        return $this->addressText;
+    }
+    
     /**
      * Metadata used to define object relationship to database
      *

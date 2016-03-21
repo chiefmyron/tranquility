@@ -109,6 +109,17 @@ class PersonBusinessObject extends BusinessObject {
     }
     
     /**
+     * Associates a user account with this person
+     * 
+     * @param User $user  User account to be associated with the person
+     * @return Person
+     */
+    public function setUserAccount(User $user) {
+        $this->user = $user;
+        return $this;
+    }
+    
+    /**
      * Retreive a collection of addresses associated with this person
      *
      * @var string $type  Type of address collection to return

@@ -44,7 +44,7 @@
                         </p>
                     </div>
                 </div>
-        @if ($i%2 == 2)
+        @if ($i%2 == 1)
             </div><!-- End of row -->
         @endif
     @endfor

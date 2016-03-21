@@ -27,27 +27,29 @@ Route::get('/administration/auth/logout', 'Administration\AuthController@logout'
 // Backoffice administration routes
 Route::group(['prefix' => 'administration', 'middleware' => ['administration.auth', 'administration.noCache']], function() {
 	// Main dashboard
-	Route::get('/', 'Administration\HomeController@index');
+	Route::get('/',                                  'Administration\HomeController@index');
 	
 	// People controller
-	Route::get ('/people', 'Administration\PeopleController@index');
-	Route::post('/people', 'Administration\PeopleController@store');
-	Route::get ('/people/create', 'Administration\PeopleController@create');
-	Route::post('/people/delete', 'Administration\PeopleController@delete');
-    Route::get ('/people/confirm', 'Administration\PeopleController@confirmAction');
-    Route::post('/people/confirm', 'Administration\PeopleController@confirmAction');
-	Route::get ('/people/{id}', 'Administration\PeopleController@show');
-	Route::get ('/people/{id}/update', 'Administration\PeopleController@update');
-    Route::get ('/people/{id}/user', 'Administration\PeopleController@showUser');
-	
+	Route::get ('/people',                           'Administration\PeopleController@index');
+	Route::post('/people',                           'Administration\PeopleController@store');
+	Route::get ('/people/create',                    'Administration\PeopleController@create');
+	Route::post('/people/delete',                    'Administration\PeopleController@delete');
+    Route::get ('/people/confirm',                   'Administration\PeopleController@confirmAction');
+    Route::post('/people/confirm',                   'Administration\PeopleController@confirmAction');
+	Route::get ('/people/{id}',                      'Administration\PeopleController@show');
+	Route::get ('/people/{id}/update',               'Administration\PeopleController@update');
+    Route::get ('/people/{id}/user',                 'Administration\PeopleController@showUser');
+    Route::post('/people/{id}/user',                 'Administration\PeopleController@storeUser');
+    Route::get ('/people/{id}/user/create',          'Administration\PeopleController@createUser');
+    
 	// Users controller
-	Route::get('/users', 'Administration\UsersController@listPeopleUsers');
-	Route::post('/users', 'Administration\UsersController@storePersonUser');
-	Route::get('/users/create', 'Administration\UsersController@create');
-	Route::get('/users/{id}', 'Administration\UsersController@showPersonUser');
-	Route::get('/users/{id}/update', 'Administration\UsersController@updatePersonUser');
-    Route::get('/users/{id}/update/password', 'Administration\UsersController@changePassword');
-    Route::post('/users/{id}/update/password', 'Administration\UsersController@saveNewPassword');
+	Route::get ('/users',                            'Administration\UsersController@listPeopleUsers');
+	Route::post('/users',                            'Administration\UsersController@storePersonUser');
+	Route::get ('/users/create',                     'Administration\UsersController@create');
+	Route::get ('/users/{id}',                       'Administration\UsersController@showPersonUser');
+	Route::get ('/users/{id}/update',                'Administration\UsersController@updatePersonUser');
+    Route::get ('/users/{id}/update/password',       'Administration\UsersController@changePassword');
+    Route::post('/users/{id}/update/password',       'Administration\UsersController@saveNewPassword');
     
     // Address controller
     Route::post('/address',                          'Administration\AddressController@store');
@@ -65,5 +67,5 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
     Route::get ('/tags/{parentId}/remove/{id}',      'Administration\TagsController@remove');
     
     // Settings controller
-    Route::get('/settings', 'Administration\SettingsController@index');
+    Route::get ('/settings',                         'Administration\SettingsController@index');
 });

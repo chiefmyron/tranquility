@@ -235,12 +235,6 @@ body {
 }
 
 // Breadcrumbs
-.breadcrumb-container {
-    //position: relative;
-    //top: -65px;
-    //margin-bottom: -20px;
-}
-
 .breadcrumb {
     display: inline;
     padding-left: 0px;
@@ -442,6 +436,10 @@ p.h-adr span {
     padding: $layout-padding-width;
 }
 
+.modal-dialog hr {
+    margin-top: 5px;
+}
+
 // Profile pictures
 .profile-picture-container {
     text-align: center;    
@@ -462,6 +460,7 @@ span.tag {
     padding: 2px 5px;
     margin-bottom: 4px;
     text-transform: lowercase;
+    font-variant: small-caps;
 }
 
 span.tag a {
@@ -473,14 +472,16 @@ p.tag-list {
 }
 
 .bootstrap-tagsinput {
-    background-color: #fff;
-    border: 1px solid #ccc;
+    background-color: $input-bg;
+    border: 1px solid $input-border;
     display: block;
     padding: 4px 6px;
     color: #555;
     max-width: 100%;
     line-height: 30px;
     cursor: text;
+    @include box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
+    @include transition(border-color ease-in-out .15s, box-shadow ease-in-out .15s);
 }
 
 .bootstrap-tagsinput .label {
@@ -511,13 +512,9 @@ p.tag-list {
 .bootstrap-tagsinput.form-control input::-webkit-input-placeholder {
     color: #777;
 }
-.bootstrap-tagsinput input:focus {
-    //border: none;
-    //box-shadow: none;
-}
 .bootstrap-tagsinput .tag {
     margin-right: 2px;
-    color: white;
+    color: $tags-color;
 }
 .bootstrap-tagsinput .tag [data-role="remove"] {
     margin-left: 2px;
@@ -535,6 +532,27 @@ p.tag-list {
 
 .label-entity-user {
     background-color: $brand-entity-user !important;
+}
+
+// Forms
+.radio,
+.checkbox {
+    margin-left: 20px;
+}
+
+.radio label,
+.checkbox label {
+    margin-left: -20px;
+}
+
+label + .radio,
+label + .checkbox {
+    margin-top: 0;
+}
+
+// Process messages
+.alert-error {
+  @include alert-variant($alert-danger-bg, $alert-danger-border, $alert-danger-text);
 }
 
 /******************************************************************************

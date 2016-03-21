@@ -22,6 +22,15 @@ class AddressService extends \Tranquility\Services\Service {
 	 * @return \Tranquility\Services\ServiceResponse
 	 */
 	public function create(array $data) {
+        // Retrieve parent entity
+        $parentId = Utility::extractValue($data, 'parentId', 0);
+        $response = $this->findParentEntity($parentId);
+        if ($response->containsErrors()) {
+            return $response;
+        }
+        
+        // Create address
+        $data['parent'] = $response->getFirstContentItem();
 		$response = parent::create($data);
 		
 		// Add entity specific success code

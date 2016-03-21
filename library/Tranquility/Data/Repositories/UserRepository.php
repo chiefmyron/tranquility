@@ -8,6 +8,33 @@ use Tranquility\Data\Objects\ExtensionObjects\AuditTrail;
 class UserRepository extends EntityRepository {
     
     /**
+     * Creates a new user record and associates it with the parent entity
+     * 
+     * @param array $data  Input data to create the record
+     * @return \Tranquility\Data\BusinessObjects\Entity
+     */
+    public function create(array $data) {
+		// Create new audit trail record
+		$auditTrail = new AuditTrail($data);
+        $this->_em->persist($auditTrail);
+        
+        // Create new entity record, with the audit trail attached
+        $entityName = $this->getEntityName();
+        $entity = new $entityName($data);
+        $entity->version = 1; // Force version for new records to be 1
+        $entity->setAuditTrail($auditTrail);
+        $this->_em->persist($entity);
+        
+        // Link user to parent entity
+        $data['parent']->setUserAccount($entity);
+        $this->_em->persist($data['parent']);
+        $this->_em->flush();
+		
+		// Return newly created entity
+		return $entity;
+    }
+    
+    /**
      * Updates an existing entity record, and moves the old version of the record
      * into a historical table
      *
@@ -98,10 +125,9 @@ class UserRepository extends EntityRepository {
 	 */
     public function getPeopleWithUserAccounts($filterConditions = array(), $orderConditions = array(), $resultsPerPage = 0, $startRecordIndex = 0) {
         // Start creation of query
-        $entityName = $this->getEntityName();
         $queryBuilder = $this->_em->createQueryBuilder();
         $queryBuilder->select('e')
-                     ->from(\Tranquility\Data\BusinessObjects\UserBusinessObject::class, 'e')
+                     ->from($this->getEntityName(), 'e')
                      ->innerJoin('e.person', 'person');
         
         // Add other filter conditions

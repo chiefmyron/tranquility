@@ -167,14 +167,6 @@ class AddressController extends Controller {
 		$params['updateDateTime'] = Carbon::now();
 		$params['transactionSource'] = EnumTransactionSource::UIBackend;
         
-        // Retrieve parent entity details
-        $response = $this->_getService($category)->findParentEntity($parentId);
-        if ($response->containsErrors()) {
-            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
-            return Response::json($ajax->toArray());
-        }
-        $parentEntity = $response->getFirstContentItem();
-        		
 		// Create or update record		
 		if ($id != 0) {
             // Update existing record
@@ -182,7 +174,6 @@ class AddressController extends Controller {
 			$response = $this->_getService($category)->update($id, $params);
 		} else {
             // Create new address record
-            $params['parent'] = $parentEntity;
             $params['updateReason'] = 'backend address create';
 			$response = $this->_getService($category)->create($params);
 		}
@@ -198,7 +189,7 @@ class AddressController extends Controller {
 
         // Render address panel for person
         $address = $response->getFirstContentItem();
-        $ajax = $this->_refreshAddressList($parentEntity, $category);
+        $ajax = $this->_refreshAddressList($parentId, $category);
         $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
         $ajax->addCallback('closeDialog');
         return Response::json($ajax->toArray());
@@ -303,7 +294,7 @@ class AddressController extends Controller {
     }
     
     private function _refreshAddressList($parent, $type) {
-        if (is_int($parent)) {
+        if (is_numeric($parent)) {
             // Retrieve parent entity details
             $response = $this->_getService($type)->findParentEntity($parent);
             if ($response->containsErrors()) {

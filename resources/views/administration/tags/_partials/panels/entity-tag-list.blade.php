@@ -4,7 +4,7 @@
                             @if ($entity->getEntityType() == 'person')
                             <span class="tag label-entity-{{ $entity->getEntityType() }}"><a href="{{ action('Administration\PeopleController@index') }}">{{ trans('administration.common_entity_type_'.$entity->getEntityType()) }}</a></span>
                                 @if (!is_null($entity->getUserAccount()))
-                            <span class="tag label-entity-user"><a href="#">{{ trans('administration.common_entity_type_user') }}</a></span>    
+                            <span class="tag label-entity-user"><a href="{{ action('Administration\UsersController@listPeopleUsers') }}">{{ trans('administration.common_entity_type_user') }}</a></span>    
                                 @endif
                             @elseif ($entity->getEntityType() == 'account')
                             

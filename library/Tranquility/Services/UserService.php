@@ -16,6 +16,52 @@ class UserService extends \Tranquility\Services\Service {
     }
     
     /**
+	 * Create a new User record
+	 *
+	 * @param array Data for creating a new User record
+	 * @return \Tranquility\Services\ServiceResponse
+	 */
+	public function create(array $data) {
+        // Set up response object
+		$response = new ServiceResponse();
+                
+        // Set any empty strings to nulls
+        foreach ($data as $key => $value) {
+            if ($value === '') {
+                $data[$key] = null;
+            }
+        }
+				
+		// Perform input validation
+		$validation = $this->validateInputFields($data, true);
+		if ($validation !== true) {
+			// Send error response back immediately
+			$response->addMessages($validation);
+			$response->setHttpResponseCode(EnumHttpStatusCode::BadRequest);
+			return $response;
+		}
+        
+        // Encode password
+        $data['password'] = Hash::make($data['password']); 
+        unset($data['passwordConfirm']);
+        
+        // Retrieve parent entity
+        $parentId = Utility::extractValue($data, 'parentId', 0);
+        $response = $this->findParentEntity($parentId);
+        if ($response->containsErrors()) {
+            return $response;
+        }
+        $data['parent'] = $response->getFirstContentItem();
+		
+		// Attempt to create the user
+        $entity = $this->_getRepository()->create($data);
+		$response->setContent($entity);
+		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
+        $response->addMessage(10043, EnumMessageLevel::Success, 'message_10043_phone_address_record_created_successfully');
+		return $response;
+	}
+    
+    /**
 	 * Updates an existing User record
 	 *
 	 * @param int   $id    ID for existing User record
@@ -97,7 +143,7 @@ class UserService extends \Tranquility\Services\Service {
 		
 		// Password verification
 		if ($newRecord) {
-            $messages = array_merge($messages, $this->validateNewPasswordFields);
+            $messages = array_merge($messages, $this->validateNewPasswordFields($inputs));
 		}
 		
 		// If there are one or more messages, then there are errors - return messages

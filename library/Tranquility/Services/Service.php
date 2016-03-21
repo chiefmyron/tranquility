@@ -233,7 +233,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
                 
         // Set any empty strings to nulls
         foreach ($data as $key => $value) {
-            if ($value == '') {
+            if ($value === '') {
                 $data[$key] = null;
             }
         }
