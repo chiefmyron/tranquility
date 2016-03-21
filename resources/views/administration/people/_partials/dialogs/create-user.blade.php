@@ -8,7 +8,7 @@
     @include('administration.users._partials.forms.create')
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
     <button type="submit" class="btn btn-primary" id="dialog-submit">{{ trans('administration.users_heading_create_user') }}</button>
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
 </div>
 {!! Form::close() !!}

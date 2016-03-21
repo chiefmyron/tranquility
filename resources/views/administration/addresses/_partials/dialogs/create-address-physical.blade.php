@@ -10,7 +10,7 @@
 <div class="modal-footer">
     {!! Form::hidden('parentId', $parentId) !!}
     {!! Form::hidden('category', 'physical') !!}
-    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
     <button type="submit" class="btn btn-primary" id="dialog-submit">{{ trans('administration.address_heading_add_new_address') }}</button>
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
 </div>
 {!! Form::close() !!}

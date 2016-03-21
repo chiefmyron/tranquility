@@ -18,7 +18,7 @@
                         @foreach ($selectedIds as $id)
                         {!! Form::hidden('id[]', $id) !!}
                         @endforeach
-						<button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
 						<button type="submit" class="btn btn-primary" id="dialog-submit">{{ trans('administration.common_command_delete_confirm') }}</button>
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
                         {!! Form::close() !!}
 					</div>

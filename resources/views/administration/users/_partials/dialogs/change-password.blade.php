@@ -19,7 +19,7 @@
 </div>
 <div class="modal-footer">
     {!! Form::hidden('id', $id) !!}
-    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
     <button type="submit" class="btn btn-primary" id="dialog-submit">{{ trans('administration.users_command_change_password') }}</button>
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
 </div>
 {!! Form::close() !!}

@@ -11,7 +11,7 @@
     {!! Form::hidden('id', $address->id) !!}
     {!! Form::hidden('parentId', $address->getParentEntity()->id) !!}
     {!! Form::hidden('category', $address->category) !!}
-    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
     <button type="submit" class="btn btn-primary" id="dialog-submit">{{ trans('administration.address_heading_update_'.$address->category) }}</button>
+    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">{{ trans('administration.common_cancel') }}</button>
 </div>
 {!! Form::close() !!}
