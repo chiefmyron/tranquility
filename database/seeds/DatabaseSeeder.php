@@ -3,8 +3,10 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Doctrine\ORM\EntityManagerInterface;
-use Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
-use Tranquility\Enums\System\EntityType        as EnumEntityType;
+use Tranquility\Enums\System\TransactionSource                  as EnumTransactionSource;
+use Tranquility\Enums\System\EntityType                         as EnumEntityType;
+use Tranquility\Enums\BusinessObjects\Address\AddressTypes      as EnumAddressType;
+use Tranquility\Enums\BusinessObjects\Address\EmailAddressTypes as EnumEmailType;
 
 class DatabaseSeeder extends Seeder {
 
@@ -95,6 +97,23 @@ class DatabaseSeeder extends Seeder {
             'firstName' => 'System',
             'lastName' => 'Administrator',
             'userId' => $userId
+        ));
+        
+        // Create new Address record, and associate with the Person
+        $addressId = DB::table('entity')->insertGetId(array(
+            'version' => 1,
+            'type' => EnumEntityType::Address,
+            'deleted' => 0,
+            'transactionId' => $transactionId    
+        ));
+        
+        DB::table('entity_addresses')->insert(array(
+            'id' => $addressId,
+            'parentId' => $personId,
+            'category' => EnumAddressType::Email,
+            'addressType' => EnumEmailType::Work,
+            'addressText' => 'administrator@homestead.app',
+            'primaryContact' => 1
         ));
 	}
 }
