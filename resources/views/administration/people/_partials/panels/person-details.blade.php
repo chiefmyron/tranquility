@@ -22,8 +22,8 @@
                         <dt>{{ trans('administration.people_label_user_account') }}</dt>
                         @if(is_null($user))
                         <dd>
-                            No user account
-                            <p><a href="{{ action('Administration\PeopleController@createUser', ['id' => $person->id]) }}" class="ajax">{{ trans('administration.users_heading_create_user') }}</a></p>
+                            {{ trans('administration.people_label_no_user_account') }}
+                            <p><a href="{{ action('Administration\PeopleController@createUser', ['id' => $person->id]) }}" class="ajax"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.users_heading_create_user') }}</a></p>
                         </dd>
                         @else
                         <dd><a href="{{ action('Administration\UsersController@showPersonUser', ['id' => $user->id]) }}">{{ $user->username }}</a></dd>

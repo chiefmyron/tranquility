@@ -349,7 +349,8 @@ class PeopleController extends Controller {
         
         // Render address panel for person
         $person = $this->_service->find($id)->getFirstContentItem();
-        $ajax->addContent('person-details-container', $this->_renderPartial('administration.people._partials.panels.person-details', ['person' => $person, 'user' => $person->getUserAccount()]), 'attachCommonHandlers');
+        $ajax->addContent('person-details-container', $this->_renderPartial('administration.people._partials.panels.person-details', ['person' => $person, 'user' => $person->getUserAccount()]));
+        $ajax->addContent('email-addresses-container', $this->_renderPartial('administration.addresses._partials.panels.email-address', ['addresses' => $person->getAddresses(EnumAddressType::Email), 'parentId' => $person->id]), 'attachCommonHandlers');
         $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
         $ajax->addCallback('closeDialog');
         return Response::json($ajax->toArray());

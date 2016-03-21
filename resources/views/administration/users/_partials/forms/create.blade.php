@@ -4,20 +4,20 @@
     <div class="radio">
         <label>
             {!! Form::radio('usernameOption', 'existing', true) !!}
-            Use an existing email address:
+            {{ trans('administration.users_label_use_existing_email_address') }}:
         </label>
         @if (count($emailAddresses) == 1)
         <em>{{ $emailAddresses[0] }}</em>
         {!! Form::hidden('existingUsername', $emailAddresses[0]) !!}
         @else
-        {!! Form::select('existingUsername', $emailAddresses, null, ['class' => 'form-control']) !!}
+        {!! Form::select('existingUsername', $emailAddresses, null, ['class' => 'form-control', 'autofocus']) !!}
         @endif
     </div>
     
     <div class="radio">
         <label>
             {!! Form::radio('usernameOption', 'new') !!}
-            Create a new username / email address:
+            {{ trans('administration.users_label_create_new_username') }}:
         </label>
         {!! Form::email('newUsername', null, ['class' => 'form-control']) !!}
     </div>
@@ -25,8 +25,8 @@
 </div>
 @else
 <div class="form-group">
-    {!! Form::label('newUsername', trans('administration.common_username')) !!}
-    {!! Form::email('newUsername', null, ['class' => 'form-control']) !!}	
+    {!! Form::label('newUsername', trans('administration.common_email_address')) !!}
+    {!! Form::email('newUsername', null, ['class' => 'form-control', 'autofocus']) !!}	
     {!! FormError::inline('newUsername', Session::get('username')) !!}
 </div>
 @endif

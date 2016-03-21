@@ -54,10 +54,10 @@ class UserService extends \Tranquility\Services\Service {
         $data['parent'] = $response->getFirstContentItem();
 		
 		// Attempt to create the user
-        $entity = $this->_getRepository()->create($data);
-		$response->setContent($entity);
+        $user = $this->_getRepository()->create($data);
+		$response->setContent($user);
 		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
-        $response->addMessage(10043, EnumMessageLevel::Success, 'message_10043_phone_address_record_created_successfully');
+        $response->addMessage(10030, EnumMessageLevel::Success, 'message_10030_user_record_created_successfully', ['name' => $data['parent']->getFullName()]);
 		return $response;
 	}
     
