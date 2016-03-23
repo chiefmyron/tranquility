@@ -94,6 +94,14 @@ class PeopleController extends Controller {
 			Session::flash('messages', $response->getMessages());
 			return redirect()->action('Administration\PeopleController@index');
 		}
+        
+        // Check to see if person is viewing their own record
+        $person = $response->getFirstContentItem();
+        $user = $person->getUserAccount();
+        $messages = Session::get('messages');
+        if (!is_null($user) && ($user->id == Auth::user()->id) && (count($messages) <= 0)) {
+            $this->_addProcessMessage(EnumMessageLevel::Info, 'message_10034_user_viewing_own_record');
+        }
 		return view('administration.people.show')->with('person', $response->getFirstContentItem());
 	}
 	
