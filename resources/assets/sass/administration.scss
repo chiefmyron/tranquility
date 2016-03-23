@@ -453,6 +453,17 @@ p.h-adr span {
 }
 
 // Tags
+div.tagsinput {
+    background-color: $input-bg;
+    border: 1px solid $input-border;
+    padding: 5px 5px 0 5px;
+    width: auto;
+    height: auto;
+    overflow-y: auto;
+    @include box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
+    @include transition(border-color ease-in-out .15s, box-shadow ease-in-out .15s);
+}
+
 span.tag {
     background-color: $tags-default-bg;
     color: $tags-color;
@@ -467,62 +478,35 @@ span.tag a {
     color: $tags-color;
 }
 
-p.tag-list {
-    margin-bottom: 0;
+div.tagsinput span.tag {
+    display:block;
+    float:left;
+    margin-right: 5px;
+    margin-bottom: 5px;
 }
 
-.bootstrap-tagsinput {
-    background-color: $input-bg;
-    border: 1px solid $input-border;
-    display: block;
-    padding: 4px 6px;
-    color: #555;
-    max-width: 100%;
-    line-height: 30px;
-    cursor: text;
-    @include box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
-    @include transition(border-color ease-in-out .15s, box-shadow ease-in-out .15s);
+div.tagsinput input {
+    width:80px;
+    border:1px solid transparent;
+    background:0 0;
+    color:#000;
+    outline:0
 }
 
-.bootstrap-tagsinput .label {
-    font-size: 100%;
-    font-weight: normal;
-    line-height: $line-height-base;
-    border-radius: $border-radius-base;
+div.tagsinput div {
+    display:block;
+    float:left
 }
 
-.bootstrap-tagsinput input {
-    border: none;
-    box-shadow: none;
-    outline: none;
-    background-color: transparent;
-    padding: 0 6px;
-    margin: 0;
-    width: auto;
-    max-width: inherit;
+.tags_clear {
+    clear:both;
+    width:100%;
+    height:0
 }
 
-.bootstrap-tagsinput.form-control input::-moz-placeholder {
-    color: #777;
-    opacity: 1;
-}
-.bootstrap-tagsinput.form-control input:-ms-input-placeholder {
-    color: #777;
-}
-.bootstrap-tagsinput.form-control input::-webkit-input-placeholder {
-    color: #777;
-}
-.bootstrap-tagsinput .tag {
-    margin-right: 2px;
-    color: $tags-color;
-}
-.bootstrap-tagsinput .tag [data-role="remove"] {
-    margin-left: 2px;
-    cursor: pointer;
-}
-.bootstrap-tagsinput .tag [data-role="remove"]:after {
-    content: "| x";
-    padding: 0px 2px;
+.not_valid{
+    background:#FBD8DB!important;
+    color:#90111A!important
 }
 
 // Entity labels
@@ -553,6 +537,37 @@ label + .checkbox {
 // Process messages
 .alert-error {
   @include alert-variant($alert-danger-bg, $alert-danger-border, $alert-danger-text);
+}
+
+// Autocomplete
+ul.ui-autocomplete {
+    z-index: ($zindex-modal + 1);
+    padding: 5px 0;
+    margin: 2px 0 0; // override default ul
+    list-style: none;
+    font-size: $font-size-base;
+    text-align: left; // Ensures proper alignment if parent has it changed (e.g., modal footer)
+    background-color: $dropdown-bg;
+    border: 1px solid $dropdown-fallback-border; // IE8 fallback
+    border: 1px solid $dropdown-border;
+    border-radius: $border-radius-base;
+    @include box-shadow(0 6px 12px rgba(0,0,0,.175));
+}
+
+ul.ui-autocomplete .ui-menu-item {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: $line-height-base;
+    color: $dropdown-link-color;
+    white-space: nowrap; // prevent links from randomly breaking onto new lines
+}
+
+ul.ui-autocomplete .ui-menu-item.ui-state-focus {
+    margin: 0;
+    color: $dropdown-link-hover-color;
+    background-color: $dropdown-link-hover-bg;   
 }
 
 /******************************************************************************

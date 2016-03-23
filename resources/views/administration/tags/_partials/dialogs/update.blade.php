@@ -8,7 +8,7 @@
     
     <div class="form-group">
         {!! Form::label('tags', trans('administration.tags_label_tags')) !!}
-        {!! Form::text('tags', implode(',', $tags), ['class' => 'form-control', 'data-role' => 'tagsinput', 'autofocus']) !!}	
+        {!! Form::text('tags', implode(',', $tags), ['class' => 'form-control', 'data-role' => 'tagsinput', 'data-autocomplete' => action('Administration\TagsController@autocomplete'), 'autofocus']) !!}	
         {!! FormError::inline('tags', Session::get('messages')) !!}
     </div>
 </div>

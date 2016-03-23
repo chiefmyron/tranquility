@@ -28,7 +28,13 @@ $('.modal').on('shown.bs.modal', function() {
     $(this).find('[autofocus]').focus();
     
     // Attach tagging
-    $(this).find('[data-role="tagsinput"]').tagsinput();
+    $(this).find('[data-role="tagsinput"]').each(function (element) {
+        $(this).tagsInput({
+            'height': 'auto',
+            'width': '100%',
+            'autocomplete_url': $(this).attr('data-autocomplete')    
+        });
+    });
 });
 
 /**

@@ -62,6 +62,7 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
     
     // Tags controller
     Route::post('/tags',                             'Administration\TagsController@store');
+    Route::get ('/tags/autocomplete',                'Administration\TagsController@autocomplete');
     Route::get ('/tags/{parentId}',                  'Administration\TagsController@index');
     Route::get ('/tags/{parentId}/update',           'Administration\TagsController@update');
     Route::get ('/tags/{parentId}/remove/{id}',      'Administration\TagsController@remove');

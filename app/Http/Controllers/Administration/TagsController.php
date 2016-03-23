@@ -146,5 +146,30 @@ class TagsController extends Controller {
         $ajax->addCallback('closeDialog');
         return Response::json($ajax->toArray());
     }
+    
+    public function autocomplete(Request $request) {
+        // Get the search term
+        $term = $request->get('term', '');
+        
+        // Get the set of tags
+        $filter = array(
+            ['text', 'LIKE', $term]
+        );
+        $response = $this->_service->all($filter);
+        if ($response->containsErrors()) {
+			// Errors encountered - redisplay form with error messages
+            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+			$ajax->addMessages($response->getMessages());
+            return Response::json($ajax->toArray());
+		}
+        
+        $tags = $response->getContent();
+        $output = array();
+        foreach ($tags as $tag) {
+            $output[] = $tag->text;
+        }
+        
+        echo json_encode($output);
+    }
   
 }

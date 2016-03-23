@@ -26,6 +26,8 @@
         @endif
         
         <!-- Custom styles -->
+        <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />-->
+        <link href="/backend/css/jquery-ui.css" rel="stylesheet" type="text/css" />
         <link href="/backend/css/layout.css" rel="stylesheet" type="text/css" />
         
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -83,7 +85,9 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         @endif
-        <script src="/backend/js/bootstrap-tagsinput.js"></script>
+        <!--<script src="/backend/js/typeahead.bundle.min.js"></script>-->
+        <script src="/backend/js/jquery-ui.min.js"></script>
+        <script src="/backend/js/jquery.tagsinput.min.js"></script>
         <script src="/backend/js/core.js"></script>
     </body>
 </html>   

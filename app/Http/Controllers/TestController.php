@@ -29,12 +29,7 @@ class TestController extends Controller {
 	 */
 	public function index()
 	{
-        $entity = $this->em->find('\Tranquility\Data\BusinessObjects\PersonBusinessObject', 54);
-        $addresses = $entity->getPhysicalAddresses()->toArray();
-       var_dump($addresses);
-        //var_dump($entity->getAuditTrailDetails());
-        //echo 'Remember token: '.$entity->getRememberToken();
-		//return view('welcome');
+       return view('test');
 	}
 	
 	public function administration() {

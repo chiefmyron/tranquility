@@ -168,6 +168,10 @@ class EntityRepository extends \Doctrine\ORM\EntityRepository {
                 // Check for values not in array
                 $queryBuilder = $queryBuilder->add('where', $queryBuilder->expr()->notIn('e.'.$filter[0], ':'.$filter[0]));
                 $parameters[$filter[0]] = $filter[2];
+            } elseif ((count($filter) == 3) && trim(strtoupper($filter[1]) == 'LIKE')) {
+                // String search
+                $queryBuilder = $queryBuilder->add('where', $queryBuilder->expr()->like('e.'.$filter[0], $queryBuilder->expr()->literal('%'.$filter[2].'%')));
+                //$parameters[$filter[0]] = 
             } else {
                 // Standard where clause
                 $queryBuilder = $queryBuilder->andWhere('e.'.$filter[0].' '.$filter[1].' :'.$filter[0]);
