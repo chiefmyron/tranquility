@@ -12,6 +12,9 @@ $brand-danger:               #d9534f;
 $brand-error:                #a94442;
 $brand-navigation:           #303e4d;      // Base colour for navigation elements
 
+$brand-entity-person:        #6a1b9a;
+$brand-entity-user:          #e53935;
+
 // Navbar
 $nav-link-hover:                           #ABB1B7;
 $nav-link-hover-bg:                        #4A5664;
@@ -20,7 +23,6 @@ $navbar-default-toggle-hover-bg:           $brand-navigation;
 $navbar-width:                             250px;
 $dropdown-link-hover-bg:                   $brand-primary;
 $dropdown-link-hover-color:                #ffffff;
-
 
 $navbar-default-toggle-icon-bar-bg:        #888 !default;
 $navbar-default-toggle-border-color:       $brand-navigation;
@@ -31,6 +33,10 @@ $navbar-default-toggle-border-color:       #ddd !default;
 $navigation-heading:                       #ABB1B7;
 $navigation-link:                          #ABB1B7;
 
+// Tags
+$tags-color:                               #ffffff;
+$tags-default-bg:                          #708296;
+
 // Typography
 @import url("http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all");
 @import url(https://fonts.googleapis.com/css?family=Roboto);
@@ -38,6 +44,9 @@ $font-family-heading:        "Open Sans", Arial, Helvetica, sans-serif;
 $font-family-sans-serif:     "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $headings-font-weight:       300;
 $text-size-large:            1.5em;
+
+// Iconography
+$icon-font-path: "../fonts/local/";
 
 // Components
 $border-radius-base:         0px;            // Remove round corners from all elements
@@ -226,12 +235,6 @@ body {
 }
 
 // Breadcrumbs
-.breadcrumb-container {
-    //position: relative;
-    //top: -65px;
-    //margin-bottom: -20px;
-}
-
 .breadcrumb {
     display: inline;
     padding-left: 0px;
@@ -433,6 +436,10 @@ p.h-adr span {
     padding: $layout-padding-width;
 }
 
+.modal-dialog hr {
+    margin-top: 5px;
+}
+
 // Profile pictures
 .profile-picture-container {
     text-align: center;    
@@ -443,6 +450,124 @@ p.h-adr span {
     height: auto;
     margin-bottom: $layout-padding-width;
     border-radius: 75px;
+}
+
+// Tags
+div.tagsinput {
+    background-color: $input-bg;
+    border: 1px solid $input-border;
+    padding: 5px 5px 0 5px;
+    width: auto;
+    height: auto;
+    overflow-y: auto;
+    @include box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
+    @include transition(border-color ease-in-out .15s, box-shadow ease-in-out .15s);
+}
+
+span.tag {
+    background-color: $tags-default-bg;
+    color: $tags-color;
+    display: inline-block;
+    padding: 2px 5px;
+    margin-bottom: 4px;
+    text-transform: lowercase;
+    font-variant: small-caps;
+}
+
+span.tag a {
+    color: $tags-color;
+}
+
+div.tagsinput span.tag {
+    display:block;
+    float:left;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+div.tagsinput input {
+    width:80px;
+    border:1px solid transparent;
+    background:0 0;
+    color:#000;
+    outline:0
+}
+
+div.tagsinput div {
+    display:block;
+    float:left
+}
+
+.tags_clear {
+    clear:both;
+    width:100%;
+    height:0
+}
+
+.not_valid{
+    background:#FBD8DB!important;
+    color:#90111A!important
+}
+
+// Entity labels
+.label-entity-person {
+    background-color: $brand-entity-person !important;
+}
+
+.label-entity-user {
+    background-color: $brand-entity-user !important;
+}
+
+// Forms
+.radio,
+.checkbox {
+    margin-left: 20px;
+}
+
+.radio label,
+.checkbox label {
+    margin-left: -20px;
+}
+
+label + .radio,
+label + .checkbox {
+    margin-top: 0;
+}
+
+// Process messages
+.alert-error {
+  @include alert-variant($alert-danger-bg, $alert-danger-border, $alert-danger-text);
+}
+
+// Autocomplete
+ul.ui-autocomplete {
+    z-index: ($zindex-modal + 1);
+    padding: 5px 0;
+    margin: 2px 0 0; // override default ul
+    list-style: none;
+    font-size: $font-size-base;
+    text-align: left; // Ensures proper alignment if parent has it changed (e.g., modal footer)
+    background-color: $dropdown-bg;
+    border: 1px solid $dropdown-fallback-border; // IE8 fallback
+    border: 1px solid $dropdown-border;
+    border-radius: $border-radius-base;
+    @include box-shadow(0 6px 12px rgba(0,0,0,.175));
+}
+
+ul.ui-autocomplete .ui-menu-item {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: normal;
+    line-height: $line-height-base;
+    color: $dropdown-link-color;
+    white-space: nowrap; // prevent links from randomly breaking onto new lines
+}
+
+ul.ui-autocomplete .ui-menu-item.ui-state-focus {
+    margin: 0;
+    color: $dropdown-link-hover-color;
+    background-color: $dropdown-link-hover-bg;   
 }
 
 /******************************************************************************

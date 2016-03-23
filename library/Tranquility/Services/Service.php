@@ -1,13 +1,19 @@
 <?php namespace Tranquility\Services;
 
+// Doctrine 2 libraries
 use Doctrine\ORM\EntityManagerInterface;
 use Illuminate\Container\Container              as Container;
 
+// Tranquility libraries
 use \Tranquility\Utility                        as Utility;
 use \Tranquility\Exceptions\ServiceException    as ServiceException;
 use \Tranquility\Enums\System\MessageLevel      as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode    as EnumHttpStatusCode;
 use \Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
+
+// Base business object
+use Tranquility\Data\Objects\BusinessObjects\BusinessObject     as Entity;
+use Tranquility\Data\Objects\BusinessObjects\UserBusinessObject as User;
 
 abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterface {
     // Doctrine entity manager
@@ -105,7 +111,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
         
         // Check that audit trail field 'updateBy' is a valid user
 		$updateBy = Utility::extractValue($inputs, 'updateBy', 0);
-        if (!($updateBy instanceof \Tranquility\Data\BusinessObjects\UserBusinessObject)) {
+        if (!($updateBy instanceof User)) {
             $messages[] = array(
 				'code' => 10012,
 				'text' => 'message_10012_invalid_user_assigned_to_audit_trail',
@@ -211,7 +217,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
      * @return \Tranquility\Services\ServiceResponse
      */
     public function findParentEntity($parentId) {
-        $entity = $this->_entityManager->find('\Tranquility\Data\BusinessObjects\EntityBusinessObject', $parentId);
+        $entity = $this->_entityManager->find(Entity::class, $parentId);
 		return $this->_findResponse(array($entity));
     }
 	
@@ -227,7 +233,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
                 
         // Set any empty strings to nulls
         foreach ($data as $key => $value) {
-            if ($value == '') {
+            if ($value === '') {
                 $data[$key] = null;
             }
         }
@@ -327,7 +333,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	 */
 	protected function _getFields() {
         $className = $this->businessObject();
-		return $className::getEntityFields();
+		return $className::getFields();
 	}
 	
 	/**
@@ -336,7 +342,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	 */
 	protected function _getMandatoryFields($newRecord = false) {
 		$className = $this->businessObject();
-		return $className::getMandatoryEntityFields($newRecord);
+		return $className::getMandatoryFields($newRecord);
 	}
     
     /**

@@ -14,8 +14,8 @@
 	{!! Form::open(['action' => 'Administration\PeopleController@store']) !!}
 	@include('administration.people._partials.forms.create')
     <div class="form-group">
+        {!! Form::submit(trans('administration.people_command_create'), ['class' => 'btn btn-primary pull-right']) !!}
         <a href="{{ action('Administration\PeopleController@index') }}" class="btn btn-default pull-left">{{ trans('administration.common_cancel') }}</a>
-    	{!! Form::submit(trans('administration.people_command_create'), ['class' => 'btn btn-primary pull-right']) !!}
     </div>
 	{!! Form::close() !!}
 @stop

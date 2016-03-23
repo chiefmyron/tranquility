@@ -7,10 +7,15 @@ use Illuminate\Http\Request as Request;
 use App\Http\Controllers\Controller;
 
 use Carbon\Carbon;
-use Tranquility\View\AjaxResponse as AjaxResponse;
-use Tranquility\Services\PersonService as PersonService;
-use Tranquility\Enums\System\EntityType as EnumEntityType;
-use Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
+use Tranquility\Utility;
+use Tranquility\View\AjaxResponse                  as AjaxResponse;
+use Tranquility\Services\UserService               as UserService;
+use Tranquility\Services\PersonService             as PersonService;
+use Tranquility\Services\AddressService            as AddressService;
+use Tranquility\Enums\System\EntityType            as EnumEntityType;
+use Tranquility\Enums\System\MessageLevel          as EnumMessageLevel;
+use Tranquility\Enums\System\TransactionSource     as EnumTransactionSource;
+use Tranquility\Enums\BusinessObjects\Address\AddressTypes as EnumAddressType;
 
 class PeopleController extends Controller {
 
@@ -25,15 +30,19 @@ class PeopleController extends Controller {
 	|
 	*/
 	
-	private $_person;
+	private $_service;
+    private $_userService;
+    private $_addressService;
 
 	/**
 	 * Create a new controller instance.
 	 *
 	 * @return void
 	 */
-	public function __construct(PersonService $person) {
-		$this->_person = $person;
+	public function __construct(PersonService $person, AddressService $address, UserService $user) {
+		$this->_service = $person;
+        $this->_userService = $user;
+        $this->_addressService = $address;
 	}
 
 	/**
@@ -47,7 +56,7 @@ class PeopleController extends Controller {
         $recordsPerPage = $request->get('recordsPerPage', 20);
         
 		// Get the list of people
-		$response = $this->_person->all(array(), array(), $pageNumber, $recordsPerPage);
+		$response = $this->_service->all(array(), array(), $pageNumber, $recordsPerPage);
 		$responseArray = $response->toArray();
 		
 		// Determine if we are using the detail or table view (default to table)
@@ -79,7 +88,7 @@ class PeopleController extends Controller {
 	 * @return Response
 	 */
 	public function show($id) {
-		$response = $this->_person->find($id);
+		$response = $this->_service->find($id);
 		if ($response->containsErrors()) {
 			// Redirect to index with error message
 			Session::flash('messages', $response->getMessages());
@@ -104,7 +113,7 @@ class PeopleController extends Controller {
 	 * @return Response
 	 */
 	public function update($id) {
-		$response = $this->_person->find($id);
+		$response = $this->_service->find($id);
 		if ($response->containsErrors()) {
 			// Redirect to index with error message
 			Session::flash('messages', $response->getMessages());
@@ -132,10 +141,10 @@ class PeopleController extends Controller {
 		// Create or update record		
 		if ($id != 0) {
             $params['updateReason'] = 'backend person update';
-			$result = $this->_person->update($id, $params);
+			$result = $this->_service->update($id, $params);
 		} else {
             $params['updateReason'] = 'backend person create';
-			$result = $this->_person->create($params);
+			$result = $this->_service->create($params);
 		}
 		
 		// Flash messages to session, and check for errors
@@ -164,7 +173,7 @@ class PeopleController extends Controller {
         $person = null;
         if (!is_array($id) && ($id > 0)) {
             // Confirmation is for a single person only - retrieve details
-            $response = $this->_person->find($id);
+            $response = $this->_service->find($id);
             if ($response->containsErrors()) {
                 // TODO: Proper error handling here
                 throw new Exception('Error:'.$response->getMessages());
@@ -212,15 +221,15 @@ class PeopleController extends Controller {
         $params['updateDateTime'] = Carbon::now();
         $params['transactionSource'] = EnumTransactionSource::UIBackend;
         if (count($inputIds) > 1) {
-            $response = $this->_person->deleteMultiple($inputIds, $params);
+            $response = $this->_service->deleteMultiple($inputIds, $params);
         } else {
-            $response = $this->_person->delete($inputIds[0], $params);
+            $response = $this->_service->delete($inputIds[0], $params);
         }
         
         // If AJAX request, send response
         if ($request->ajax()) {
             // Refresh index view
-            $responseArray = $this->_person->all()->toArray();
+            $responseArray = $this->_service->all()->toArray();
             $responseArray['viewType'] = $request->session()->get('people.index.viewType', 'table');;
 
 			// AJAX response
@@ -244,6 +253,109 @@ class PeopleController extends Controller {
         }
 	}
     
+    public function createUser($id, Request $request) {
+        // Ensure this is received as an ajax request only
+		if (!$request->ajax()) {
+			// TODO: Proper error handling here
+			throw new Exception('Access only via AJAX request!');
+		}
+        
+        // Get existing person record
+        $ajax = new AjaxResponse();
+        $response = $this->_service->find($id);
+        if ($response->containsErrors()) {
+            $ajax->addMessages($result->getMessages());
+            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            return $ajax;
+        }
+        
+        // Check if person already has a user account
+        $person = $response->getFirstContentItem();
+        $user = $person->getUserAccount();
+        if (!is_null($user)) {
+            $ajax->addMessage(10034, 'message_10033_user_already_exists', EnumMessageLevel::Error, null);
+            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+        }
+        
+        // Get any existing email addresses for the person
+        $emailAddresses = array();
+        foreach ($person->getAddresses(EnumAddressType::Email) as $address) {
+            $emailAddresses[$address->addressText] = $address->addressText;
+        }
+        
+        // Render dialog
+        $dialog = $this->_renderPartial('administration.people._partials.dialogs.create-user', ['person' => $person, 'emailAddresses' => $emailAddresses]);
+        $ajax->addContent('modal-content', $dialog, 'displayDialog');
+		return Response::json($ajax->toArray());
+    }
+    
+    public function storeUser($id, Request $request) {
+        // Ensure this is received as an ajax request only
+		if (!$request->ajax()) {
+			// TODO: Proper error handling here
+			throw new Exception('Access only via AJAX request!');
+		}
+        
+        // Get input values
+        $data = $request->all();
+        $data['parentId'] = $id;
+        $data['registeredDateTime'] = Carbon::now();
+        
+        // Set audit trail details
+        $auditTrail = array (
+            'updateBy' => Auth::user(),
+            'updateDateTime' => Carbon::now(),
+            'updateReason' => 'new user creation',
+            'transactionSource' => EnumTransactionSource::UIBackend,
+        );
+        
+        // Check if a new email address needs to be created
+        $ajax = new \Tranquility\View\AjaxResponse();
+        if (Utility::extractValue($data, 'usernameOption', 'new') == 'new') {
+            // Add in additional audit trail details
+            $emailData = array(
+                'addressType' => 'other',
+                'addressText' => Utility::extractValue($data, 'newUsername', ''),
+                'primaryContact' => 0,
+                'category' => EnumAddressType::Email,
+                'parentId' => $id,
+            );
+            $emailData = array_merge($emailData, $auditTrail);
+            $response = $this->_addressService->create($emailData);
+            if ($response->containsErrors()) {
+                // Errors encountered - redisplay form with error messages
+                $ajax->addContent('modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('modal-dialog-container #process-message-container'));
+                $ajax->addMessages($response->getMessages());
+                return Response::json($ajax->toArray());
+            }
+            
+            // Set username to new email address
+            $data['username'] = $emailData['addressText'];
+        } else {
+            // Set username to use existing email address
+            $data['username'] = Utility::extractValue($data, 'existingUsername', '');
+        }
+        
+        // Create new user
+        unset($data['usernameOption'], $data['existingUsername'], $data['newUsername']);
+        $data = array_merge($data, $auditTrail);
+        $response = $this->_userService->create($data);
+        if ($response->containsErrors()) {
+            // Errors encountered - redisplay form with error messages
+            $ajax->addContent('modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('modal-dialog-container #process-message-container'));
+            $ajax->addMessages($response->getMessages());
+            return Response::json($ajax->toArray());
+        }
+        
+        // Render address panel for person
+        $person = $this->_service->find($id)->getFirstContentItem();
+        $ajax->addContent('person-details-container', $this->_renderPartial('administration.people._partials.panels.person-details', ['person' => $person, 'user' => $person->getUserAccount()]));
+        $ajax->addContent('email-addresses-container', $this->_renderPartial('administration.addresses._partials.panels.email-address', ['addresses' => $person->getAddresses(EnumAddressType::Email), 'parentId' => $person->id]), 'attachCommonHandlers');
+        $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+        $ajax->addCallback('closeDialog');
+        return Response::json($ajax->toArray());
+    }
+    
     public function showUser($id, Request $request) {
 		// Ensure this is received as an ajax request only
 		if (!$request->ajax()) {
@@ -253,7 +365,7 @@ class PeopleController extends Controller {
         
         // Get inputs from request and retrieve person record
         $ajax = new AjaxResponse();
-        $response = $this->_person->find($id);
+        $response = $this->_service->find($id);
         if ($response->containsErrors()) {
             $ajax->addMessages($result->getMessages());
             $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));

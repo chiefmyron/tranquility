@@ -12,8 +12,54 @@ class UserService extends \Tranquility\Services\Service {
      * @return string
      */
     public function businessObject() {
-        return 'Tranquility\Data\BusinessObjects\UserBusinessObject';
+        return 'Tranquility\Data\Objects\BusinessObjects\UserBusinessObject';
     }
+    
+    /**
+	 * Create a new User record
+	 *
+	 * @param array Data for creating a new User record
+	 * @return \Tranquility\Services\ServiceResponse
+	 */
+	public function create(array $data) {
+        // Set up response object
+		$response = new ServiceResponse();
+                
+        // Set any empty strings to nulls
+        foreach ($data as $key => $value) {
+            if ($value === '') {
+                $data[$key] = null;
+            }
+        }
+				
+		// Perform input validation
+		$validation = $this->validateInputFields($data, true);
+		if ($validation !== true) {
+			// Send error response back immediately
+			$response->addMessages($validation);
+			$response->setHttpResponseCode(EnumHttpStatusCode::BadRequest);
+			return $response;
+		}
+        
+        // Encode password
+        $data['password'] = Hash::make($data['password']); 
+        unset($data['passwordConfirm']);
+        
+        // Retrieve parent entity
+        $parentId = Utility::extractValue($data, 'parentId', 0);
+        $response = $this->findParentEntity($parentId);
+        if ($response->containsErrors()) {
+            return $response;
+        }
+        $data['parent'] = $response->getFirstContentItem();
+		
+		// Attempt to create the user
+        $user = $this->_getRepository()->create($data);
+		$response->setContent($user);
+		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
+        $response->addMessage(10030, EnumMessageLevel::Success, 'message_10030_user_record_created_successfully', ['name' => $data['parent']->getFullName()]);
+		return $response;
+	}
     
     /**
 	 * Updates an existing User record
@@ -97,7 +143,7 @@ class UserService extends \Tranquility\Services\Service {
 		
 		// Password verification
 		if ($newRecord) {
-            $messages = array_merge($messages, $this->validateNewPasswordFields);
+            $messages = array_merge($messages, $this->validateNewPasswordFields($inputs));
 		}
 		
 		// If there are one or more messages, then there are errors - return messages
@@ -155,7 +201,7 @@ class UserService extends \Tranquility\Services\Service {
 	 */
 	public function findByToken($id, $token) {
         $entity = $this->_getRepository()->findByToken($id, $token);
-		return $this->_findResponse($entity);
+		return $this->_findResponse(array($entity));
 	}
 	
     /**

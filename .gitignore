@@ -3,6 +3,7 @@
 /nbproject
 /.vscode
 /.vagrant
+/.homestead
 .env
 auth.json
 Homestead.yaml

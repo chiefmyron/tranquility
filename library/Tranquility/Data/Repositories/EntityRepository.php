@@ -1,7 +1,9 @@
 <?php namespace Tranquility\Data\Repositories;
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Tranquility\Data\BusinessObjects\Extensions\AuditTrail;
+
+use Tranquility\Data\Objects\ExtensionObjects\Tags       as Tag;
+use Tranquility\Data\Objects\ExtensionObjects\AuditTrail as AuditTrail;
 
 class EntityRepository extends \Doctrine\ORM\EntityRepository {
     
@@ -63,7 +65,7 @@ class EntityRepository extends \Doctrine\ORM\EntityRepository {
         // Create historical version of entity
         $historyClassName = call_user_func($entityName.'::getHistoricalEntityClass');
         $historicalEntity = new $historyClassName($entity);
-        $historicalEntity->setAuditTrail($entity->getAuditTrailDetails());
+        $historicalEntity->setAuditTrail($entity->getAuditTrail());
         $this->_em->persist($historicalEntity);
         
         // Create new audit trail record
@@ -95,6 +97,49 @@ class EntityRepository extends \Doctrine\ORM\EntityRepository {
         return $this->update($id, $data);
 	}
     
+    public function addTag($id, $tag) {
+        // Retrieve existing record
+        $entity = $this->find($id);
+        $entity->addTag($tag);
+        $this->_em->flush();
+        
+        // Return updated entity
+        return $entity;
+    }
+    
+    public function removeTag($id, $tag) {
+        // Retrieve existing record
+        $entity = $this->find($id);
+        $entity->removeTag($tag);
+        $this->_em->flush();
+        
+        // Return updated entity
+        return $entity;
+    }
+    
+    public function setTags($id, array $tagCollection) {
+        // Retrieve existing record
+        $entity = $this->find($id);
+        
+        // Get existing tag collection for entity
+        $existingTags = $entity->getTags();
+        
+        // Determine which tags need to be added
+        $adds = array_diff($tagCollection, $existingTags);
+        foreach($adds as $addTag) {
+            $entity = $this->addTag($id, $addTag);
+        }
+        
+        // Determine which tags need to be removed from the collection
+        $removes = array_diff($existingTags, $tagCollection);
+        foreach ($removes as $removeTag) {
+            $entity = $this->removeTag($id, $removeTag);
+        }
+        
+        // Return updated entity
+        return $entity;
+    }
+    
     /**
 	 * Used to add additional query conditions, ordering and set limits to a selection query
 	 *
@@ -109,11 +154,26 @@ class EntityRepository extends \Doctrine\ORM\EntityRepository {
         // Add filter conditions
 		foreach ($filterConditions as $filter) {
             // Check for specialised conditions
-            if ((count($filter) == 2)  && strtoupper($filter[1]) == 'IS NULL') {
+            if ((count($filter) == 2) && trim(strtoupper($filter[1]) == 'IS NULL')) {
+                // Check for null
                 $queryBuilder = $queryBuilder->add('where', $queryBuilder->expr()->isNotNull($filter[0]));
-            } elseif ((count($filter) == 2)  && strtoupper($filter[1] == 'IS NOT NULL')) {
+            } elseif ((count($filter) == 2) && trim(strtoupper($filter[1]) == 'IS NOT NULL')) {
+                // Check for not null
                 $queryBuilder = $queryBuilder->add('where', $queryBuilder->expr()->isNull($filter[0]));
+            } elseif ((count($filter) == 3) && trim(strtoupper($filter[1]) == 'IN')) {
+                // Check for values in array
+                $queryBuilder = $queryBuilder->add('where', $queryBuilder->expr()->in('e.'.$filter[0], ':'.$filter[0]));
+                $parameters[$filter[0]] = $filter[2];
+            } elseif ((count($filter) == 3) && trim(strtoupper($filter[1]) == 'NOT IN')) {
+                // Check for values not in array
+                $queryBuilder = $queryBuilder->add('where', $queryBuilder->expr()->notIn('e.'.$filter[0], ':'.$filter[0]));
+                $parameters[$filter[0]] = $filter[2];
+            } elseif ((count($filter) == 3) && trim(strtoupper($filter[1]) == 'LIKE')) {
+                // String search
+                $queryBuilder = $queryBuilder->add('where', $queryBuilder->expr()->like('e.'.$filter[0], $queryBuilder->expr()->literal('%'.$filter[2].'%')));
+                //$parameters[$filter[0]] = 
             } else {
+                // Standard where clause
                 $queryBuilder = $queryBuilder->andWhere('e.'.$filter[0].' '.$filter[1].' :'.$filter[0]);
                 $parameters[$filter[0]] = $filter[2];
             }

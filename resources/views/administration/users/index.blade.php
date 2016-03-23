@@ -1,14 +1,14 @@
 @extends('administration.app')
 
+@section('menu')
+	@include('administration._partials.menu', ['active' => 'users'])
+@stop
+
 @section('heading')
 	@include('administration._partials.heading', ['heading' => trans('administration.users_heading_users_people')])
 @stop
 
 @section('breadcrumbs', Breadcrumbs::render('admin.settings.users'))
-
-@section('sidebar')
-	@include('administration._partials.sidebar', ['active' => 'users'])
-@stop
 
 @section('content')
         <div class="table-responsive">

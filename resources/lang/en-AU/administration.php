@@ -13,8 +13,13 @@ return array(
     'common_go_back' => 'Go back',
     'common_actions' => 'Actions',
     'common_tips' => 'Tips',
+    'common_tags' => 'Tags',
 	'common_heading_delete_confirm' => 'Delete these records?',
 	'common_command_delete_confirm' => 'Delete records',
+    'common_entity_type_person' => 'Person',
+    'common_entity_type_user' => 'User',
+    'common_entity_type_address' => 'Address',
+    
 	
 	// Login text
 	'login_heading_login' => 'Login',
@@ -35,6 +40,7 @@ return array(
     'people_label_first_name' => 'First name',
     'people_label_last_name' => 'Last name',
     'people_label_user_account' => 'User account',
+    'people_label_no_user_account' => 'No user account',
     'people_command_create' => 'Create new person record',
     'people_command_update' => 'Update details',
     'people_message_delete_confirmation_single' => 'Are you sure you want to delete the record for :name?',
@@ -57,6 +63,8 @@ return array(
     'users_label_security_group' => 'User group',
     'users_label_new_password' => 'New password',
     'users_label_new_password_confirm' => 'Re-type your password to confirm',
+    'users_label_use_existing_email_address' => 'Use an existing email address',
+    'users_label_create_new_username' => 'Create a new username / email address',
     'users_status_active' => 'Active',
     'users_status_suspended' => 'Suspended',
     'users_tip_text_index' => 'To create a new user account, go to their Person record and create it from there. If the user doesn\'t have a Person record, create it first and then add a user account.',
@@ -111,6 +119,11 @@ return array(
     'address_command_add_another_address' => 'Add another address',
     'address_command_view_map' => 'View map',
     'address_command_make_primary' => 'Make primary',
+    
+    // Tagging strings
+    'tags_heading_update' => 'Update tags',
+    'tags_label_tags' => 'Tags',
+    'tags_command_add_tag' => 'Add tag',
     
     // Search strings
     'search_heading_search' => 'Search',
