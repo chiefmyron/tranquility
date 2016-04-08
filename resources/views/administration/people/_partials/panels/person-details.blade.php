@@ -26,7 +26,7 @@
                             <p><a href="{{ action('Administration\PeopleController@createUser', ['id' => $person->id]) }}" class="ajax"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.users_heading_create_user') }}</a></p>
                         </dd>
                         @else
-                        <dd><a href="{{ action('Administration\UsersController@showPersonUser', ['id' => $user->id]) }}">{{ $user->username }}</a></dd>
+                        <dd><a href="{{ action('Administration\UsersController@show', ['id' => $user->id]) }}">{{ $user->username }}</a></dd>
                         
                         <dt>{{ trans('administration.users_label_account_status') }}</dt>
                             @if($user->active)

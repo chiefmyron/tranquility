@@ -55,7 +55,9 @@ function attachCommonHandlers() {
     
     // Handle click event for links throughout the UI
     $("a.ajax").on('click.ajaxLinkEvent', function(e) {
-        xhrItemEventHandler(this, e);    
+        if (!($(this).hasClass('disabled'))) {
+            xhrItemEventHandler(this, e);xhrItemEventHandler(this, e);    
+        }
     });
     
     // Handle click event for a 'select all' checkbox in a table
@@ -69,6 +71,11 @@ function attachCommonHandlers() {
     $('table td input:checkbox.record-select').change(function () {
         changeToolbarLinkStatus();
     });
+    
+    // Handle disabled hyperlinks
+    $("a.disabled").on('click.disabledHyperlinkEvent', function (e) {
+        e.preventDefault();
+    })
 }
 
 /**
@@ -96,6 +103,12 @@ function attachGlobalSearchHandlers() {
 function xhrItemEventHandler(context, e) {
     // Prevent link navigation
     e.preventDefault();
+    
+    // Check that link is not disabled
+    if ($(context).hasClass('disabled') || $(context).parent('li').hasClass('disabled')) {
+        e.preventDefault();
+        return;
+    }
     
     // Check if link is for an action that works on multiple selected items
     var response;
