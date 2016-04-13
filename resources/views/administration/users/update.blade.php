@@ -11,12 +11,12 @@
 @section('breadcrumbs', Breadcrumbs::render('admin.settings.users.update', $user))
 
 @section('content')
-	{!! Form::model($user, ['action' => 'Administration\UsersController@storePersonUser']) !!}
+	{!! Form::model($user, ['action' => 'Administration\UsersController@store']) !!}
     @include('administration.users._partials.forms.update')
     {!! Form::hidden('id', $user->id) !!}
     <div class="form-group">
         {!! Form::submit(trans('administration.users_command_update_user'), ['class' => 'btn btn-primary pull-right']) !!}
-        <a href="{{ action('Administration\UsersController@showPersonUser', ['id' => $user->id]) }}" class="btn btn-default pull-left">{{ trans('administration.common_cancel') }}</a>
+        <a href="{{ action('Administration\UsersController@show', ['id' => $user->id]) }}" class="btn btn-default pull-left">{{ trans('administration.common_cancel') }}</a>
     </div>
 	{!! Form::close() !!}
 @stop

@@ -145,6 +145,22 @@ class UserService extends \Tranquility\Services\Service {
 		if ($newRecord) {
             $messages = array_merge($messages, $this->validateNewPasswordFields($inputs));
 		}
+        
+        // Username validation
+		if (isset($inputs['username']) && !filter_var($inputs['username'], FILTER_VALIDATE_EMAIL)) {
+			$messages[] = array(
+				'code' => 10004,
+				'text' => 'message_10004_username_must_be_email_address',
+				'level' => EnumMessageLevel::Error,
+				'fieldId' => 'username'
+			);
+            $messages[] = array(
+				'code' => 10004,
+				'text' => 'message_10004_username_must_be_email_address',
+				'level' => EnumMessageLevel::Error,
+				'fieldId' => 'newUsername'
+			);
+		}
 		
 		// If there are one or more messages, then there are errors - return messages
 		if (count($messages) > 0) {
