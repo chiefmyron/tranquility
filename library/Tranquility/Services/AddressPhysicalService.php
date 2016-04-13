@@ -28,7 +28,15 @@ class AddressPhysicalService extends \Tranquility\Services\Service {
 		$response = new ServiceResponse();
         $addressType = Utility::extractValue($data, 'type', '');
         
+        // Retrieve parent entity
+        $parentId = Utility::extractValue($data, 'parentId', 0);
+        $response = $this->findParentEntity($parentId);
+        if ($response->containsErrors()) {
+            return $response;
+        }
+        
 		// Perform input validation
+        $data['parent'] = $response->getFirstContentItem();
 		$validation = $this->validateInputFields($data, true);
 		if ($validation !== true) {
 			// Send error response back immediately
