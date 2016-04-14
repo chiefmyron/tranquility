@@ -7,6 +7,25 @@ use Tranquility\Data\Objects\ExtensionObjects\AuditTrail as AuditTrail;
 
 class EntityRepository extends \Doctrine\ORM\EntityRepository {
     
+    /**
+     * Finds entities by a set of criteria.
+     *
+     * @param array      $criteria
+     * @param array|null $orderBy
+     * @param int|null   $limit
+     * @param int|null   $offset
+     *
+     * @return array The objects.
+     */
+    public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null) {
+        // By default, do not find deleted records
+        if (!isset($criteria['deleted'])) {
+            $criteria['deleted'] = 0;
+        }
+        
+        return parent::findBy($criteria, $orderBy, $limit, $offset);
+    }
+    
     public function all($filterConditions = array(), $orderConditions = array(), $resultsPerPage = 0, $startRecordIndex = 0) {
         // Start creation of query
         $entityName = $this->getEntityName();

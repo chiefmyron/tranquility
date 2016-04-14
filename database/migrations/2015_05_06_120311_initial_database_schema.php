@@ -100,7 +100,7 @@ class InitialDatabaseSchema extends Migration {
         // Application user account
         Schema::create('entity_users', function(Blueprint $table) {
             $table->bigInteger('id')->primary();
-            $table->string('username', 255)->unique();
+            $table->string('username', 255);
             $table->string('password', 255);
             $table->string('timezoneCode', 30);
             $table->string('localeCode', 30);
@@ -181,7 +181,7 @@ class InitialDatabaseSchema extends Migration {
         Schema::create('history_entity_users', function(Blueprint $table) {
             $table->bigInteger('id');
             $table->integer('version');
-            $table->string('username', 255)->unique();
+            $table->string('username', 255);
             $table->string('password', 255);
             $table->string('timezoneCode', 30);
             $table->string('localeCode', 30);

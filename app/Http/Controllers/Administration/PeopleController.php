@@ -320,25 +320,33 @@ class PeopleController extends Controller {
         // Check if a new email address needs to be created
         $ajax = new \Tranquility\View\AjaxResponse();
         if (Utility::extractValue($data, 'usernameOption', 'new') == 'new') {
-            // Add in additional audit trail details
-            $emailData = array(
-                'addressType' => 'other',
-                'addressText' => Utility::extractValue($data, 'newUsername', ''),
-                'primaryContact' => 0,
-                'category' => EnumAddressType::Email,
-                'parentId' => $id,
-            );
-            $emailData = array_merge($emailData, $auditTrail);
-            $response = $this->_addressService->create($emailData);
-            if ($response->containsErrors()) {
-                // Errors encountered - redisplay form with error messages
-                $ajax->addContent('modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('modal-dialog-container #process-message-container'));
-                $ajax->addMessages($response->getMessages());
-                return Response::json($ajax->toArray());
-            }
+            // Retrieve the person record
+            $person = $this->_service->find($id)->getFirstContentItem();
             
+            // Check to see if the address already exists for the person
+            $addressText = Utility::extractValue($data, 'addressText', '');
+            $criteria = array(['addressText', '=', $addressText], ['parentEntity', '=', $person]);
+            $response = $this->_addressService->all($criteria);
+            if ($response->getItemCount() <= 0) {
+                // Create new email address
+                $emailData = array(
+                    'addressType' => 'other',
+                    'addressText' => $addressText,
+                    'primaryContact' => 0,
+                    'category' => EnumAddressType::Email,
+                    'parentId' => $id,
+                );
+                $emailData = array_merge($emailData, $auditTrail);
+                $response = $this->_addressService->create($emailData);
+                if ($response->containsErrors()) {
+                    // Errors encountered - redisplay form with error messages
+                    $ajax->addContent('modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('modal-dialog-container #process-message-container'));
+                    $ajax->addMessages($response->getMessages());
+                    return Response::json($ajax->toArray());
+                }
+            }
             // Set username to new email address
-            $data['username'] = $emailData['addressText'];
+            $data['username'] = $addressText;    
         } else {
             // Set username to use existing email address
             $data['username'] = Utility::extractValue($data, 'existingUsername', '');

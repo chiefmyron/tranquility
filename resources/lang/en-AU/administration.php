@@ -19,7 +19,6 @@ return array(
     'common_entity_type_person' => 'Person',
     'common_entity_type_user' => 'User',
     'common_entity_type_address' => 'Address',
-    
 	
 	// Login text
 	'login_heading_login' => 'Login',
@@ -79,6 +78,7 @@ return array(
     'users_command_update_user' => 'Update user account',
     'users_command_change_password' => 'Change password',
     'users_command_back_to_users_list' => 'Back to list of users',
+    'users_message_delete_confirmation_single' => 'Are you sure you want to delete the user account for :name?',
     
     // Address strings
     'address_heading_physical_addresses' => 'Addresses',

@@ -78,7 +78,7 @@ class UsersController extends Controller {
 		if ($response->containsErrors()) {
 			// Redirect to index with error message
 			Session::flash('messages', $response->getMessages());
-			return redirect()->action('Administration\UsersController@listPeopleUsers');
+			return redirect()->action('Administration\UsersController@index');
 		}
 
         // Set flag to indicate if this is viewing the record for the current user
@@ -110,7 +110,7 @@ class UsersController extends Controller {
 		if ($response->containsErrors()) {
 			// Redirect to index with error message
 			Session::flash('messages', $response->getMessages());
-			return redirect()->action('Administration\UsersController@listPeopleUsers');
+			return redirect()->action('Administration\UsersController@index');
 		}
 		return view('administration.users.update')->with('user', $response->getFirstContentItem());
 	}
@@ -150,8 +150,39 @@ class UsersController extends Controller {
         $user = $result->getFirstContentItem();
         Session::set('tranquility.localeFormatCode', $user->localeCode);
         Session::set('tranquility.timezoneFormatCode', $user->timezoneCode);
-		return redirect()->action('Administration\UsersController@showPersonUser', ['id' => $user->id]);
+		return redirect()->action('Administration\UsersController@show', ['id' => $user->id]);
 	}
+    
+    /** 
+     * Delete one or more user accounts
+     *
+     * @return Response
+     */
+    public function delete(Request $request) {
+        $id = $request->input('id', array());
+        if (count($id) > 1) {
+            return $this->_deleteMultiple($request);
+        }
+        
+        // Handle single user deletion
+        $params = array();
+		$params['type'] = EnumEntityType::User;
+		$params['updateBy'] = Auth::user();
+		$params['updateReason'] = 'delete single user';
+		$params['updateDateTime'] = Carbon::now();
+		$params['transactionSource'] = EnumTransactionSource::UIBackend;
+        $result = $this->_userService->delete($id[0], $params);
+        
+        // Flash messages to session, and check for errors
+		Session::flash('messages', $result->getMessages());
+		if ($result->containsErrors()) {
+			// Errors encountered - redisplay form with error messages
+			return redirect()->back()->withInput();
+		}
+		
+		// No errors - return to user list page
+		return redirect()->action('Administration\UsersController@index');
+    }
     
     public function changePassword($id, Request $request) {
         // Ensure this is received as an ajax request only
@@ -220,18 +251,19 @@ class UsersController extends Controller {
         // Retrieve user
         $ajax = new \Tranquility\View\AjaxResponse();
         $response = $this->_userService->find($id);
-        if ($response->containsErrors() || count($response->getContent() == 0)) {
+        $contentItems = $response->getContent();
+        if ($response->containsErrors() || count($response->getContent()) == 0) {
             // Errors encountered - redisplay form with error messages
             $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
 			$ajax->addMessages($response->getMessages());
             return Response::json($ajax->toArray());
         }
-        $data = array('user' => $response->getFirstContentItem);
+        $data = array('user' => $response->getFirstContentItem());
         
         // Render dialog based on action
         switch($action) {
             case 'delete':
-                $dialog = $this->_renderPartial('administration.people._partials.dialogs.confirm-single-delete', $data);
+                $dialog = $this->_renderPartial('administration.users._partials.dialogs.confirm-single-delete', $data);
 				break;
 			case 'logout':
 				$dialog = $this->_renderPartial('administration.people._partials.dialogs.confirm-single-logout', $data);

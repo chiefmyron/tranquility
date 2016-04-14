@@ -46,6 +46,7 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
 	Route::get ('/users',                            'Administration\UsersController@index');
 	Route::post('/users',                            'Administration\UsersController@store');
 	Route::get ('/users/create',                     'Administration\UsersController@create');
+    Route::post('/users/delete',                     'Administration\UsersController@delete');
     Route::post('/users/confirm',                    'Administration\UsersController@confirmMultiple');
     Route::get ('/users/confirm/{id}',               'Administration\UsersController@confirm');
 	Route::get ('/users/{id}',                       'Administration\UsersController@show');

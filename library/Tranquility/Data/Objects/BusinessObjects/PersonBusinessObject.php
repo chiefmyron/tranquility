@@ -114,7 +114,7 @@ class PersonBusinessObject extends BusinessObject {
      * @param User $user  User account to be associated with the person
      * @return Person
      */
-    public function setUserAccount(User $user) {
+    public function setUserAccount($user) {
         $this->user = $user;
         return $this;
     }

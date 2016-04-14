@@ -194,6 +194,15 @@ class UserBusinessObject extends BusinessObject implements UserContract {
         return $this->person->getFullName();
     }
     
+    /**
+     * Get the parent Person associated with the User
+     *
+     * @return Person
+     */
+    public function getPerson() {
+        return $this->person;
+    }
+    
     public function getUserToken($type) {
         // Check type is a valid token type
         if (!EnumUserTokenType::isValidValue($type)) {
