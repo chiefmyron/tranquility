@@ -17,5 +17,3 @@
     
     <a class="btn hidden-lg hidden-md" id="toggle-toolbar" href="#toolbar-container">{{ trans('administration.common_actions') }}...</a>
 </div>
-
-<hr />

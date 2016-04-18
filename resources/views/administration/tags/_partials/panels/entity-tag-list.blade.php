@@ -14,5 +14,4 @@
                             <span class="tag"><a href="#">{{ $tag->text }}</a> | <a href="{{ action('Administration\TagsController@remove', ['parentId' => $entity->id, 'id' => $tag->id]) }}" class="ajax">&times;</a></span>
                     		@endforeach
                         </p>
-                        <a href="{{ action('Administration\TagsController@update', ['parentId' => $entity->id]) }}" class="ajax"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.tags_command_add_tag') }}</a>
                     </div>

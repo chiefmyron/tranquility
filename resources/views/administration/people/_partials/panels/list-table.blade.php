@@ -1,5 +1,5 @@
     	<div class="table-responsive">
-			<table class="table table-striped data-table">
+			<table class="table table-striped data-table entity-person">
 				<tr>
 					<th class="checkboxcol">
 						<input type="checkbox" name="selectAll" id="selectAll" value="" class="selectAll checkbox" />

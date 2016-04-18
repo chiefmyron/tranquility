@@ -2,7 +2,7 @@
  * Bootstrap variable overrides                                               *
  ******************************************************************************/
 
-// Colors
+// Colours
 $body-bg:                    #ffffff;//#e9ecf3;      // Page background
 $brand-primary:              #6698c8;      // Hyperlinks
 $brand-success:              #5cb85c;
@@ -12,17 +12,37 @@ $brand-danger:               #d9534f;
 $brand-error:                #a94442;
 $brand-navigation:           #303e4d;      // Base colour for navigation elements
 
+// Entity colours
 $brand-entity-person:        #6a1b9a;
 $brand-entity-user:          #e53935;
+$brand-entity-invoice:       #f1c40f;
+$brand-entity-accounts:      #27ae60;
+$brand-entity-pages:         #2980b9;
+$brand-entity-images:        #d35400;
 
 // Navbar
-$nav-link-hover:                           #ABB1B7;
-$nav-link-hover-bg:                        #4A5664;
-$nav-tab-hover-bg:                         #eeeeee;
-$navbar-default-toggle-hover-bg:           $brand-navigation;
-$navbar-width:                             250px;
+$navbar-width:               250px;
+$navigation-heading:         lighten($brand-navigation, 40%);  //#ABB1B7;
+$navigation-link:            lighten($brand-navigation, 40%);  //#ABB1B7;
+$nav-link-hover:             lighten($brand-navigation, 40%);  //#ABB1B7;
+$nav-link-hover-bg:          lighten($brand-navigation, 10%);  //#454545
+
+// Dropdown menus
 $dropdown-link-hover-bg:                   $brand-primary;
 $dropdown-link-hover-color:                #ffffff;
+
+
+
+
+
+
+
+
+
+
+$nav-tab-hover-bg:                         #eeeeee;
+$navbar-default-toggle-hover-bg:           $brand-navigation;
+
 
 $navbar-default-toggle-icon-bar-bg:        #888 !default;
 $navbar-default-toggle-border-color:       $brand-navigation;
@@ -30,8 +50,7 @@ $navbar-default-link-active-color:         #ffffff;
 $navbar-default-link-active-bg:            $brand-primary;
 $navbar-default-toggle-icon-bar-bg:        #888 !default;
 $navbar-default-toggle-border-color:       #ddd !default;
-$navigation-heading:                       #ABB1B7;
-$navigation-link:                          #ABB1B7;
+
 
 // Tags
 $tags-color:                               #ffffff;
@@ -147,7 +166,6 @@ body {
 
 .nav-container .site-search {
     position: relative;
-    margin-bottom: 30px;
 }
 
 .nav-container .site-search .submit-btn {
@@ -195,19 +213,21 @@ body {
 
 .nav-container .nav-items ul.nav.nav-stacked li a {
     color: $navigation-link;
+    margin-left: ($layout-padding-width * -1);
+    padding-left: $layout-padding-width;
 }
 .nav-container .nav-items ul.nav.nav-stacked li a i {
     padding-right: 5px;
-}
-
-.nav-container .nav-items ul.nav.nav-stacked > li.start a {
-    padding-left: 5px;
 }
 
 .nav-container .nav-items ul.nav.nav-stacked > li.active a {
     background-color: $navbar-default-link-active-bg;
     color: $navbar-default-link-active-color;
     font-weight: 500;
+}
+
+.nav-container .nav-items ul.nav.nav-stacked > li.active.people a {
+    background-color: $brand-entity-person;
 }
 
 .nav-container .nav-items ul.nav.nav-stacked > li.heading {
@@ -217,7 +237,7 @@ body {
 .nav-container .nav-items ul.nav.nav-stacked > li.heading > h3 {
     font-size: 13px;
     padding: 0;
-    margin: 0;
+    margin: 15px 0 0 0;
     font-weight: 600;
     text-transform: uppercase;
     color: $navigation-heading;
@@ -336,15 +356,25 @@ body {
 
 // Data tables
 table.data-table th {
-    background-color: $brand-primary;
-    color: #ffffff;
-    font-weight: 500;
+    background-color: #ffffff; //$brand-navigation;
+    border-top: 0 !important;
+    border-bottom: 2px solid $brand-primary;
+    color: $brand-navigation;//#ffffff;
+    font-weight: 800;
+}
+
+table.data-table.entity-person th {
+    border-bottom: 2px solid $brand-entity-person;
 }
 
 table.data-table td.footer {
     padding: 1px;
     border-top: 0px;
     background-color: $brand-primary;
+}
+
+table.data-table.entity-person td.footer {
+    background-color: $brand-entity-person;
 }
 
 // Tabs
@@ -370,8 +400,65 @@ table.data-table td.footer {
     margin-bottom: $layout-padding-width;
 }
 
+// Profile page format
+.entity-profile ul {
+    list-style: none;
+    padding: 0;
+}
+
+.entity-profile li div.icon {
+    width: 60px;
+    height: 60px;
+    float: left;
+    padding-top: $layout-padding-width;
+    text-align: center;
+    font-size: 2em;
+    color: $navigation-heading;
+}
+
+.entity-profile ul div.data-item {
+    border-bottom: 1px solid $gray-lighter;
+    padding: $layout-padding-width $layout-padding-width $layout-padding-width 60px;
+}
+
+.entity-profile ul div.data-item p {
+    margin: 0;
+}
+
+.entity-profile ul div.data-item span.heading,
+.entity-profile ul div.data-item span.action {    
+    display: block;
+}
+
+.entity-profile ul div.data-item span.heading {    
+    font-weight: 800;
+}
+
+.entity-profile ul div.data-item span.action {    
+    margin-top: 5px;
+}
+
+.entity-profile ul div.data-item span.sub {    
+    margin-left: 5px;
+    color: $navigation-heading;
+    text-transform: lowercase;
+    font-variant: small-caps;
+}
+
+// Profile pictures
+.profile-picture-container {
+    text-align: center;    
+}
+
+.profile-picture {
+    width: 150px;
+    height: auto;
+    margin-bottom: $layout-padding-width;
+    border-radius: 75px;
+}
+
 // Data panels
-.data-item {
+/*.data-item {
     padding: $layout-padding-width;
     padding-bottom: 5px;
     margin-bottom: $layout-padding-width;
@@ -412,12 +499,7 @@ dl.data-list dt {
 dl.data-list dd {
     padding-bottom: $layout-padding-width;
     //font-size: $text-size-large;
-}
-
-// Microformats
-p.h-adr span {
-    display: block;
-}
+}*/
 
 // Modal dialog
 .full-bleed {
@@ -578,7 +660,7 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
  ******************************************************************************/
  
 // Small screen / tablet (768px)
-@media (min-width: $screen-sm-min) {
+/*@media (min-width: $screen-sm-min) {
     // Profile pictures
     .profile-picture-container {
         text-align: left;
@@ -590,7 +672,7 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
         border-radius: 0;
     }
     
-}
+}*/
 
 // Medium screen / desktop (992px)
 @media (min-width: $screen-md-min) {
