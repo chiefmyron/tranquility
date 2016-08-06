@@ -63,10 +63,25 @@
                                         <span class="title">Accounts</span>
                                     </a>
                                 </li>
+                                <li class="heading">
+                                    <h3>Store</h3>
+                                </li>
+                                <li class="nav-item orders{{ strtolower($active) == "invoices" ? " active" : ""}}">
+                                    <a href="#" class="nav-link">
+                                        <i class="icon-settings"></i>
+                                        <span class="title">Orders</span>
+                                    </a>
+                                </li>
                                 <li class="nav-item invoices{{ strtolower($active) == "invoices" ? " active" : ""}}">
                                     <a href="#" class="nav-link">
                                         <i class="icon-settings"></i>
                                         <span class="title">Invoices</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item products{{ strtolower($active) == "invoices" ? " active" : ""}}">
+                                    <a href="#" class="nav-link">
+                                        <i class="icon-settings"></i>
+                                        <span class="title">Products</span>
                                     </a>
                                 </li>
                             </ul>

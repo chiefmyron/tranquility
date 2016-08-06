@@ -101,15 +101,16 @@ class TagService extends \Tranquility\Services\Service {
 		$response = new ServiceResponse();
         
         // Remove any tags that are set to an empty string
-        for ($i = 0; $i < count($tagValues); $i++) {
-            if (trim($tagValues[$i]) == "") {
-                unset($tagValues[$i]);
+        $tagSet = array();
+        foreach ($tagValues as $tagText) {
+            $tagText = trim(str_replace(array(",", ";"), "", $tagText));
+            if ($tagText != "") {
+                $tagSet[] = $tagText;
             }
         }
-        $tagValues = array_merge($tagValues); // Reset array indexes
-        
+
         // Get the set of tags already created
-        $tagValues = array_map('strtolower', $tagValues);
+        $tagValues = array_map('strtolower', $tagSet);
         $filter = array(['text', 'IN', $tagValues]);
         $result = $this->all($filter);
         $tags = $result->getContent();

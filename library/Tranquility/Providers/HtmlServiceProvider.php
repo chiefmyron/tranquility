@@ -25,6 +25,7 @@ class HtmlServiceProvider extends \Collective\Html\HtmlServiceProvider {
 		$this->registerFormErrorBuilder();
         $this->registerDateTimeFormatterBuilder();
         $this->registerToolbarManager();
+		$this->registerActionButtonManager();
 
 		$this->app->alias('html', 'Collective\Html\HtmlBuilder');
 		$this->app->alias('form', 'Tranquility\Html\Form\FormBuilder');
@@ -76,8 +77,21 @@ class HtmlServiceProvider extends \Collective\Html\HtmlServiceProvider {
     public function registerToolbarManager() {
 		$this->app['toolbar'] = $this->app->share(function($app) {
 			$toolbar = $this->app->make('Tranquility\Html\Toolbar\Manager');
-			$toolbar->setView($app['config']['toolbar.view']);
+			$toolbar->setView($app['config']['html.view-toolbar']);
 			return $toolbar;
+		});
+	}
+
+	/**
+     * Register the action button manager
+     *
+     * @return void
+     */
+    public function registerActionButtonManager() {
+		$this->app['actionButton'] = $this->app->share(function($app) {
+			$actionButton = $this->app->make('Tranquility\Html\ActionButton\Manager');
+			$actionButton->setView($app['config']['html.view-actionButton']);
+			return $actionButton;
 		});
 	}
 
@@ -87,7 +101,7 @@ class HtmlServiceProvider extends \Collective\Html\HtmlServiceProvider {
 	 * @return array
 	 */
 	public function provides() {
-		return array('html', 'form', 'form-error', 'toolbar', 'html-datetime');
+		return array('html', 'form', 'form-error', 'toolbar', 'actionButton', 'html-datetime');
 	}
 
 }

@@ -59,8 +59,8 @@ class AuthController extends Controller {
             // AJAX response
             $dialog = $this->_renderPartial('administration.auth._partials.dialogs.dialog-login');
 			$ajax = new \Tranquility\View\AjaxResponse();
-			$ajax->addContent('modal-content', $dialog, 'displayDialog');
-            $ajax->addContent('dialog-process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $messages]));
+			$ajax->addContent('#modal-content', $dialog, 'displayDialog');
+            $ajax->addContent('#dialog-process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $messages]));
 			return Response::json($ajax->toArray());
 		}
         
@@ -113,7 +113,7 @@ class AuthController extends Controller {
         $messages = $this->_validateLoginForm($request);
         if (count($messages) > 0) {
             // Render process messages and add field level messages
-            $ajax->addContent('dialog-process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $messages]));
+            $ajax->addContent('#dialog-process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $messages]));
             $ajax->addMessages($messages);
             return Response::json($ajax->toArray());
         }
@@ -128,7 +128,7 @@ class AuthController extends Controller {
                 'fieldId' => null,
                 'level' => EnumMessageLevel::Success
             );
-            $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $messages]), 'closeDialog');
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $messages]), 'closeDialog');
 		} else {
             // Unsuccessful authentication - set error message
             $messages[] = array(
@@ -137,7 +137,7 @@ class AuthController extends Controller {
                 'fieldId' => null,
                 'level' => EnumMessageLevel::Error		
             );
-            $ajax->addContent('dialog-process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $messages]));
+            $ajax->addContent('#dialog-process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $messages]));
         }
         return Response::json($ajax->toArray());
     }

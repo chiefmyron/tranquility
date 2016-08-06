@@ -214,6 +214,7 @@ body {
 .nav-container .nav-items ul.nav.nav-stacked li a {
     color: $navigation-link;
     margin-left: ($layout-padding-width * -1);
+    margin-right: ($layout-padding-width * -1);
     padding-left: $layout-padding-width;
 }
 .nav-container .nav-items ul.nav.nav-stacked li a i {
@@ -221,13 +222,14 @@ body {
 }
 
 .nav-container .nav-items ul.nav.nav-stacked > li.active a {
-    background-color: $navbar-default-link-active-bg;
-    color: $navbar-default-link-active-color;
+    background-color: #ffffff;
     font-weight: 500;
+    padding-left: 10px;
 }
 
 .nav-container .nav-items ul.nav.nav-stacked > li.active.people a {
-    background-color: $brand-entity-person;
+    border-left: 5px solid $brand-entity-person;
+    color: $brand-entity-person;
 }
 
 .nav-container .nav-items ul.nav.nav-stacked > li.heading {
@@ -254,16 +256,57 @@ body {
     margin-top: 5px;
 }
 
+// Page heading
+#page-header {
+    display: flex;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    justify-content: space-between;
+    position: relative;
+    min-height: min-content;
+    padding-bottom: $layout-padding-width;
+}
+
+#page-header .page-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+    padding-bottom: $layout-padding-width;
+}
+
+#page-header .page-title h1 {
+    display: inline;
+    white-space: nowrap;
+    margin-right: $layout-padding-width;
+}
+
+#page-header #extra-headers {
+    flex-shrink: 0;
+    padding-top: 5px;
+    margin-left: $layout-padding-width;
+    position: absolute;
+    right: -7px;
+    top: -65px;
+}
+
+#page-header #extra-headers .btn-group {
+    white-space: nowrap;
+}
+
 // Breadcrumbs
 .breadcrumb {
-    display: inline;
-    padding-left: 0px;
-    padding-top: 10px;
-    background-color: transparent;
+    padding: $layout-padding-width;
+    border-bottom: 1px solid lighten($brand-navigation, 40%);
+    background-color: lighten($brand-navigation, 70%);  //#ABB1B7;
+    margin-bottom: 0;
 }
 
 .breadcrumb li {
     display: none;
+}
+
+.breadcrumb li a:hover {
+    text-decoration: none;
 }
 
 .breadcrumb li.previous {
@@ -273,10 +316,6 @@ body {
 
 .breadcrumb li.previous:before {
     content: none;
-}
-
-.page-title {
-    margin-bottom: $layout-padding-width;
 }
 
 // Toolbar
@@ -407,26 +446,49 @@ table.data-table.entity-person td.footer {
 }
 
 .entity-profile li div.icon {
-    width: 60px;
-    height: 60px;
-    float: left;
-    padding-top: $layout-padding-width;
-    text-align: center;
-    font-size: 2em;
-    color: $navigation-heading;
+    display: none;
 }
 
 .entity-profile ul div.data-item {
     border-bottom: 1px solid $gray-lighter;
-    padding: $layout-padding-width $layout-padding-width $layout-padding-width 60px;
+    padding: $layout-padding-width;
+    background-color: transparent;
+    margin: 0;
+}
+
+.entity-profile ul div.data-item .element {
+    margin-bottom: $layout-padding-width;
 }
 
 .entity-profile ul div.data-item p {
     margin: 0;
 }
 
+.entity-profile ul div.data-item hr {
+    display: none;
+}
+
+.entity-profile ul div.data-item button.action-menu-toggle {
+    border: 0;
+    background: transparent;
+    float: right;
+    color: $navigation-heading;
+}
+
+.entity-profile ul div.data-item button.action-menu-toggle:focus {
+    border: none !important;
+    outline: none;
+}
+
+.entity-profile ul div.data-item .dropdown-menu {
+    right: 0;
+    left: auto;
+    margin-top: 20px;
+}
+
 .entity-profile ul div.data-item span.heading,
-.entity-profile ul div.data-item span.action {    
+.entity-profile ul div.data-item span.action,
+.entity-profile ul div.data-item span.sub {    
     display: block;
 }
 
@@ -438,8 +500,8 @@ table.data-table.entity-person td.footer {
     margin-top: 5px;
 }
 
+div.data-item span.sub,
 .entity-profile ul div.data-item span.sub {    
-    margin-left: 5px;
     color: $navigation-heading;
     text-transform: lowercase;
     font-variant: small-caps;
@@ -457,22 +519,28 @@ table.data-table.entity-person td.footer {
     border-radius: 75px;
 }
 
+// Microformats
+p.h-adr span {
+    display: block;
+}
+
 // Data panels
-/*.data-item {
+.data-item {
     padding: $layout-padding-width;
     padding-bottom: 5px;
     margin-bottom: $layout-padding-width;
-    background-color: #efefef;
+    background-color: #f9f9f9;
 }
 
 .data-item.primary {
-    background-color: lighten($brand-warning, 30%);
+    background-color: #fffae5;
 }
 
 .data-item .data-header {
     border-bottom: 1px solid;
     padding-bottom: 2px;
     margin-bottom: 10px;
+    border-bottom-color: #bbbbbb;
 }
 
 .data-item .data-header h4 {
@@ -484,6 +552,10 @@ table.data-table.entity-person td.footer {
     text-transform: lowercase;
 }
 
+.data-action {
+    padding: $layout-padding-width;
+}
+
 dl.data-list {
     margin-bottom: 0;
 }
@@ -492,14 +564,10 @@ dl.data-list dt {
     color: #555555;
 }
 
-.data-item .data-header {
-    border-bottom-color: #bbbbbb;
-}
-
 dl.data-list dd {
     padding-bottom: $layout-padding-width;
     //font-size: $text-size-large;
-}*/
+}
 
 // Modal dialog
 .full-bleed {
@@ -520,6 +588,13 @@ dl.data-list dd {
 
 .modal-dialog hr {
     margin-top: 5px;
+}
+
+.modal-spinner {
+    background-image: url('../images/spinner-64.gif');
+    background-repeat:no-repeat;
+    background-position: center center;
+    height: 150px;
 }
 
 // Profile pictures
@@ -660,19 +735,14 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
  ******************************************************************************/
  
 // Small screen / tablet (768px)
-/*@media (min-width: $screen-sm-min) {
-    // Profile pictures
-    .profile-picture-container {
-        text-align: left;
+@media (min-width: $screen-sm-min) {
+    #page-header #extra-headers {
+        position: relative;
+        top: auto;
+        right: auto;
     }
     
-    .profile-picture {
-        width: 100%;
-        margin-bottom: 0;
-        border-radius: 0;
-    }
-    
-}*/
+}
 
 // Medium screen / desktop (992px)
 @media (min-width: $screen-md-min) {
@@ -684,24 +754,13 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
     .nav-container .branding a {
         margin-left: 50px;
     }
+
+    // Page heading
+    #page-header .page-title {
+        padding-bottom: 5px;
+    }
     
     // Breadcrumbs
-    .breadcrumb-container {
-        position: relative;
-        top: auto;
-        margin-bottom: 0px;
-    }
-
-    .breadcrumb {
-        position: relative;
-        display: block;
-        top: auto;
-        padding-left: 0px;
-        padding-top: 10px;
-        margin-bottom: 0px;
-        background-color: transparent;
-    }
-
     .breadcrumb li {
         display: inline;
     }
@@ -732,7 +791,6 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
     
     // Main content container
     .content-container {
-        margin-right: $navbar-width;
         padding-left: $layout-padding-width;
         padding-right: $layout-padding-width;
         padding-top: $layout-padding-width;
@@ -811,19 +869,49 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
         margin-bottom: 2px;
         width: 100%;
     }
+
+    // Breadcrumb
+    .breadcrumb {
+        position: relative;
+        margin-left: $navbar-width;
+        margin-top: ($layout-padding-width * -1);
+    }
     
     // Main content container
     .content-container {
         margin-left: $navbar-width;
-        margin-right: $navbar-width;
         padding-left: $layout-padding-width;
         padding-right: $layout-padding-width;
-        padding-top: 0;
+        padding-top: $layout-padding-width;
     }    
     
     // Toolbar
     #toolbar-container {
         padding-top: 0;
         padding-bottom: 0;
+    }
+    
+    .entity-profile ul div.data-item {
+        padding: $layout-padding-width $layout-padding-width $layout-padding-width 60px;
+    }
+    
+    .entity-profile ul div.data-item hr {
+        display: block;
+        margin-right: ($layout-padding-width * -1);
+    }
+    
+    .entity-profile ul div.data-item .element {
+        margin-bottom: 0;
+    }
+    
+    .entity-profile li div.icon {
+        display: block;
+        width: 60px;
+        height: 60px;
+        float: left;
+        padding-top: $layout-padding-width;
+        text-align: center;
+        font-size: 2em;
+        color: $navigation-heading;
     }
 }

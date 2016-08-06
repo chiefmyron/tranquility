@@ -19,6 +19,8 @@ return array(
     'common_entity_type_person' => 'Person',
     'common_entity_type_user' => 'User',
     'common_entity_type_address' => 'Address',
+    'common_toggle_dropdown' => 'Show / hide dropdown menu',
+    'common_quick_contact' => 'Quick contact',
 	
 	// Login text
 	'login_heading_login' => 'Login',
@@ -40,8 +42,12 @@ return array(
     'people_label_last_name' => 'Last name',
     'people_label_user_account' => 'User account',
     'people_label_no_user_account' => 'No user account',
+    'people_label_company' => 'Company',
     'people_command_create' => 'Create new person record',
-    'people_command_update' => 'Update details',
+    'people_command_update' => 'Update person details',
+    'people_command_delete' => 'Delete record for this person',
+    'people_command_switch_view_detail' => 'Switch to detail view',
+    'people_command_switch_view_table' => 'Switch to list view',
     'people_message_delete_confirmation_single' => 'Are you sure you want to delete the record for :name?',
     'people_message_delete_confirmation_multiple' => 'Are you sure you want to delete the :count records currently selected?',
     'people_message_has_active_user_account' => ':name has had a user account on your site since :registeredDateTime.',

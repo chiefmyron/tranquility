@@ -137,6 +137,35 @@ class PersonBusinessObject extends BusinessObject {
         }
         return $addresses->toArray();
     }
+
+    public function getPrimaryAddresses() {
+        // Build criteria to ensure we only get the active and primary address records
+        $criteria = Criteria::create()->where(Criteria::expr()->eq("deleted", 0));
+        $criteria = $criteria->andWhere(Criteria::expr()->eq("primaryContact", true));
+        $result = $this->addresses->matching($criteria);
+
+        $addresses = array();
+        foreach ($result as $address) {
+            $addresses[$address->category] = $address;
+        }
+
+        return $addresses;
+    }
+
+    public function getPrimaryAddress($type) {
+        // Build criteria to ensure we only get the active and primary address records
+        $criteria = Criteria::create()->where(Criteria::expr()->eq("deleted", 0));
+        $criteria = $criteria->andWhere(Criteria::expr()->eq("primaryContact", true));
+        $criteria = $criteria->andWhere(Criteria::expr()->eq("category", $type));
+        $result = $this->addresses->matching($criteria);
+
+        // If no primary address is set, return null
+        if (count($result) <= 0) {
+            return null;
+        }
+
+        return $result[0];
+    }
     
     /**
      * Metadata used to define object relationship to database

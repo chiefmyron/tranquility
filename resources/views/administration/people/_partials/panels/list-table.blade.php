@@ -1,4 +1,4 @@
-    	<div class="table-responsive">
+		<div>
 			<table class="table table-striped data-table entity-person">
 				<tr>
 					<th class="checkboxcol">
@@ -18,6 +18,15 @@
 					</th>
 				</tr>
 		@foreach ($content as $person)
+<?php
+// Get primary contact details for person
+$emailAddress = $person->getPrimaryAddress('email');
+if (!is_null($emailAddress)) {
+	$emailAddress = $emailAddress->toString();
+}
+$userAccount = $person->getUserAccount();
+
+?>		
 				<tr>
 					<td class="checkboxcol">
 						<input type="checkbox" name="id" value="{{ $person->id }}" class="record-select checkbox" />
@@ -26,7 +35,7 @@
 						<a href="{{ action('Administration\PeopleController@show', [$person->id]) }}">{{ $person->firstName.' '.$person->lastName}}</a>
 					</td>
 					<td>
-						
+						{{ $emailAddress or 'No email' }}
 					</td>
 					<td>
 						

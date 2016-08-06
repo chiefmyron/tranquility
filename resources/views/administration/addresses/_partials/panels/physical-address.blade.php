@@ -5,7 +5,11 @@
                 <div class="col-md-12">
                 <div class="data-item text-center">
                     <p class="large">{{ trans('administration.address_message_no_physical_addresses') }}</p>
-                    <p class="large"><a href="{{ action('Administration\AddressController@create', ['type' => 'physical', 'parentId' => $parentId]) }}" class="ajax"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.address_heading_add_new_address') }}</a></p>
+                    <p class="large">
+                        <a href="{{ action('Administration\AddressController@create', ['type' => 'physical', 'parentId' => $parentId]) }}" class="ajax" data-ajax-preload-target="modal">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.address_heading_add_new_address') }}
+                        </a>
+                    </p>
                 </div>
                 </div>
             </div>
@@ -14,14 +18,14 @@
         @if ($i%2 == 0)
             <div class="row">
         @endif
-                <div class="col-md-6">
+                <div class="col-lg-6 col-md-12">
                     <div class="data-item">
                         <div class="data-header">
                             <h4>{{ trans('administration.address_label_'.$addresses[$i]->addressType.'_address') }}</h4>
                             <span class="action">
-                                <a href="{{ action('Administration\AddressController@confirm', ['id' => $addresses[$i]->id, 'type' => 'physical']) }}" class="ajax">{{ trans('administration.common_delete') }}</a> |
-                                <a href="{{ action('Administration\AddressController@update', ['id' => $addresses[$i]->id, 'type' => 'physical']) }}" class="ajax">{{ trans('administration.common_update') }}</a> |
-                                <a href="{{ action('Administration\AddressController@displayMap', [$addresses[$i]->id]) }}" class="ajax">{{ trans('administration.address_command_view_map') }}</a>    
+                                <a href="{{ action('Administration\AddressController@confirm', ['id' => $addresses[$i]->id, 'type' => 'physical']) }}" class="ajax" data-ajax-preload-target="modal">{{ trans('administration.common_delete') }}</a> |
+                                <a href="{{ action('Administration\AddressController@update', ['id' => $addresses[$i]->id, 'type' => 'physical']) }}" class="ajax" data-ajax-preload-target="modal">{{ trans('administration.common_update') }}</a> |
+                                <a href="{{ action('Administration\AddressController@displayMap', [$addresses[$i]->id]) }}" class="ajax" data-ajax-preload-target="modal">{{ trans('administration.address_command_view_map') }}</a>    
                             </span>
                         </div>
                         <p class="h-adr">
@@ -42,6 +46,8 @@
                             <span class="p-country-name">{{ trans('countries.'.$addresses[$i]->country) }}</span>
                             @endif
                         </p>
+                        
+                        
                     </div>
                 </div>
         @if ($i%2 == 1)
@@ -52,12 +58,10 @@
     @if (count($addresses)%2 == 0)
             <div class="row">
     @endif
-                <div class="col-md-6 text-center">
-                    <div class="data-item">
-                        <a href="{{ action('Administration\AddressController@create', ['type' => 'physical', 'parentId' => $parentId]) }}" class="ajax large">
-                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.address_command_add_another_address') }}
-                        </a>    
-                    </div>
+                <div class="col-md-6 text-center data-action">
+                    <a href="{{ action('Administration\AddressController@create', ['type' => 'physical', 'parentId' => $parentId]) }}" class="ajax large" data-ajax-preload-target="modal">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.address_command_add_another_address') }}
+                    </a>    
                 </div>
             </div>
 @endif

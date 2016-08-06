@@ -7,23 +7,14 @@
                     <ul>
                         <li>
                             <div class="icon">
-                                <i class="icon-tag"></i>
-                            </div>
-                            <div class="data-item">
-                                <span class="heading">{{ trans('administration.common_tags') }}</span>
-                                <span>@include('administration.tags._partials.panels.entity-tag-list', ['entity' => $person, 'tags' => $person->getTags()])</span>
-                                <span class="action"><a href="{{ action('Administration\TagsController@update', ['parentId' => $person->id]) }}" class="ajax"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.tags_command_add_tag') }}</a></span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="icon">
                                 <i class="icon-briefcase"></i>
                             </div>
                             <div class="data-item">
-                                <span class="heading">Company</span>
-                                <span>None</span>
+                                <span class="heading">{{ trans('administration.people_label_company') }}</span>
+                                <span>Works at Company</span>
                             </div>
                         </li>
+
                         <li>
                             <div class="icon">
                                 <i class="icon-user"></i>
@@ -32,7 +23,7 @@
                                 <span class="heading">{{ trans('administration.people_label_user_account') }}</span>
                         @if(is_null($user))                            
                                 <span>{{ trans('administration.people_label_no_user_account') }}</span>
-                                <span class="action"><a href="{{ action('Administration\PeopleController@createUser', ['id' => $person->id]) }}" class="ajax"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.users_heading_create_user') }}</a></span>
+                                <span class="action"><a href="{{ action('Administration\PeopleController@createUser', ['id' => $person->id]) }}" class="ajax" data-ajax-preload-target="modal"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.users_heading_create_user') }}</a></span>
                             </div>
                         </li>
                         @else
@@ -45,11 +36,39 @@
                             </div>
                         </li>
                         @endif
+
+                        <?php $primaryAddresses = $person->getPrimaryAddresses(); ?>
+                        @if (count($primaryAddresses) > 0)
+                        <li>
+                            <div class="icon">
+                                <i class="icon-envelope"></i>
+                            </div>
+                            <div class="data-item">
+                                <span class="heading">{{ trans('administration.common_quick_contact') }}</span>
+                                @if (isset($primaryAddresses['email']))
+                                <p>
+                                    <a href="mailto:{{ $primaryAddresses['email']->addressText }}">{{ $primaryAddresses['email']->addressText }}</a>
+                                </p>
+                                @endif
+                                @if (isset($primaryAddresses['phone']))
+                                <p class="h-adr">
+                                    <a href="tel:{{ $primaryAddresses['phone']->addressText }}">{{ $primaryAddresses['phone']->addressText }}</a>
+                                </p>
+                                @endif
+                            </div>
+                        </li>
+                        @endif
                         
-                        @include('administration.addresses._partials.panels.profile-physical-address', ['addresses' => $person->getAddresses('physical'), 'parentId' => $person->id])
-                        @include('administration.addresses._partials.panels.profile-email-address', ['addresses' => $person->getAddresses('email'), 'parentId' => $person->id])
-                        @include('administration.addresses._partials.panels.profile-phone-address', ['addresses' => $person->getAddresses('phone'), 'parentId' => $person->id])
-                        
+                        <li>
+                            <div class="icon">
+                                <i class="icon-tag"></i>
+                            </div>
+                            <div class="data-item">
+                                <span class="heading">{{ trans('administration.common_tags') }}</span>
+                                <span>@include('administration.tags._partials.panels.entity-tag-list', ['entity' => $person, 'tags' => $person->getTags()])</span>
+                                <span class="action"><a href="{{ action('Administration\TagsController@update', ['parentId' => $person->id]) }}" class="ajax" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.tags_command_add_tag') }}</a></span>
+                            </div>
+                        </li>
                     </ul>    
                 </div>
             </div>

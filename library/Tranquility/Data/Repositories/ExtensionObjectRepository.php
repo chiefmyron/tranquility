@@ -5,8 +5,20 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Tranquility\Data\BusinessObjects\Extensions\Tags       as Tag;
 use Tranquility\Data\BusinessObjects\Extensions\AuditTrail as AuditTrail;
 
-class ExtensionObjectRepository extends EntityRepository {
-    
+class ExtensionObjectRepository extends \Doctrine\ORM\EntityRepository {
+
+    /**
+     * Gets a full set of records
+     */ 
+    public function all() {
+        // Start creation of query
+        $entityName = $this->getEntityName();
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select('e')->from($entityName, 'e');
+        $query = $queryBuilder->getQuery();
+        return $query->getResult();
+    }
+
     /**
      * Creates a new record
      * 

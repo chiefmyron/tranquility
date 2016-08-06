@@ -44,20 +44,23 @@
                 <!-- Start navigation  -->
                 @yield('menu')  
                 <!-- End navigation --> 
+
+                <!-- Start breadcrumbs -->
+                @yield('breadcrumbs')
+                <!-- End breadcrumbs -->
                 
-                <!-- Toolbar -->
-                <div id="toolbar-container" class="toolbar-container">
-                    @yield('toolbar')  
-                </div>
-                <!-- End of toolbar -->
-           
                 <!-- Beginning of main page content -->
                 <div class="content-container">
-                    <!-- Page heading and subheading -->
-                    @yield('heading')
                     
-                    <!-- Breadcrumbs -->
-                    @yield('breadcrumbs')
+                    
+                    <!-- Page heading and subheading -->
+                    <header id="page-header">
+                        @yield('heading')
+
+                        <div id="extra-headers">
+                            @yield('actionButton')
+                        </div>
+                    </header>
                     
                     <!-- Process messages -->
                     @include('administration._partials.errors', ['messages' => Session::pull('messages')])
