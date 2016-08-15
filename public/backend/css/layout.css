@@ -6023,24 +6023,40 @@ body {
   padding: 0;
   color: #6698c8; }
 
-table.data-table th {
-  background-color: #ffffff;
-  border-top: 0 !important;
-  border-bottom: 2px solid #6698c8;
-  color: #303e4d;
-  font-weight: 800; }
+/*table.data-table {
+    width: 100%;
+}
 
-table.data-table.entity-person th {
-  border-bottom: 2px solid #6a1b9a; }
+table.data-table th,
+table.data-table td {
+    display: none;
+    border-top: 0px !important;
+    padding: 0px !important;
+}
 
-table.data-table td.footer {
-  padding: 1px;
-  border-top: 0px;
-  background-color: #6698c8; }
+table.data-table tr:nth-of-type(odd) {
+    background-color: transparent;
+}
 
-table.data-table.entity-person td.footer {
-  background-color: #6a1b9a; }
+table.data-table tr td:nth-child(2) {
+    display: block;
+    font-size: 1.3em;
+}
 
+table.data-table tr td:nth-child(2) a {
+    display: block;
+    padding: $layout-padding-width;
+    border-bottom: 1px solid $table-border-color;
+    margin-left: -14px;
+    margin-right: -14px;
+}
+
+table.data-table tr td:nth-child(2) a:after {
+    content: attr(data-secondary-info);
+    display: block;
+    font-size: 0.8em;
+    color: $text-color;
+}*/
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:focus,
 .nav-tabs > li.active > a:hover {
@@ -6331,7 +6347,39 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
   .content-container {
     padding-left: 15px;
     padding-right: 15px;
-    padding-top: 15px; } }
+    padding-top: 15px; }
+  table.data-table {
+    width: 100%; }
+  table.data-table th,
+  table.data-table td {
+    display: table-cell;
+    padding: 8px !important;
+    line-height: 1.428571429;
+    vertical-align: top;
+    border-top: 1px solid #ddd !important; }
+  table.data-table tr:nth-of-type(odd) {
+    background-color: #f9f9f9; }
+  table.data-table tr td:nth-child(2) {
+    display: table-cell;
+    font-size: 1em; }
+  table.data-table tr td:nth-child(2) a {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    border-bottom: 0px; }
+  table.data-table tr td:nth-child(2) a:after {
+    content: "";
+    display: none; }
+  table.data-table th {
+    background-color: #ffffff;
+    border-top: 0 !important;
+    border-bottom: 2px solid #6698c8;
+    color: #303e4d;
+    font-weight: 800; }
+  table.data-table td.footer {
+    padding: 1px;
+    border-top: 0px;
+    background-color: #6698c8; } }
 
 @media (min-width: 1200px) {
   .nav-container {

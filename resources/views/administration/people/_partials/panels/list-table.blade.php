@@ -32,7 +32,7 @@ $userAccount = $person->getUserAccount();
 						<input type="checkbox" name="id" value="{{ $person->id }}" class="record-select checkbox" />
 					</td>
 					<td>
-						<a href="{{ action('Administration\PeopleController@show', [$person->id]) }}">{{ $person->firstName.' '.$person->lastName}}</a>
+						<a href="{{ action('Administration\PeopleController@show', [$person->id]) }}" data-secondary-info="{{ $emailAddress }}">{{ $person->firstName.' '.$person->lastName}}</a>
 					</td>
 					<td>
 						{{ $emailAddress or 'No email' }}
