@@ -6023,40 +6023,37 @@ body {
   padding: 0;
   color: #6698c8; }
 
-/*table.data-table {
-    width: 100%;
-}
+table.data-table {
+  width: 100%; }
 
-table.data-table th,
-table.data-table td {
-    display: none;
-    border-top: 0px !important;
-    padding: 0px !important;
-}
+.data-table > tbody > tr > th,
+.data-table > tbody > tr > td {
+  /*table.data-table th,
+table.data-table td {*/
+  display: none;
+  border-top: 0px;
+  padding: 0px; }
 
 table.data-table tr:nth-of-type(odd) {
-    background-color: transparent;
-}
+  background-color: transparent; }
 
 table.data-table tr td:nth-child(2) {
-    display: block;
-    font-size: 1.3em;
-}
+  display: block;
+  font-size: 1.3em; }
 
 table.data-table tr td:nth-child(2) a {
-    display: block;
-    padding: $layout-padding-width;
-    border-bottom: 1px solid $table-border-color;
-    margin-left: -14px;
-    margin-right: -14px;
-}
+  display: block;
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  margin-left: -14px;
+  margin-right: -14px; }
 
 table.data-table tr td:nth-child(2) a:after {
-    content: attr(data-secondary-info);
-    display: block;
-    font-size: 0.8em;
-    color: $text-color;
-}*/
+  content: attr(data-secondary-info);
+  display: block;
+  font-size: 0.8em;
+  color: #333333; }
+
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:focus,
 .nav-tabs > li.active > a:hover {
@@ -6350,13 +6347,13 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
     padding-top: 15px; }
   table.data-table {
     width: 100%; }
-  table.data-table th,
-  table.data-table td {
+  .data-table > tbody > tr > th,
+  .data-table > tbody > tr > td {
     display: table-cell;
-    padding: 8px !important;
+    padding: 8px;
     line-height: 1.428571429;
     vertical-align: top;
-    border-top: 1px solid #ddd !important; }
+    border-top: 1px solid #ddd; }
   table.data-table tr:nth-of-type(odd) {
     background-color: #f9f9f9; }
   table.data-table tr td:nth-child(2) {
