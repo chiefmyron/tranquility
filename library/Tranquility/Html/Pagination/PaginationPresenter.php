@@ -34,6 +34,9 @@ class PaginationPresenter extends BootstrapThreePresenter {
             $data['links'] = $this->getPaginationLinks();
             $data['currentPage'] = $this->paginator->currentPage();
             $data['totalPages'] = $this->paginator->lastPage();
+            $data['firstItem'] = $this->paginator->firstItem();
+            $data['lastItem'] = $this->paginator->lastItem();
+            $data['totalItems'] = $this->paginator->total();
 
             // Create a view, if it doesn't already exist
             $view = view($this->_viewName, $data);

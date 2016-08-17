@@ -438,18 +438,37 @@ table.data-table td.checkboxcol {
 
 // Pagination
 .pagination-container .item-summary {
-    display: inline-block;
-    padding-top: $padding-base-vertical;
+    display: block;
+    text-align: center;
+    padding: $layout-padding-width;
 }
 
 .pagination-container ul.pagination {
-    float: right;
+    display: block;
     margin: 0px;
 }
 
 .pagination-container ul.pagination li a,
-.pagination-container ul.pagination li span {
+.pagination-container ul.pagination li>span {
+    display: none;
+}
+
+.pagination-container ul.pagination li a[rel="prev"],
+.pagination-container ul.pagination li a[rel="next"] {
+    display: block;
+    margin-bottom: $layout-padding-width;
     border: 0px;
+    font-size: 1.2em;
+}
+
+.pagination-container ul.pagination li a[rel="prev"] {
+    float: left;
+    margin-left: ($layout-padding-width * -1);
+}
+
+.pagination-container ul.pagination li a[rel="next"]{
+    float: right;
+    margin-right: ($layout-padding-width * -1);
 }
 
 // Tabs
@@ -879,6 +898,29 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
         padding: 1px;
         border-top: 0px;
         background-color: $brand-primary;
+    }
+
+    // Pagination
+    .pagination-container .item-summary {
+        display: inline-block;
+        padding: $padding-base-vertical 0 0 0;
+    }
+
+    .pagination-container ul.pagination {
+        float: right;
+        margin: 0px;
+    }
+
+    .pagination-container ul.pagination li a,
+    .pagination-container ul.pagination li>span {
+        display: inline;
+        border: 0px;
+    }
+
+    .pagination-container ul.pagination li a[rel="prev"],
+    .pagination-container ul.pagination li a[rel="next"] {
+        font-size: 1em;
+        margin: 0px;
     }
     
 }

@@ -1,6 +1,6 @@
 <div class="pagination-container">
     <span class="item-summary">
-        {{ trans_choice('administration.common_pagination_summary', $totalPages, ['currentPage' => $currentPage, 'totalPages' => $totalPages]) }}
+        {{ trans_choice('administration.common_pagination_summary', $totalPages, ['firstItem' => $firstItem, 'lastItem' => $lastItem, 'totalItems' => $totalItems]) }}
     </span>
 
     @if ($links)
@@ -16,11 +16,15 @@ foreach ($links as $link) {
 
     switch($link['type']) {
         case 'previous':
-            $label = trans('administration.common_pagination_previous'); 
+            // Add arrow icon at start of label
+            $label = '<span class="glyphicon glyphicon-chevron-left hidden-lg hidden-md" aria-hidden="true"></span> ';
+            $label .= trans('administration.common_pagination_previous'); 
             $rel = ' rel="prev"';
             break;
         case 'next':
+            // Add arrow icon at end of label
             $label = trans('administration.common_pagination_next'); 
+            $label .= '<span class="glyphicon glyphicon-chevron-right hidden-lg hidden-md" aria-hidden="true"></span> ';
             $rel = ' rel="next"';
             break;
         case 'page':

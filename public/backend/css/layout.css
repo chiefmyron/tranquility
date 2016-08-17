@@ -6057,16 +6057,32 @@ table.data-table td.checkboxcol {
   width: 1%; }
 
 .pagination-container .item-summary {
-  display: inline-block;
-  padding-top: 6px; }
+  display: block;
+  text-align: center;
+  padding: 15px; }
 
 .pagination-container ul.pagination {
-  float: right;
+  display: block;
   margin: 0px; }
 
 .pagination-container ul.pagination li a,
-.pagination-container ul.pagination li span {
-  border: 0px; }
+.pagination-container ul.pagination li > span {
+  display: none; }
+
+.pagination-container ul.pagination li a[rel="prev"],
+.pagination-container ul.pagination li a[rel="next"] {
+  display: block;
+  margin-bottom: 15px;
+  border: 0px;
+  font-size: 1.2em; }
+
+.pagination-container ul.pagination li a[rel="prev"] {
+  float: left;
+  margin-left: -15px; }
+
+.pagination-container ul.pagination li a[rel="next"] {
+  float: right;
+  margin-right: -15px; }
 
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:focus,
@@ -6390,7 +6406,21 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
   table.data-table td.footer {
     padding: 1px;
     border-top: 0px;
-    background-color: #6698c8; } }
+    background-color: #6698c8; }
+  .pagination-container .item-summary {
+    display: inline-block;
+    padding: 6px 0 0 0; }
+  .pagination-container ul.pagination {
+    float: right;
+    margin: 0px; }
+  .pagination-container ul.pagination li a,
+  .pagination-container ul.pagination li > span {
+    display: inline;
+    border: 0px; }
+  .pagination-container ul.pagination li a[rel="prev"],
+  .pagination-container ul.pagination li a[rel="next"] {
+    font-size: 1em;
+    margin: 0px; } }
 
 @media (min-width: 1200px) {
   .nav-container {

@@ -61,8 +61,6 @@ class PeopleController extends Controller {
             'people' => $response->getContent()
         );
 
-		//$responseArray = $response->toArray();
-		
 		// Display detail view
 		if ($request->ajax()) {
 			// AJAX response

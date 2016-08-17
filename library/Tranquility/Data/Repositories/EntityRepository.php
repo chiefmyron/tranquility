@@ -44,10 +44,6 @@ class EntityRepository extends \Doctrine\ORM\EntityRepository {
             // Paginate result set
             $resultSet = $this->paginate($query, $resultsPerPage);
             return $resultSet;
-            var_dump($resultSet);
-
-
-            return $this->paginate($query, $resultsPerPage);
         } else {
             // Return entire result set
             return $query->getResult();
