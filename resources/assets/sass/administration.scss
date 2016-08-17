@@ -398,12 +398,11 @@ body {
 // Responsive data table
 table.data-table {
     width: 100%;
+    margin-bottom: 0px;
 }
 
 .data-table > tbody > tr > th,
 .data-table > tbody > tr > td {
-/*table.data-table th,
-table.data-table td {*/
     display: none;
     border-top: 0px;
     padding: 0px;
@@ -431,6 +430,26 @@ table.data-table tr td:nth-child(2) a:after {
     display: block;
     font-size: 0.8em;
     color: $text-color;
+}
+
+table.data-table td.checkboxcol {
+    width: 1%;
+}
+
+// Pagination
+.pagination-container .item-summary {
+    display: inline-block;
+    padding-top: $padding-base-vertical;
+}
+
+.pagination-container ul.pagination {
+    float: right;
+    margin: 0px;
+}
+
+.pagination-container ul.pagination li a,
+.pagination-container ul.pagination li span {
+    border: 0px;
 }
 
 // Tabs

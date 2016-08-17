@@ -6,6 +6,9 @@ use Tranquility\Data\Objects\ExtensionObjects\Tags       as Tag;
 use Tranquility\Data\Objects\ExtensionObjects\AuditTrail as AuditTrail;
 
 class EntityRepository extends \Doctrine\ORM\EntityRepository {
+
+    // Enable pagination for entity collections
+    use \LaravelDoctrine\ORM\Pagination\Paginatable;
     
     /**
      * Finds entities by a set of criteria.
@@ -38,9 +41,15 @@ class EntityRepository extends \Doctrine\ORM\EntityRepository {
         // If pagination options have been supplied, add paging conditions
         $query = $queryBuilder->getQuery();
         if ($resultsPerPage > 0) {
-            $query->setFirstResult($resultsPerPage)->setMaxResults($startRecordIndex);
-            return new Paginator($queryBuilder);
+            // Paginate result set
+            $resultSet = $this->paginate($query, $resultsPerPage);
+            return $resultSet;
+            var_dump($resultSet);
+
+
+            return $this->paginate($query, $resultsPerPage);
         } else {
+            // Return entire result set
             return $query->getResult();
         }
     }

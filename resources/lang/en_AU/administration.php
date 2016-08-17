@@ -21,6 +21,9 @@ return array(
     'common_entity_type_address' => 'Address',
     'common_toggle_dropdown' => 'Show / hide dropdown menu',
     'common_quick_contact' => 'Quick contact',
+    'common_pagination_summary' => 'Displaying all records|Displaying :currentPage of :totalPages pages',
+    'common_pagination_previous' => 'Previous',
+    'common_pagination_next' => 'Next',
 	
 	// Login text
 	'login_heading_login' => 'Login',

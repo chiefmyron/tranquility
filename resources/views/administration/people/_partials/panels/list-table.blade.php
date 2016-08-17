@@ -17,7 +17,7 @@
 						Logged in
 					</th>
 				</tr>
-		@foreach ($content as $person)
+		@foreach ($people as $person)
 <?php
 // Get primary contact details for person
 $emailAddress = $person->getPrimaryAddress('email');
@@ -49,4 +49,8 @@ $userAccount = $person->getUserAccount();
 					<td class="footer" colspan="6"></td>
 				</tr>
 			</table>
+			<div class="data-table-footer">
+			
+			</div>
+{{ $people->links() }}
 		</div>

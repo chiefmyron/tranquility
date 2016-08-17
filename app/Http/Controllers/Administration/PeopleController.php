@@ -56,24 +56,18 @@ class PeopleController extends Controller {
         $recordsPerPage = $request->get('recordsPerPage', 20);
         
 		// Get the list of people
-		$response = $this->_service->all(array(), array(), $pageNumber, $recordsPerPage);
-		$responseArray = $response->toArray();
-		
-		// Determine if we are using the detail or table view (default to table)
-		$viewType = $request->input('view', $request->session()->get('people.index.viewType', 'table'));
-		if ($viewType != 'detail' && $viewType != 'table') {
-			// Default to table view
-			$viewType = 'table';
-		}
-		$request->session()->put('people.index.viewType', $viewType);
-		$responseArray['viewType'] = $viewType;
+		$response = $this->_service->all(array(), array(), $recordsPerPage, $pageNumber);
+        $responseArray = array(
+            'people' => $response->getContent()
+        );
+
+		//$responseArray = $response->toArray();
 		
 		// Display detail view
 		if ($request->ajax()) {
 			// AJAX response
 			$ajax = new \Tranquility\View\AjaxResponse();
-			$ajax->addContent('#main-content-container', $this->_renderPartial('administration.people._partials.panels.list-'.$viewType, $responseArray));
-			$ajax->addContent('#toolbar-container', $this->_renderPartial('administration.people._partials.toolbars.index-'.$viewType), 'attachCommonHandlers');
+			$ajax->addContent('#main-content-container', $this->_renderPartial('administration.people._partials.panels.list-table', $responseArray));
 			return Response::json($ajax->toArray());
 		}
 		

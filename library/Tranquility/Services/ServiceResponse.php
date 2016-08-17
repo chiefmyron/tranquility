@@ -84,6 +84,12 @@ class ServiceResponse {
 	 * @throws \Tranquility\Services\ServiceException
 	 */
 	public function setContent($content = array(), $calculateMetadata = true) {
+		// If content is a paginated collection, use it as the content collection without modification
+		if ($content instanceof \Illuminate\Pagination\AbstractPaginator) {
+			$this->_content = $content;
+			return;
+		}
+
         // If content is a collection, add each one separately
         if (!is_array($content) && !($content instanceof \Traversable) && !($content instanceof \IteratorAggregate)) {
             $content = array($content);

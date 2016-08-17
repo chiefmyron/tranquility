@@ -17,4 +17,7 @@ return [
 	// View used by the action button manager
 	'view-actionButton' => 'administration._partials.actions',
 
+	// View used by the pagination presenter
+	'view-pagination' => 'administration._partials.pagination',
+
 ];

@@ -1,9 +1,12 @@
 <?php namespace Tranquility\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
+
 use Tranquility\Html\Form\FormBuilder          as FormBuilder;
 use Tranquility\Html\FormError\Builder         as FormErrorBuilder;
 use Tranquility\Html\DateTimeFormatter\Builder as HtmlDateTimeFormatterBuilder;
+use Tranquility\Html\Pagination\PaginationPresenter;
 
 class HtmlServiceProvider extends \Collective\Html\HtmlServiceProvider {
 
@@ -26,6 +29,7 @@ class HtmlServiceProvider extends \Collective\Html\HtmlServiceProvider {
         $this->registerDateTimeFormatterBuilder();
         $this->registerToolbarManager();
 		$this->registerActionButtonManager();
+		$this->registerPaginationProvider();
 
 		$this->app->alias('html', 'Collective\Html\HtmlBuilder');
 		$this->app->alias('form', 'Tranquility\Html\Form\FormBuilder');
@@ -93,6 +97,19 @@ class HtmlServiceProvider extends \Collective\Html\HtmlServiceProvider {
 			$actionButton->setView($app['config']['html.view-actionButton']);
 			return $actionButton;
 		});
+	}
+
+	/**
+	 * Register the pagination provider
+	 *
+	 * @return void
+	 */
+	public function registerPaginationProvider() {
+		Paginator::presenter(function($paginator) {
+			$presenter = new PaginationPresenter($paginator);
+			$presenter->setView($this->app['config']['html.view-pagination']);
+            return $presenter;
+        });
 	}
 
 	/**
