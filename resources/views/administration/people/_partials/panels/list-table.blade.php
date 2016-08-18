@@ -18,6 +18,13 @@
 							</ul>
 						</td>
 					</tr>
+					<tr class="actions">
+						<td colspan="5">
+							<div>
+								<a href="{{ action('Administration\PeopleController@confirmAction', ['action' => 'delete']) }}" id="toolbar-delete-multiple-people" class="btn btn-primary ajax table-action disabled multi-select" role="button">Delete</a>
+							</div>
+						</td>
+					</tr>
 				</thead>
 				<tbody>
 					<tr>

@@ -440,6 +440,18 @@ table.data-table thead tr.filter td {
     border: 1px solid $table-border-color !important;
 }
 
+table.data-table thead tr.actions td {
+    padding: 0;
+}
+
+table.data-table thead tr.actions div {
+    display: none;
+    margin-top: $table-cell-padding;
+    padding: $table-cell-padding;
+    background-color: lighten($brand-navigation, 70%);
+    border: 1px solid lighten($brand-navigation, 40%);
+}
+
 table.data-table thead ul.filter-items {
     padding-left: 0px;
     margin-top: $padding-base-vertical;

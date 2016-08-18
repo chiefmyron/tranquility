@@ -42,13 +42,13 @@ function attachCommonHandlers() {
     // Handle click event for a 'select all' checkbox in a table
     $('table th .selectAll').on('click.selectAllCheckbox', function(e){
         var table = $(e.target).closest('table');
-        $('td input:checkbox', table).prop('checked', this.checked);
-        changeToolbarLinkStatus();
+        $('tbody td input:checkbox', table).prop('checked', this.checked);
+        changeTableActionButtonStatus(table);
     });
     
     // Handle click event for any 'record selector' checkbox in a table
     $('table td input:checkbox.record-select').change(function () {
-        changeToolbarLinkStatus();
+        changeTableActionButtonStatus();
     });
     
     // Handle disabled hyperlinks
@@ -217,12 +217,18 @@ function processAjaxResponse(response) {
 /**
  * Enable toolbar links that interact with multiple selected items only if at least one item is selected
  */
-function changeToolbarLinkStatus() {
-    if ($('table td input.record-select').is(':checked')) {
-        $("#toolbar-container li.multi-select").removeClass("disabled");
+function changeTableActionButtonStatus(table) {
+    if ($('tbody td input.record-select', table).is(':checked')) {
+        // Enable action buttons
+        $('thead .table-action', table).removeClass('disabled');
+        $('thead tr.actions div', table).slideDown();
     } else {
-        $("#toolbar-container li.multi-select").addClass("disabled");
-        $('table th .selectAll').prop('checked', false);
+        // Disable action buttons
+        $('thead .table-action', table).addClass('disabled');
+        $('thead tr.actions div', table).slideUp();
+
+        // Uncheck the 'select all' checkbox
+        $('tbody th .selectAll', table).prop('checked', false);
     }
 }
 

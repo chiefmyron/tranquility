@@ -6060,6 +6060,16 @@ table.data-table thead tr.filter td {
   background-color: #f9f9f9 !important;
   border: 1px solid #ddd !important; }
 
+table.data-table thead tr.actions td {
+  padding: 0; }
+
+table.data-table thead tr.actions div {
+  display: none;
+  margin-top: 8px;
+  padding: 8px;
+  background-color: #eef1f4;
+  border: 1px solid #90a4b9; }
+
 table.data-table thead ul.filter-items {
   padding-left: 0px;
   margin-top: 6px;
