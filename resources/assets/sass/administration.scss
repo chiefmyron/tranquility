@@ -11,6 +11,7 @@ $brand-warning:              #f0ad4e;
 $brand-danger:               #d9534f;
 $brand-error:                #a94442;
 $brand-navigation:           #303e4d;      // Base colour for navigation elements
+$brand-data-panel:           #f9f9f9;
 
 // Entity colours
 $brand-entity-person:        #6a1b9a;
@@ -393,8 +394,6 @@ body {
     color: $brand-primary;
 }
 
-
-
 // Responsive data table
 table.data-table {
     width: 100%;
@@ -434,6 +433,36 @@ table.data-table tr td:nth-child(2) a:after {
 
 table.data-table td.checkboxcol {
     width: 1%;
+}
+
+table.data-table thead tr.filter td {
+    background-color: $brand-data-panel !important;
+    border: 1px solid $table-border-color !important;
+}
+
+table.data-table thead ul.filter-items {
+    padding-left: 0px;
+    margin-top: $padding-base-vertical;
+    margin-bottom: $padding-base-vertical;
+}
+
+table.data-table thead ul.filter-items li {
+    display: inline;
+    padding: 0 $table-cell-padding 0 $table-cell-padding;
+    border-right: 1px solid $table-border-color;
+}
+
+table.data-table thead ul.filter-items li:first-child {
+    padding-left: 0;
+}
+
+table.data-table thead ul.filter-items li:last-child {
+    border-right: 0px;
+}
+
+table.data-table thead ul.filter-items .checkbox {
+    display: inline;
+    margin-right: $padding-base-vertical;
 }
 
 // Pagination
@@ -584,7 +613,7 @@ p.h-adr span {
     padding: $layout-padding-width;
     padding-bottom: 5px;
     margin-bottom: $layout-padding-width;
-    background-color: #f9f9f9;
+    background-color: $brand-data-panel;
 }
 
 .data-item.primary {
@@ -797,60 +826,6 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
         right: auto;
     }
     
-}
-
-// Medium screen / desktop (992px)
-@media (min-width: $screen-md-min) {
-    // Fixed header nav
-    .nav-container .branding {
-        text-align: left;    
-    }
-    
-    .nav-container .branding a {
-        margin-left: 50px;
-    }
-
-    // Page heading
-    #page-header .page-title {
-        padding-bottom: 5px;
-    }
-    
-    // Breadcrumbs
-    .breadcrumb li {
-        display: inline;
-    }
-
-    .breadcrumb li.previous {
-        display: inline;
-        font-size: 1em;
-    }
-
-    .breadcrumb > li + li.previous:before {
-        content: "/ ";
-    }
-
-    .page-title {
-        margin-bottom: 0px;
-    }
-    
-    // Right-hand toolbar
-    #toolbar-container {
-        position: inherit;
-        width: $navbar-width;
-        box-shadow: none;
-        transform: scaleX(1);
-        padding-left: 0;
-        float: right;
-        width: $navbar-width;
-    }
-    
-    // Main content container
-    .content-container {
-        padding-left: $layout-padding-width;
-        padding-right: $layout-padding-width;
-        padding-top: $layout-padding-width;
-    }  
-
     // Fallback to regular layout for data table
     table.data-table {
         width: 100%;
@@ -922,7 +897,59 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
         font-size: 1em;
         margin: 0px;
     }
+}
+
+// Medium screen / desktop (992px)
+@media (min-width: $screen-md-min) {
+    // Fixed header nav
+    .nav-container .branding {
+        text-align: left;    
+    }
     
+    .nav-container .branding a {
+        margin-left: 50px;
+    }
+
+    // Page heading
+    #page-header .page-title {
+        padding-bottom: 5px;
+    }
+    
+    // Breadcrumbs
+    .breadcrumb li {
+        display: inline;
+    }
+
+    .breadcrumb li.previous {
+        display: inline;
+        font-size: 1em;
+    }
+
+    .breadcrumb > li + li.previous:before {
+        content: "/ ";
+    }
+
+    .page-title {
+        margin-bottom: 0px;
+    }
+    
+    // Right-hand toolbar
+    #toolbar-container {
+        position: inherit;
+        width: $navbar-width;
+        box-shadow: none;
+        transform: scaleX(1);
+        padding-left: 0;
+        float: right;
+        width: $navbar-width;
+    }
+    
+    // Main content container
+    .content-container {
+        padding-left: $layout-padding-width;
+        padding-right: $layout-padding-width;
+        padding-top: $layout-padding-width;
+    }      
 }
 
 // Large screen / wide desktop (1200px)

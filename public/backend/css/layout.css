@@ -6056,6 +6056,30 @@ table.data-table tr td:nth-child(2) a:after {
 table.data-table td.checkboxcol {
   width: 1%; }
 
+table.data-table thead tr.filter td {
+  background-color: #f9f9f9 !important;
+  border: 1px solid #ddd !important; }
+
+table.data-table thead ul.filter-items {
+  padding-left: 0px;
+  margin-top: 6px;
+  margin-bottom: 6px; }
+
+table.data-table thead ul.filter-items li {
+  display: inline;
+  padding: 0 8px 0 8px;
+  border-right: 1px solid #ddd; }
+
+table.data-table thead ul.filter-items li:first-child {
+  padding-left: 0; }
+
+table.data-table thead ul.filter-items li:last-child {
+  border-right: 0px; }
+
+table.data-table thead ul.filter-items .checkbox {
+  display: inline;
+  margin-right: 6px; }
+
 .pagination-container .item-summary {
   display: block;
   text-align: center;
@@ -6344,37 +6368,7 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
   #page-header #extra-headers {
     position: relative;
     top: auto;
-    right: auto; } }
-
-@media (min-width: 992px) {
-  .nav-container .branding {
-    text-align: left; }
-  .nav-container .branding a {
-    margin-left: 50px; }
-  #page-header .page-title {
-    padding-bottom: 5px; }
-  .breadcrumb li {
-    display: inline; }
-  .breadcrumb li.previous {
-    display: inline;
-    font-size: 1em; }
-  .breadcrumb > li + li.previous:before {
-    content: "/ "; }
-  .page-title {
-    margin-bottom: 0px; }
-  #toolbar-container {
-    position: inherit;
-    width: 250px;
-    box-shadow: none;
-    -webkit-transform: scaleX(1);
-    transform: scaleX(1);
-    padding-left: 0;
-    float: right;
-    width: 250px; }
-  .content-container {
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 15px; }
+    right: auto; }
   table.data-table {
     width: 100%; }
   .data-table > tbody > tr > th,
@@ -6421,6 +6415,36 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
   .pagination-container ul.pagination li a[rel="next"] {
     font-size: 1em;
     margin: 0px; } }
+
+@media (min-width: 992px) {
+  .nav-container .branding {
+    text-align: left; }
+  .nav-container .branding a {
+    margin-left: 50px; }
+  #page-header .page-title {
+    padding-bottom: 5px; }
+  .breadcrumb li {
+    display: inline; }
+  .breadcrumb li.previous {
+    display: inline;
+    font-size: 1em; }
+  .breadcrumb > li + li.previous:before {
+    content: "/ "; }
+  .page-title {
+    margin-bottom: 0px; }
+  #toolbar-container {
+    position: inherit;
+    width: 250px;
+    box-shadow: none;
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+    padding-left: 0;
+    float: right;
+    width: 250px; }
+  .content-container {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 15px; } }
 
 @media (min-width: 1200px) {
   .nav-container {
