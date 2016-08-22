@@ -89,6 +89,9 @@ return array(
     'users_command_change_password' => 'Change password',
     'users_command_back_to_users_list' => 'Back to list of users',
     'users_message_delete_confirmation_single' => 'Are you sure you want to delete the user account for :name?',
+
+    // Account strings
+    'accounts_heading_accounts' => 'Accounts',
     
     // Address strings
     'address_heading_physical_addresses' => 'Addresses',

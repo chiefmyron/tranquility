@@ -58,9 +58,9 @@
                                     </a>
                                 </li>
                                 <li class="nav-item accounts{{ strtolower($active) == "accounts" ? " active" : ""}}">
-                                    <a href="#" class="nav-link">
+                                    <a href="{{ action('Administration\AccountsController@index') }}" class="nav-link">
                                         <i class="icon-briefcase"></i>
-                                        <span class="title">Accounts</span>
+                                        <span class="title">{{ trans('administration.accounts_heading_accounts') }}</span>
                                     </a>
                                 </li>
                                 <li class="heading">

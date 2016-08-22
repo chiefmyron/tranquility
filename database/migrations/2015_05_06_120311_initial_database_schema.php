@@ -108,6 +108,20 @@ class InitialDatabaseSchema extends Migration {
             $table->bigInteger('securityGroupId');
             $table->dateTime('registeredDateTime');
         });
+
+        // Account
+        Schema::create('entity_accounts', function(Blueprint $table) {
+            $table->bigInteger('id')->primary();
+            $table->string('name', 255);
+        });
+
+        // Entity cross-referencing with other entities
+        Schema::create('entity_entity_xref', function(Blueprint $table) {
+            $table->bigInteger('parentId');
+            $table->bigInteger('childId');
+            $table->string('childEntityType', 255);
+            $table->primary(['parentId', 'childId']);
+        });
         
         // Entity cross-referencing for tags
         Schema::create('entity_tags_xref', function(Blueprint $table) {
@@ -260,9 +274,11 @@ class InitialDatabaseSchema extends Migration {
         Schema::dropIfExists('history_entity_addresses_physical');
         Schema::dropIfExists('history_entity_addresses');
         Schema::dropIfExists('history_entity');
+        Schema::dropIfExists('entity_entity_xref');
         Schema::dropIfExists('entity_tags_xref');
         Schema::dropIfExists('entity_users');
         Schema::dropIfExists('entity_people');
+        Schema::dropIfExists('entity_accounts');
         Schema::dropIfExists('entity_addresses_physical');
         Schema::dropIfExists('entity_addresses');
         Schema::dropIfExists('entity');
