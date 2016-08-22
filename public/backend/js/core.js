@@ -70,7 +70,7 @@ function xhrItemEventHandler(context, e) {
     e.preventDefault();
     
     // Check that link is not disabled
-    if ($(context).hasClass('disabled') || $(context).parent('li').hasClass('disabled')) {
+    if ($(context).hasClass('disabled')) {
         e.preventDefault();
         return;
     }
@@ -86,8 +86,7 @@ function xhrItemEventHandler(context, e) {
     }
     
     // Check if link is for an action that works on multiple selected items
-    var response;
-    if ($(context).parent('li').hasClass('multi-select')) {
+    if ($(context).hasClass('multi-select')) {
         // Multiple items selected - use a POST request
         var selectedItems = _getSelectedListItems();
         ajaxCall($(context).attr("href"), "POST", {id: selectedItems}, "json");
@@ -221,11 +220,15 @@ function changeTableActionButtonStatus(table) {
     if ($('tbody td input.record-select', table).is(':checked')) {
         // Enable action buttons
         $('thead .table-action', table).removeClass('disabled');
-        $('thead tr.actions div', table).slideDown();
+        $('thead div.actions-container', table).slideDown(200);
+
+        // Update count of selected items
+        selectedItems = _getSelectedListItems();
+        $("#item-selected-counter").html(selectedItems.length);
     } else {
         // Disable action buttons
         $('thead .table-action', table).addClass('disabled');
-        $('thead tr.actions div', table).slideUp();
+        $('thead div.actions-container', table).slideUp(200);
 
         // Uncheck the 'select all' checkbox
         $('tbody th .selectAll', table).prop('checked', false);

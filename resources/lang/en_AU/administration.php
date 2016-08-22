@@ -24,6 +24,7 @@ return array(
     'common_pagination_summary' => 'Displaying all :totalItems records|Displaying :firstItem to :lastItem of :totalItems records',
     'common_pagination_previous' => 'Previous',
     'common_pagination_next' => 'Next',
+    'common_selection_num_items' => ' item(s) selected',
 	
 	// Login text
 	'login_heading_login' => 'Login',

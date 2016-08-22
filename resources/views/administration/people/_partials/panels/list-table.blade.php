@@ -1,27 +1,28 @@
 		<div>
 			<table class="table table-striped data-table entity-person">
 				<thead>
-					<tr class="filter">
+					<tr class="action-strip">
 						<td colspan="5">
-							<h4>Filter results</h4>
-							<ul class="filter-items">
-								<li>
-									Show:
-									<select>
-										<option>All people</option>
-										<option>Only people with user accounts</option>
-									</select>
-								</li>
-								<li>
-									<input type="checkbox" class="checkbox" />Show names as <em>Last name, First name</em>
-								</li>
-							</ul>
-						</td>
-					</tr>
-					<tr class="actions">
-						<td colspan="5">
-							<div>
-								<a href="{{ action('Administration\PeopleController@confirmAction', ['action' => 'delete']) }}" id="toolbar-delete-multiple-people" class="btn btn-primary ajax table-action disabled multi-select" role="button">Delete</a>
+							<div class="filter">
+								<h4>Filter results</h4>
+								<ul class="filter-items">
+									<li>
+										Show:
+										<select>
+											<option>All people</option>
+											<option>Only people with user accounts</option>
+										</select>
+									</li>
+									<li>
+										<input type="checkbox" class="checkbox" />Show names as <em>Last name, First name</em>
+									</li>
+								</ul>
+							</div>
+							<div class="actions-container">
+								<div class="actions">
+									<p><span id="item-selected-counter">4</span>{{ trans('administration.common_selection_num_items')}}: </p>
+									<a href="{{ action('Administration\PeopleController@confirmAction', ['action' => 'delete']) }}" id="toolbar-delete-multiple-people" class="btn btn-primary ajax table-action disabled multi-select" data-ajax-preload-target="modal" role="button">Delete</a>
+								</div>
 							</div>
 						</td>
 					</tr>
