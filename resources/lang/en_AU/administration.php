@@ -14,6 +14,7 @@ return array(
     'common_actions' => 'Actions',
     'common_tips' => 'Tips',
     'common_tags' => 'Tags',
+    'common_name' => 'Name',
 	'common_heading_delete_confirm' => 'Delete these records?',
 	'common_command_delete_confirm' => 'Delete records',
     'common_entity_type_person' => 'Person',
@@ -92,6 +93,9 @@ return array(
 
     // Account strings
     'accounts_heading_accounts' => 'Accounts',
+    'accounts_heading_create' => 'Add a new account',
+    'accounts_heading_update' => 'Update details for :name',
+    'accounts_message_no_records' => 'Sorry, we couldn\'t find any account records...',
     
     // Address strings
     'address_heading_physical_addresses' => 'Addresses',

@@ -225,7 +225,7 @@ body {
 .nav-container .nav-items ul.nav.nav-stacked > li.active a {
     background-color: #ffffff;
     font-weight: 500;
-    padding-left: 10px;
+    color: $brand-navigation;
 }
 
 .nav-container .nav-items ul.nav.nav-stacked > li.active.people a {
@@ -431,6 +431,7 @@ table.data-table tr td:nth-child(2) a:after {
     color: $text-color;
 }
 
+table.data-table th.checkboxcol,
 table.data-table td.checkboxcol {
     width: 1%;
 }

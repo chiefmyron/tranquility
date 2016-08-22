@@ -38,6 +38,24 @@ Breadcrumbs::register('admin.people.update', function($breadcrumbs, $person) {
 	$breadcrumbs->push(trans('administration.people_command_update'), action('Administration\PeopleController@update', [$person->id]));
 });
 
+// Accounts controller
+Breadcrumbs::register('admin.accounts', function($breadcrumbs) {
+	$breadcrumbs->parent('admin.home');
+	$breadcrumbs->push(trans('administration.accounts_heading_accounts'), action('Administration\AccountsController@index'));
+});
+Breadcrumbs::register('admin.accounts.show', function($breadcrumbs, $account) {
+	$breadcrumbs->parent('admin.accounts');
+	$breadcrumbs->push($account->getFullName(), action('Administration\AccountsController@show', [$account->id]));
+});
+Breadcrumbs::register('admin.accounts.create', function($breadcrumbs) {
+	$breadcrumbs->parent('admin.accounts');
+	$breadcrumbs->push(trans('administration.accounts_heading_create'), action('Administration\AccountsController@create'));
+});
+Breadcrumbs::register('admin.accounts.update', function($breadcrumbs, $account) {
+	$breadcrumbs->parent('admin.accounts.show', $person);
+	$breadcrumbs->push(trans('administration.accounts_command_update'), action('Administration\AccountsController@update', [$account->id]));
+});
+
 // Settings breadcrumbs
 Breadcrumbs::register('admin.settings', function($breadcrumbs) {
 	$breadcrumbs->parent('admin.home');

@@ -14,6 +14,7 @@ use Tranquility\Exceptions\BusinessObjectException                          as B
 // Tranquility related business objects
 use Tranquility\Data\Objects\BusinessObjects\PersonBusinessObject           as Person;
 use Tranquility\Data\Objects\BusinessObjects\UserBusinessObject             as User;
+use Tranquility\Data\Objects\BusinessObjects\AccountBusinessObject          as Account;
 use Tranquility\Data\Objects\BusinessObjects\AddressBusinessObject          as Address;
 use Tranquility\Data\Objects\BusinessObjects\AddressPhysicalBusinessObject  as AddressPhysical;
 
@@ -28,14 +29,15 @@ abstract class BusinessObject extends DataObject {
     protected $type;
     protected $subType;
     protected $deleted;
-    protected $auditTrail;
     protected $locks;
     
-    // Related entities
+    // Related business objects
     protected $addresses;
     protected $physicalAddresses;
+    protected $relatedEntities;
     
     // Related extension data objects
+    protected $auditTrail;
     protected $tags;
     
     /**
@@ -238,6 +240,7 @@ abstract class BusinessObject extends DataObject {
         $builder->setDiscriminatorColumn('type');
         $builder->addDiscriminatorMapClass(EnumEntityType::Person, Person::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::User, User::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::Account, Account::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::Address, Address::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhysical, AddressPhysical::class);
         
@@ -251,6 +254,7 @@ abstract class BusinessObject extends DataObject {
         $builder->createOneToMany('addresses', Address::class)->mappedBy('parentEntity')->build();
         $builder->createOneToMany('physicalAddresses', AddressPhysical::class)->mappedBy('parentEntity')->build();
         $builder->createManyToMany('tags', Tag::class)->inversedBy('entities')->setJoinTable('entity_tags_xref')->addJoinColumn('entityId', 'id')->addInverseJoinColumn('tagId', 'id')->build();
+        $builder->createManyToMany('relatedEntities', BusinessObject::class)->setJoinTable('entity_entity_xref')->addJoinColumn('parentId', 'id')->addInverseJoinColumn('childId', 'id')->build();
     }
     
     /**
