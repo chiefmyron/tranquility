@@ -1,6 +1,7 @@
 <?php namespace Tranquility\Services;
 
 use \Hash;
+use \Auth                                     as Auth;
 use \Tranquility\Utility                      as Utility;
 use \Tranquility\Enums\System\MessageLevel    as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode  as EnumHttpStatusCode;
@@ -83,6 +84,26 @@ class UserService extends \Tranquility\Services\Service {
 	}
     
     /**
+     * Deletes an existing User record
+     *
+     * @param int   $id    ID for existing User record
+     * @param array $data  Audit trail information for deleted record
+     * @return \Tranquility\Services\ServiceResponse
+     */
+    public function delete($id, array $data) {
+        // Make sure that user is not attempting to delete their own account
+        if ($id == Auth::user()->id) {
+            $response = new ServiceResponse();
+            $response->setHttpResponseCode(EnumHttpStatusCode::BadRequest);
+            $response->addMessage(10037, EnumMessageLevel::Error, 'message_10037_user_cannot_delete_own_record');
+            return $response;
+        }
+        
+        // Attempt to delete user
+        return parent::delete($id, $data);
+    }
+    
+    /**
      * Changes the password for an existing user record
      *
      * @param int   $id    ID for existing User record
@@ -125,33 +146,54 @@ class UserService extends \Tranquility\Services\Service {
     }
 	
 	/**
-	 * Validate data for input fields - this includes checking mandatory fields and audit
-	 * trail fields
+	 * User specific validation of inputs
 	 * 
 	 * @param array   $inputs     Array of data field values
 	 * @param boolean $newRecord  True if creating validating fields for a new record
-	 * @return mixed  True if valid input, array of messages if invalid input
+	 * @return array  Error messages from validation. Empty array if no errors.
 	 */
-	public function validateInputFields($inputs, $newRecord = false) {
+	public function validateBusinessObjectRules($inputs, $newRecord) {
 		$messages = array();
-		
-		// Perform mandatory field and audit trail field validation
-		$result = parent::validateInputFields($inputs, $newRecord);
-		if ($result !== true) {
-			$messages = $result;
-		}
 		
 		// Password verification
 		if ($newRecord) {
-            $messages = array_merge($messages, $this->validateNewPasswordFields($inputs));
+            $messages = $this->validateNewPasswordFields($inputs);
 		}
-		
-		// If there are one or more messages, then there are errors - return messages
-		if (count($messages) > 0) {
-			return $messages;
+        
+        // Username validation
+        $username = Utility::extractValue($inputs, 'username', null);
+		if (isset($inputs['username']) && !filter_var($username, FILTER_VALIDATE_EMAIL)) {
+			$messages[] = array(
+				'code' => 10004,
+				'text' => 'message_10004_username_must_be_email_address',
+				'level' => EnumMessageLevel::Error,
+				'fieldId' => 'username'
+			);
+            $messages[] = array(
+				'code' => 10004,
+				'text' => 'message_10004_username_must_be_email_address',
+				'level' => EnumMessageLevel::Error,
+				'fieldId' => 'addressText'
+			);
 		}
-		
-		return true;
+        
+        // Check username does not already exist
+        $result = $this->findBy('username', $username);
+        if ($result->getItemCount() > 0) {
+            $messages[] = array(
+				'code' => 10038,
+				'text' => 'message_10038_username_not_available',
+				'level' => EnumMessageLevel::Error,
+				'fieldId' => 'username'
+			);
+            $messages[] = array(
+				'code' => 10038,
+				'text' => 'message_10038_username_not_available',
+				'level' => EnumMessageLevel::Error,
+				'fieldId' => 'addressText'
+			);
+        }
+        return $messages;
 	}
     
     /**

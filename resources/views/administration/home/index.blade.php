@@ -12,4 +12,6 @@
 
 @section('content')
 	This will be a beautiful dashboard... one day.
+
+	{{ phpinfo() }}
 @stop

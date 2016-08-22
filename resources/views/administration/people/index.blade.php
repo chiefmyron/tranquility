@@ -8,12 +8,13 @@
 	@include('administration._partials.heading', ['heading' => trans('administration.people_heading_people')])
 @stop
 
+@section('actionButton')
+	{{ ActionButton::setPrimaryAction('people_heading_create', 'toolbar-add-new-person', action('Administration\PeopleController@create'), null, 'pencil') }}
+	{!! ActionButton::render() !!}
+@stop
+
 @section('breadcrumbs', Breadcrumbs::render('admin.people'))
 
 @section('content')
-	@include('administration.people._partials.panels.list-'.$viewType, ['content' => $content])
-@stop
-
-@section('toolbar')
-	@include('administration.people._partials.toolbars.index-'.$viewType)
+	@include('administration.people._partials.panels.list-table', ['people' => $people])
 @stop

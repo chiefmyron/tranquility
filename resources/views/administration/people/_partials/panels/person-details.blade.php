@@ -1,46 +1,74 @@
-        <div id="person-details-container">
-            <div class="row">
-                <div class="col-sm-2 profile-picture-container">
+            <div id="person-details-container">
+                <div class="profile-picture-container">
                     <a href="#"><img class="profile-picture" src="/backend/images/user-avatar-default.png" alt="..."></a>
                 </div>
                 
-                <div class="col-sm-5">
-                    <dl class="data-list">
-                        <dt>{{ trans('administration.people_label_title') }}</dt>
-                        <dd>{{ $person->title or "&nbsp;" }}</dd>
-                        
-                        <dt>{{ trans('administration.people_label_first_name') }}</dt>
-                        <dd>{{ $person->firstName }}</dd>
-                        
-                        <dt>{{ trans('administration.people_label_last_name') }}</dt>
-                        <dd>{{ $person->lastName }}</dd>
-                    </dl>
-                </div>
-                
-                <div class="col-sm-5">
-                    <dl class="data-list">
-                        <dt>{{ trans('administration.people_label_user_account') }}</dt>
-                        @if(is_null($user))
-                        <dd>
-                            {{ trans('administration.people_label_no_user_account') }}
-                            <p><a href="{{ action('Administration\PeopleController@createUser', ['id' => $person->id]) }}" class="ajax"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.users_heading_create_user') }}</a></p>
-                        </dd>
+                <div class="entity-profile">
+                    <ul>
+                        <li>
+                            <div class="icon">
+                                <i class="icon-briefcase"></i>
+                            </div>
+                            <div class="data-item">
+                                <span class="heading">{{ trans('administration.people_label_company') }}</span>
+                                <span>Works at Company</span>
+                            </div>
+                        </li>
+
+                        <li>
+                            <div class="icon">
+                                <i class="icon-user"></i>
+                            </div>
+                            <div class="data-item">
+                                <span class="heading">{{ trans('administration.people_label_user_account') }}</span>
+                        @if(is_null($user))                            
+                                <span>{{ trans('administration.people_label_no_user_account') }}</span>
+                                <span class="action"><a href="{{ action('Administration\PeopleController@createUser', ['id' => $person->id]) }}" class="ajax" data-ajax-preload-target="modal"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.users_heading_create_user') }}</a></span>
+                            </div>
+                        </li>
                         @else
-                        <dd><a href="{{ action('Administration\UsersController@showPersonUser', ['id' => $user->id]) }}">{{ $user->username }}</a></dd>
-                        
-                        <dt>{{ trans('administration.users_label_account_status') }}</dt>
+                                <span><a href="{{ action('Administration\UsersController@show', ['id' => $user->id]) }}">{{ $user->username }}</a></span><br />
                             @if($user->active)
-                        <dd><strong class="text-success">{{ trans('administration.users_status_active') }}</strong></dd>    
+                                <span><strong class="text-success">{{ trans('administration.users_status_active') }}</strong></span>
                             @else
-                        <dd><strong class="text-warning">{{ trans('administration.users_status_suspended') }}</strong></dd>
-                            @endif
+                                <span><strong class="text-warning">{{ trans('administration.users_status_suspended') }}</strong></span>
+                            @endif  
+                            </div>
+                        </li>
+                        @endif
+
+                        <?php $primaryAddresses = $person->getPrimaryAddresses(); ?>
+                        @if (count($primaryAddresses) > 0)
+                        <li>
+                            <div class="icon">
+                                <i class="icon-envelope"></i>
+                            </div>
+                            <div class="data-item">
+                                <span class="heading">{{ trans('administration.common_quick_contact') }}</span>
+                                @if (isset($primaryAddresses['email']))
+                                <p>
+                                    <a href="mailto:{{ $primaryAddresses['email']->addressText }}">{{ $primaryAddresses['email']->addressText }}</a>
+                                </p>
+                                @endif
+                                @if (isset($primaryAddresses['phone']))
+                                <p class="h-adr">
+                                    <a href="tel:{{ $primaryAddresses['phone']->addressText }}">{{ $primaryAddresses['phone']->addressText }}</a>
+                                </p>
+                                @endif
+                            </div>
+                        </li>
                         @endif
                         
-                        <dt>{{ trans('administration.common_tags') }}</dt>
-                        <dd>
-                            @include('administration.tags._partials.panels.entity-tag-list', ['entity' => $person, 'tags' => $person->getTags()])
-                        </dd>
-                    </dl>
+                        <li>
+                            <div class="icon">
+                                <i class="icon-tag"></i>
+                            </div>
+                            <div class="data-item">
+                                <span class="heading">{{ trans('administration.common_tags') }}</span>
+                                <span>@include('administration.tags._partials.panels.entity-tag-list', ['entity' => $person, 'tags' => $person->getTags()])</span>
+                                <span class="action"><a href="{{ action('Administration\TagsController@update', ['parentId' => $person->id]) }}" class="ajax" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.tags_command_add_tag') }}</a></span>
+                            </div>
+                        </li>
+                    </ul>    
                 </div>
             </div>
-        </div>

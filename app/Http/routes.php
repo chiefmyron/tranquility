@@ -43,11 +43,14 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
     Route::get ('/people/{id}/user/create',          'Administration\PeopleController@createUser');
     
 	// Users controller
-	Route::get ('/users',                            'Administration\UsersController@listPeopleUsers');
-	Route::post('/users',                            'Administration\UsersController@storePersonUser');
+	Route::get ('/users',                            'Administration\UsersController@index');
+	Route::post('/users',                            'Administration\UsersController@store');
 	Route::get ('/users/create',                     'Administration\UsersController@create');
-	Route::get ('/users/{id}',                       'Administration\UsersController@showPersonUser');
-	Route::get ('/users/{id}/update',                'Administration\UsersController@updatePersonUser');
+    Route::post('/users/delete',                     'Administration\UsersController@delete');
+    Route::post('/users/confirm',                    'Administration\UsersController@confirmMultiple');
+    Route::get ('/users/confirm/{id}',               'Administration\UsersController@confirm');
+	Route::get ('/users/{id}',                       'Administration\UsersController@show');
+	Route::get ('/users/{id}/update',                'Administration\UsersController@update');
     Route::get ('/users/{id}/update/password',       'Administration\UsersController@changePassword');
     Route::post('/users/{id}/update/password',       'Administration\UsersController@saveNewPassword');
     

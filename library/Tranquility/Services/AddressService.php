@@ -1,9 +1,10 @@
 <?php namespace Tranquility\Services;
 
-use \Tranquility\Utility                        as Utility;
-use \Tranquility\Enums\System\EntityType        as EnumEntityType;
-use \Tranquility\Enums\System\MessageLevel      as EnumMessageLevel;
-use \Tranquility\Enums\System\HttpStatusCode    as EnumHttpStatusCode;
+use \Tranquility\Utility                                    as Utility;
+use \Tranquility\Enums\System\EntityType                    as EnumEntityType;
+use \Tranquility\Enums\System\MessageLevel                  as EnumMessageLevel;
+use \Tranquility\Enums\System\HttpStatusCode                as EnumHttpStatusCode;
+use \Tranquility\Enums\BusinessObjects\Address\AddressTypes as EnumAddressType;
 
 class AddressService extends \Tranquility\Services\Service {
     /**
@@ -106,4 +107,29 @@ class AddressService extends \Tranquility\Services\Service {
         $response->addMessage(10049, EnumMessageLevel::Success, 'message_10049_phone_address_primary_contact_updated', ['addressText' => $entity->addressText]);
 		return $response;
     }
+    
+    /**
+	 * Address specific validation of inputs
+	 * 
+	 * @param array   $inputs     Array of data field values
+	 * @param boolean $newRecord  True if creating validating fields for a new record
+	 * @return array  Error messages from validation. Empty array if no errors.
+	 */
+	public function validateBusinessObjectRules($inputs, $newRecord) {
+		$messages = array();
+		
+		// If this is an email address, validate syntax
+        $category = Utility::extractValue($inputs, 'category', null);
+        $addressText = Utility::extractValue($inputs, 'addressText', null);
+        if ($category == EnumAddressType::Email && !filter_var($addressText, FILTER_VALIDATE_EMAIL)) {
+			$messages[] = array(
+				'code' => 10051,
+				'text' => 'message_10051_email_address_format_invalid',
+				'level' => EnumMessageLevel::Error,
+				'fieldId' => 'addressText'
+			);
+        }
+		
+		return $messages;
+	}
 }	

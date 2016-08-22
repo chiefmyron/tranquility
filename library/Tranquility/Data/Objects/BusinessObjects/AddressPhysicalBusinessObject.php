@@ -140,6 +140,10 @@ class AddressPhysicalBusinessObject extends Entity {
         );
     }
     
+    public function getSingleLineAddress() {
+        return $this->_joinAddressParts(", ");
+    }
+    
     /**
      * Get URL encoded, single line string of address
      *

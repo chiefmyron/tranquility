@@ -7,8 +7,8 @@
             {{ trans('administration.users_label_use_existing_email_address') }}:
         </label>
         @if (count($emailAddresses) == 1)
-        <em>{{ $emailAddresses[0] }}</em>
-        {!! Form::hidden('existingUsername', $emailAddresses[0]) !!}
+        <em>{{ reset($emailAddresses) }}</em>
+        {!! Form::hidden('existingUsername', reset($emailAddresses)) !!}
         @else
         {!! Form::select('existingUsername', $emailAddresses, null, ['class' => 'form-control', 'autofocus']) !!}
         @endif
@@ -19,15 +19,16 @@
             {!! Form::radio('usernameOption', 'new') !!}
             {{ trans('administration.users_label_create_new_username') }}:
         </label>
-        {!! Form::email('newUsername', null, ['class' => 'form-control']) !!}
+        {!! Form::email('addressText', null, ['class' => 'form-control']) !!}
+        {!! FormError::inline('addressText', Session::get('messsages')) !!}
     </div>
     {!! FormError::inline('usernameOption', Session::get('username')) !!}
 </div>
 @else
 <div class="form-group">
-    {!! Form::label('newUsername', trans('administration.common_email_address')) !!}
-    {!! Form::email('newUsername', null, ['class' => 'form-control', 'autofocus']) !!}	
-    {!! FormError::inline('newUsername', Session::get('username')) !!}
+    {!! Form::label('addressText', trans('administration.common_email_address')) !!}
+    {!! Form::email('addressText', null, ['class' => 'form-control', 'autofocus']) !!}	
+    {!! FormError::inline('addressText', Session::get('messsages')) !!}
 </div>
 @endif
 

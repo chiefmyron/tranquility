@@ -64,7 +64,7 @@ return [
 	|
 	*/
 
-	'locale' => 'en-AU',
+	'locale' => 'en_AU',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -210,6 +210,7 @@ return [
 		'Form'               => 'Collective\Html\FormFacade',
 		'FormError'          => 'Tranquility\Html\FormError\Facade',
 		'Toolbar'            => 'Tranquility\Html\Toolbar\Facade',
+		'ActionButton'       => 'Tranquility\Html\ActionButton\Facade',
         'DateTimeFormatter'  => 'Tranquility\Html\DateTimeFormatter\Facade',
 		'Breadcrumbs'        => 'DaveJamesMiller\Breadcrumbs\Facade',
         'EntityManager'      => 'LaravelDoctrine\ORM\Facades\EntityManager',

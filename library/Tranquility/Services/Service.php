@@ -59,6 +59,9 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		
 		// Validate audit trail fields
         $messages = array_merge($messages, $this->validateAuditTrailFields($inputs));
+        
+        // Perform service-specific validation
+        $messages = array_merge($messages, $this->validateBusinessObjectRules($inputs, $newRecord));
 
 		// If there are one or more messages, then there are errors - return messages
 		if (count($messages) > 0) {
@@ -142,6 +145,17 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
         
         return $messages;
     }
+    
+    /**
+	 * Validate business object specific rules for input fields - defined in each service
+	 * 
+	 * @param array   $inputs    Array of data field values
+	 * @param boolean $newRecord True if creating validating fields for a new record
+	 * @return array  Error messages from validation. Empty array if no errors.
+	 */
+    public function validateBusinessObjectRules($inputs, $newRecord) {
+        return array();
+    }
 	
 	/**
 	 * Retrieve all entities of this type
@@ -188,8 +202,7 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	 * @return \Tranquility\Services\ServiceResponse
 	 */
 	public function find($id) {
-        $entity = $this->_entityManager->find($this->businessObject(), $id);
-		return $this->_findResponse(array($entity));
+        return $this->findBy('id', $id);
 	}
 	
     /**

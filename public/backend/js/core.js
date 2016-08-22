@@ -19,22 +19,6 @@ $.ajaxSetup({
 // Initial page setup
 $(document).ready(function() {
     attachCommonHandlers();
-    attachGlobalSearchHandlers();
-});
-
-// Event - fires whenever dialog is displayed
-$('.modal').on('shown.bs.modal', function() {
-    // Set autofocus for elements in dialog
-    $(this).find('[autofocus]').focus();
-    
-    // Attach tagging
-    $(this).find('[data-role="tagsinput"]').each(function (element) {
-        $(this).tagsInput({
-            'height': 'auto',
-            'width': '100%',
-            'autocomplete_url': $(this).attr('data-autocomplete')    
-        });
-    });
 });
 
 /**
@@ -48,45 +32,33 @@ function attachCommonHandlers() {
     $("table th .selectAll").off('click.selectAllCheckbox');
     $(".page-header.navbar .search-form button").off('click.globalSearch');
     
-    // Handle click event for enabled toolbar links
-    $("#toolbar-container li.ajax a").on('click.toolbarEvent', function (e) {
-        xhrItemEventHandler(this, e);
-    });
-    
     // Handle click event for links throughout the UI
     $("a.ajax").on('click.ajaxLinkEvent', function(e) {
-        xhrItemEventHandler(this, e);    
+        if (!($(this).hasClass('disabled'))) {
+            xhrItemEventHandler(this, e);    
+        }
     });
     
     // Handle click event for a 'select all' checkbox in a table
     $('table th .selectAll').on('click.selectAllCheckbox', function(e){
         var table = $(e.target).closest('table');
-        $('td input:checkbox', table).prop('checked', this.checked);
-        changeToolbarLinkStatus();
+        $('tbody td input:checkbox', table).prop('checked', this.checked);
+        changeTableActionButtonStatus(table);
     });
     
     // Handle click event for any 'record selector' checkbox in a table
     $('table td input:checkbox.record-select').change(function () {
-        changeToolbarLinkStatus();
+        changeTableActionButtonStatus();
     });
-}
-
-/**
- * Attach event handlers to search controls in administration page header
- */
-function attachGlobalSearchHandlers() {
-    // Handle click event for global search button in page header
-    $('.page-header.navbar .search-form button').on('click.globalSearch', function(e) {
-        $('.page-header.navbar form.search-form').addClass("open");
-        $('.page-header.navbar .search-form input.form-control').focus();
-    });
-    $('.page-header.navbar .search-form input.form-control').on('focusout.globalSearch', function(e) {
-        $('.page-header.navbar form.search-form').removeClass("open");
-    });
-    $('.page-header.navbar').on('mousedown', '.search-form.open button.submit', function(e) {
+    
+    // Handle disabled hyperlinks
+    $("a.disabled").on('click.disabledHyperlinkEvent', function (e) {
         e.preventDefault();
-        e.stopPropagation(); 
-        $(this).closest(".search-form").submit();
+    });
+
+    // Handle dialog events
+    $('.modal').on('tql.modal.displayed', function (e) {
+        _eventDialogDisplayed($(this), e);
     });
 }
 
@@ -97,63 +69,114 @@ function xhrItemEventHandler(context, e) {
     // Prevent link navigation
     e.preventDefault();
     
-    // Check if link is for an action that works on multiple selected items
-    var response;
-    if ($(context).parent('li').hasClass('multi-select')) {
-        // Multiple items selected - use a POST request
-        var selectedItems = _getSelectedListItems();
-        response = ajaxCall($(context).attr("href"), "POST", {id: selectedItems}, false, null, "json");
-    } else {
-        response = ajaxCall($(context).attr("href"), "GET", {}, false, null, "json");
+    // Check that link is not disabled
+    if ($(context).hasClass('disabled')) {
+        e.preventDefault();
+        return;
+    }
+
+    // Check if a preload target has been specified
+    var preloadTarget = $(context).attr("data-ajax-preload-target");
+    switch (preloadTarget) {
+        case 'modal':
+            // Open dialog immediately and show loading spinner
+            response = _generateAjaxGenericResponse("#modal-dialog-container .modal-content", "<div class='modal-spinner'></div>", displayDialog);
+            processAjaxResponse(response);
+            break;
     }
     
-    // Process response based on HTTP status code
-    processAjaxResponse(response);   
+    // Check if link is for an action that works on multiple selected items
+    if ($(context).hasClass('multi-select')) {
+        // Multiple items selected - use a POST request
+        var selectedItems = _getSelectedListItems();
+        ajaxCall($(context).attr("href"), "POST", {id: selectedItems}, "json");
+    } else {
+        ajaxCall($(context).attr("href"), "GET", {}, "json");
+    }
 }
 
 /**
  * Wrapper to handle AJAX calls to backend
  */
-function ajaxCall( url, type, data, async, callback, datatype ) {
-    // Ensure call type is in uppercase
-    type = type.toUpperCase();
-    datatype = datatype.toLowerCase();
-    
-    // Perform AJAX call
-    var result = $.ajax({
+function ajaxCall(url, type, data, datatype) {
+    // Perform AJAX call - handling of response will be done by generic callbacks
+    $.ajax({
         url: url,
-        type: type,
+        type: type.toUpperCase(),
+        dataType: datatype.toLowerCase(),
+        async: true,
         data: data,
-        async: async,
-        dataType: datatype,
-        success: callback,
-        error: _ajaxErrorHandler
-    }); 
+        success: _callbackAjaxSuccess,
+        error: _callbackAjaxError
+    });
+}
+
+/**
+ * Callback: Generic processor for success message
+ */
+function _callbackAjaxSuccess(data, textStatus, xhr) {
+    var response = {
+        content: [],
+        messages: []
+    };
     
-    // Determine what to do based on HTTP response code
-    switch (result.status) {
-        // Status OK
-        case 200:
-            // Parse responseText for a JSON object
-            var response = {};
-            try {
-                response = jQuery.parseJSON(result.responseText);
-            } catch (ex) {
-                // Setup response as an exception
-                response = {result: "exception", content: result.content};
-            }
-            return response;
-        // Unauthorised request
+    // Check that a response was received
+    if (data === null) {
+        // No response returned
+        response = _generateAjaxGenericResponse("#modal-dialog-container .modal-content", "AJAX request did not return any data", displayDialog);
+        return processAjaxResponse(response);
+    }
+    
+    // Ensure response is an object
+    if (typeof(data) !== 'object') {
+        try {
+            response = $.parseJSON(data);
+        } catch (ex) {
+            // Generate error message content for 
+            response = _generateAjaxGenericResponse("#modal-dialog-container .modal-content", "Unable to parse AJAX response: " + ex.message, displayDialog);
+            return processAjaxResponse(response);
+        }
+    }
+
+    // Process response object
+    return processAjaxResponse(data);
+}
+
+/**
+ * Callback: Error handler for AJAX call
+ */
+function _callbackAjaxError(xhr, textStatus, errorDetails) {
+    // Handle error depending on the HTTP response code
+    switch (xhr.status) {
         case 401:
-            return ajaxCall("/administration/auth", "GET", {}, false, null, "json");
-        // Server error
+        case 403:
+            // Unauthorised access - display login dialog
+            return ajaxCall("/administration/auth", "GET", {}, "json");
         case 500:
         default:
-            // Display error in modal dialog
-            $("#modal-dialog-container .modal-content").html(result.content);
-            $("#modal-dialog-container").modal('show');
-            return;
+            // Server error - display message
+            response = _generateAjaxGenericResponse("#modal-dialog-container .modal-content", xhr.responseText, displayDialog)
+            return processAjaxResponse(response);
     }
+}
+
+/**
+ * Utility: Generate response object with a single content item and callback
+ */
+function _generateAjaxGenericResponse(element, message, callback, callbackArgs) {
+    var response = {
+        content: []
+    }
+
+    var contentItem = {
+        element: element,
+        content: message,
+        callback: callback,
+        callbackArgs: callbackArgs
+    }
+
+    response.content.push(contentItem);
+    return response;
 }
 
 /**
@@ -165,18 +188,24 @@ function processAjaxResponse(response) {
     $.each(response.content, function(i, item) {
         // Replace HTML in specified element
         if (item.element != null) {
-            $("#" + item.element).html(item.content);
+            $(item.element).html(item.content);
         }
         
         // If callback was included, execute it now
         if (item.callback != null) {
-            executeFunctionByName(item.callback, window, item.callbackArgs);
+            // If callback is a function, call it directly
+            if ($.isFunction(item.callback)) {
+                item.callback.apply(this, item.callbackArgs);
+            } else {
+                // Attempt to execute function from its name
+                executeFunctionByName(item.callback, window, item.callbackArgs);
+            }
         }
     });
     
     // Display inline error messages
     $.each(response.messages, function(i, message) {
-        $("#" + message.fieldId).after('<span class="help-inline" style="display: none;">' + message.text + '</span>'); 
+        $(message.fieldId).after('<span class="help-inline" style="display: none;">' + message.text + '</span>'); 
         if (message.fieldId != null) {
             console.log('[' + message.level + '] ' + message.text + '(Field ID: ' + message.fieldId + ')');
         }
@@ -185,29 +214,24 @@ function processAjaxResponse(response) {
 }
 
 /**
- * Handles error scenarios from an AJAX call
- */
-function _ajaxErrorHandler(xhr, ajaxOptions, errorDetails) {
-    // If the error is a HTTP 403 error, display a timeout dialog
-    if (xhr.status == 403) {
-        // Display timeout dialog
-        ajaxCall('/backoffice/auth/loginAjax', "get", {}, false, displayDialog, "json");
-    } else {
-        // Display generic error dialog
-        xhr.content = xhr.responseText;
-        displayDialog(xhr)
-    }
-}
-
-/**
  * Enable toolbar links that interact with multiple selected items only if at least one item is selected
  */
-function changeToolbarLinkStatus() {
-    if ($('table td input.record-select').is(':checked')) {
-        $("#toolbar-container li.multi-select").removeClass("disabled");
+function changeTableActionButtonStatus(table) {
+    if ($('tbody td input.record-select', table).is(':checked')) {
+        // Enable action buttons
+        $('thead .table-action', table).removeClass('disabled');
+        $('thead div.actions-container', table).slideDown(200);
+
+        // Update count of selected items
+        selectedItems = _getSelectedListItems();
+        $("#item-selected-counter").html(selectedItems.length);
     } else {
-        $("#toolbar-container li.multi-select").addClass("disabled");
-        $('table th .selectAll').prop('checked', false);
+        // Disable action buttons
+        $('thead .table-action', table).addClass('disabled');
+        $('thead div.actions-container', table).slideUp(200);
+
+        // Uncheck the 'select all' checkbox
+        $('tbody th .selectAll', table).prop('checked', false);
     }
 }
 
@@ -257,6 +281,9 @@ function displayDialog() {
             break;
     }
     $("#modal-dialog-container").modal('show');
+
+    // Trigger event
+    $('.modal').trigger('tql.modal.displayed');
 }
 
 /**
@@ -266,6 +293,26 @@ function closeDialog() {
     $("#modal-dialog-container").modal('hide');
     return false;
 }
+
+/**
+ * Event handler: Dialog load complete
+ */
+function _eventDialogDisplayed(context, e) {
+    console.log ("Event: Dialog displayed");
+    // Set autofocus for elements in dialog
+    context.find('[autofocus]').focus();
+    
+    // Attach tagging
+    context.find('[data-role="tagsinput"]').each(function (element) {
+        $(this).tagsInput({
+            'height': 'auto',
+            'width': '100%',
+            'autocomplete_url': $(this).attr('data-autocomplete'),
+            'delimiter': ','
+        });
+    });
+}
+
 
 /**
  * Event handler for default dialog form submission action
@@ -279,8 +326,7 @@ function defaultDialogSubmitEventHandler(context, e) {
     var formValues = form.serialize();
     var formAction = form.attr("action");
     var formMethod = form.attr("method");
-    var response = ajaxCall(formAction, formMethod, formValues, false, null, "json");
-    processAjaxResponse(response); 
+    return ajaxCall(formAction, formMethod, formValues, "json");
 }
 
 /**
@@ -324,7 +370,6 @@ function displayMessages(messages, target) {
         
     }
 
-    
     // Work out where we are displaying top-level (i.e. not field level) messages
     if (type == "dialog") {
         container_div = "#modal-message-container";

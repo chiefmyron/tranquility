@@ -2,7 +2,7 @@
  * Bootstrap variable overrides                                               *
  ******************************************************************************/
 
-// Colors
+// Colours
 $body-bg:                    #ffffff;//#e9ecf3;      // Page background
 $brand-primary:              #6698c8;      // Hyperlinks
 $brand-success:              #5cb85c;
@@ -11,18 +11,39 @@ $brand-warning:              #f0ad4e;
 $brand-danger:               #d9534f;
 $brand-error:                #a94442;
 $brand-navigation:           #303e4d;      // Base colour for navigation elements
+$brand-data-panel:           #f9f9f9;
 
+// Entity colours
 $brand-entity-person:        #6a1b9a;
 $brand-entity-user:          #e53935;
+$brand-entity-invoice:       #f1c40f;
+$brand-entity-accounts:      #27ae60;
+$brand-entity-pages:         #2980b9;
+$brand-entity-images:        #d35400;
 
 // Navbar
-$nav-link-hover:                           #ABB1B7;
-$nav-link-hover-bg:                        #4A5664;
-$nav-tab-hover-bg:                         #eeeeee;
-$navbar-default-toggle-hover-bg:           $brand-navigation;
-$navbar-width:                             250px;
+$navbar-width:               250px;
+$navigation-heading:         lighten($brand-navigation, 40%);  //#ABB1B7;
+$navigation-link:            lighten($brand-navigation, 40%);  //#ABB1B7;
+$nav-link-hover:             lighten($brand-navigation, 40%);  //#ABB1B7;
+$nav-link-hover-bg:          lighten($brand-navigation, 10%);  //#454545
+
+// Dropdown menus
 $dropdown-link-hover-bg:                   $brand-primary;
 $dropdown-link-hover-color:                #ffffff;
+
+
+
+
+
+
+
+
+
+
+$nav-tab-hover-bg:                         #eeeeee;
+$navbar-default-toggle-hover-bg:           $brand-navigation;
+
 
 $navbar-default-toggle-icon-bar-bg:        #888 !default;
 $navbar-default-toggle-border-color:       $brand-navigation;
@@ -30,8 +51,7 @@ $navbar-default-link-active-color:         #ffffff;
 $navbar-default-link-active-bg:            $brand-primary;
 $navbar-default-toggle-icon-bar-bg:        #888 !default;
 $navbar-default-toggle-border-color:       #ddd !default;
-$navigation-heading:                       #ABB1B7;
-$navigation-link:                          #ABB1B7;
+
 
 // Tags
 $tags-color:                               #ffffff;
@@ -147,7 +167,6 @@ body {
 
 .nav-container .site-search {
     position: relative;
-    margin-bottom: 30px;
 }
 
 .nav-container .site-search .submit-btn {
@@ -195,19 +214,23 @@ body {
 
 .nav-container .nav-items ul.nav.nav-stacked li a {
     color: $navigation-link;
+    margin-left: ($layout-padding-width * -1);
+    margin-right: ($layout-padding-width * -1);
+    padding-left: $layout-padding-width;
 }
 .nav-container .nav-items ul.nav.nav-stacked li a i {
     padding-right: 5px;
 }
 
-.nav-container .nav-items ul.nav.nav-stacked > li.start a {
-    padding-left: 5px;
+.nav-container .nav-items ul.nav.nav-stacked > li.active a {
+    background-color: #ffffff;
+    font-weight: 500;
+    padding-left: 10px;
 }
 
-.nav-container .nav-items ul.nav.nav-stacked > li.active a {
-    background-color: $navbar-default-link-active-bg;
-    color: $navbar-default-link-active-color;
-    font-weight: 500;
+.nav-container .nav-items ul.nav.nav-stacked > li.active.people a {
+    border-left: 5px solid $brand-entity-person;
+    color: $brand-entity-person;
 }
 
 .nav-container .nav-items ul.nav.nav-stacked > li.heading {
@@ -217,7 +240,7 @@ body {
 .nav-container .nav-items ul.nav.nav-stacked > li.heading > h3 {
     font-size: 13px;
     padding: 0;
-    margin: 0;
+    margin: 15px 0 0 0;
     font-weight: 600;
     text-transform: uppercase;
     color: $navigation-heading;
@@ -234,16 +257,57 @@ body {
     margin-top: 5px;
 }
 
+// Page heading
+#page-header {
+    display: flex;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    justify-content: space-between;
+    position: relative;
+    min-height: min-content;
+    padding-bottom: $layout-padding-width;
+}
+
+#page-header .page-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+    padding-bottom: $layout-padding-width;
+}
+
+#page-header .page-title h1 {
+    display: inline;
+    white-space: nowrap;
+    margin-right: $layout-padding-width;
+}
+
+#page-header #extra-headers {
+    flex-shrink: 0;
+    padding-top: 5px;
+    margin-left: $layout-padding-width;
+    position: absolute;
+    right: -7px;
+    top: -65px;
+}
+
+#page-header #extra-headers .btn-group {
+    white-space: nowrap;
+}
+
 // Breadcrumbs
 .breadcrumb {
-    display: inline;
-    padding-left: 0px;
-    padding-top: 10px;
-    background-color: transparent;
+    padding: $layout-padding-width;
+    border-bottom: 1px solid lighten($brand-navigation, 40%);
+    background-color: lighten($brand-navigation, 70%);  //#ABB1B7;
+    margin-bottom: 0;
 }
 
 .breadcrumb li {
     display: none;
+}
+
+.breadcrumb li a:hover {
+    text-decoration: none;
 }
 
 .breadcrumb li.previous {
@@ -253,10 +317,6 @@ body {
 
 .breadcrumb li.previous:before {
     content: none;
-}
-
-.page-title {
-    margin-bottom: $layout-padding-width;
 }
 
 // Toolbar
@@ -334,17 +394,141 @@ body {
     color: $brand-primary;
 }
 
-// Data tables
-table.data-table th {
-    background-color: $brand-primary;
-    color: #ffffff;
-    font-weight: 500;
+// Responsive data table
+table.data-table {
+    width: 100%;
+    margin-bottom: 0px;
 }
 
-table.data-table td.footer {
-    padding: 1px;
+.data-table > tbody > tr > th,
+.data-table > tbody > tr > td {
+    display: none;
     border-top: 0px;
-    background-color: $brand-primary;
+    padding: 0px;
+}
+
+table.data-table tr:nth-of-type(odd) {
+    background-color: transparent;
+}
+
+table.data-table tr td:nth-child(2) {
+    display: block;
+    font-size: 1.3em;
+}
+
+table.data-table tr td:nth-child(2) a {
+    display: block;
+    padding: $layout-padding-width;
+    border-bottom: 1px solid $table-border-color;
+    margin-left: -14px;
+    margin-right: -14px;
+}
+
+table.data-table tr td:nth-child(2) a:after {
+    content: attr(data-secondary-info);
+    display: block;
+    font-size: 0.8em;
+    color: $text-color;
+}
+
+table.data-table td.checkboxcol {
+    width: 1%;
+}
+
+table.data-table thead tr.action-strip td {
+    position: relative;
+    padding: 0;
+}
+
+table.data-table thead tr.action-strip .filter {
+    padding: $table-cell-padding;
+    border: 1px solid $table-border-color;
+}
+
+table.data-table thead tr.action-strip .actions-container {
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    overflow: hidden;
+    position: absolute;
+}
+
+table.data-table thead tr.action-strip .actions {
+    display: block;
+    padding: 18px $table-cell-padding $table-cell-padding $table-cell-padding;
+    background-color: lighten($brand-navigation, 70%);
+    border: 1px solid lighten($brand-navigation, 40%);
+    height: 100%;
+}
+
+table.data-table thead tr.action-strip .actions p {
+    display: inline;
+    padding-right: $table-cell-padding;
+}
+
+table.data-table thead tr.action-strip .actions p span {
+    font-weight: bold;
+}
+
+table.data-table thead ul.filter-items {
+    padding-left: 0px;
+    margin-top: $padding-base-vertical;
+    margin-bottom: $padding-base-vertical;
+}
+
+table.data-table thead ul.filter-items li {
+    display: inline;
+    padding: 0 $table-cell-padding 0 $table-cell-padding;
+    border-right: 1px solid $table-border-color;
+}
+
+table.data-table thead ul.filter-items li:first-child {
+    padding-left: 0;
+}
+
+table.data-table thead ul.filter-items li:last-child {
+    border-right: 0px;
+}
+
+table.data-table thead ul.filter-items .checkbox {
+    display: inline;
+    margin-right: $padding-base-vertical;
+}
+
+// Pagination
+.pagination-container .item-summary {
+    display: block;
+    text-align: center;
+    padding: $layout-padding-width;
+}
+
+.pagination-container ul.pagination {
+    display: block;
+    margin: 0px;
+}
+
+.pagination-container ul.pagination li a,
+.pagination-container ul.pagination li>span {
+    display: none;
+}
+
+.pagination-container ul.pagination li a[rel="prev"],
+.pagination-container ul.pagination li a[rel="next"] {
+    display: block;
+    margin-bottom: $layout-padding-width;
+    border: 0px;
+    font-size: 1.2em;
+}
+
+.pagination-container ul.pagination li a[rel="prev"] {
+    float: left;
+    margin-left: ($layout-padding-width * -1);
+}
+
+.pagination-container ul.pagination li a[rel="next"]{
+    float: right;
+    margin-right: ($layout-padding-width * -1);
 }
 
 // Tabs
@@ -370,22 +554,108 @@ table.data-table td.footer {
     margin-bottom: $layout-padding-width;
 }
 
+// Profile page format
+.entity-profile ul {
+    list-style: none;
+    padding: 0;
+}
+
+.entity-profile li div.icon {
+    display: none;
+}
+
+.entity-profile ul div.data-item {
+    border-bottom: 1px solid $gray-lighter;
+    padding: $layout-padding-width;
+    background-color: transparent;
+    margin: 0;
+}
+
+.entity-profile ul div.data-item .element {
+    margin-bottom: $layout-padding-width;
+}
+
+.entity-profile ul div.data-item p {
+    margin: 0;
+}
+
+.entity-profile ul div.data-item hr {
+    display: none;
+}
+
+.entity-profile ul div.data-item button.action-menu-toggle {
+    border: 0;
+    background: transparent;
+    float: right;
+    color: $navigation-heading;
+}
+
+.entity-profile ul div.data-item button.action-menu-toggle:focus {
+    border: none !important;
+    outline: none;
+}
+
+.entity-profile ul div.data-item .dropdown-menu {
+    right: 0;
+    left: auto;
+    margin-top: 20px;
+}
+
+.entity-profile ul div.data-item span.heading,
+.entity-profile ul div.data-item span.action,
+.entity-profile ul div.data-item span.sub {    
+    display: block;
+}
+
+.entity-profile ul div.data-item span.heading {    
+    font-weight: 800;
+}
+
+.entity-profile ul div.data-item span.action {    
+    margin-top: 5px;
+}
+
+div.data-item span.sub,
+.entity-profile ul div.data-item span.sub {    
+    color: $navigation-heading;
+    text-transform: lowercase;
+    font-variant: small-caps;
+}
+
+// Profile pictures
+.profile-picture-container {
+    text-align: center;    
+}
+
+.profile-picture {
+    width: 150px;
+    height: auto;
+    margin-bottom: $layout-padding-width;
+    border-radius: 75px;
+}
+
+// Microformats
+p.h-adr span {
+    display: block;
+}
+
 // Data panels
 .data-item {
     padding: $layout-padding-width;
     padding-bottom: 5px;
     margin-bottom: $layout-padding-width;
-    background-color: #efefef;
+    background-color: $brand-data-panel;
 }
 
 .data-item.primary {
-    background-color: lighten($brand-warning, 30%);
+    background-color: #fffae5;
 }
 
 .data-item .data-header {
     border-bottom: 1px solid;
     padding-bottom: 2px;
     margin-bottom: 10px;
+    border-bottom-color: #bbbbbb;
 }
 
 .data-item .data-header h4 {
@@ -397,6 +667,10 @@ table.data-table td.footer {
     text-transform: lowercase;
 }
 
+.data-action {
+    padding: $layout-padding-width;
+}
+
 dl.data-list {
     margin-bottom: 0;
 }
@@ -405,18 +679,9 @@ dl.data-list dt {
     color: #555555;
 }
 
-.data-item .data-header {
-    border-bottom-color: #bbbbbb;
-}
-
 dl.data-list dd {
     padding-bottom: $layout-padding-width;
     //font-size: $text-size-large;
-}
-
-// Microformats
-p.h-adr span {
-    display: block;
 }
 
 // Modal dialog
@@ -438,6 +703,13 @@ p.h-adr span {
 
 .modal-dialog hr {
     margin-top: 5px;
+}
+
+.modal-spinner {
+    background-image: url('../images/spinner-64.gif');
+    background-repeat:no-repeat;
+    background-position: center center;
+    height: 150px;
 }
 
 // Profile pictures
@@ -579,17 +851,83 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
  
 // Small screen / tablet (768px)
 @media (min-width: $screen-sm-min) {
-    // Profile pictures
-    .profile-picture-container {
-        text-align: left;
+    #page-header #extra-headers {
+        position: relative;
+        top: auto;
+        right: auto;
     }
     
-    .profile-picture {
+    // Fallback to regular layout for data table
+    table.data-table {
         width: 100%;
-        margin-bottom: 0;
-        border-radius: 0;
     }
-    
+
+    .data-table > tbody > tr > th,
+    .data-table > tbody > tr > td {
+        display: table-cell;
+        padding: $table-cell-padding;
+        line-height: $line-height-base;
+        vertical-align: top;
+        border-top: 1px solid $table-border-color;
+    }
+
+    table.data-table tr:nth-of-type(odd) {
+        background-color: $table-bg-accent;
+    }
+
+    table.data-table tr td:nth-child(2) {
+        display: table-cell;
+        font-size: 1em;
+    }
+
+    table.data-table tr td:nth-child(2) a {
+        display: inline;
+        padding: 0;
+        margin: 0;
+        border-bottom: 0px;
+    }
+
+    table.data-table tr td:nth-child(2) a:after {
+        content: "";
+        display: none;
+    }
+
+    table.data-table th {
+        background-color: #ffffff; //$brand-navigation;
+        border-top: 0 !important;
+        border-bottom: 2px solid $brand-primary;
+        color: $brand-navigation;//#ffffff;
+        font-weight: 800;
+    }
+
+    table.data-table td.footer {
+        padding: 1px;
+        border-top: 0px;
+        background-color: $brand-primary;
+    }
+
+    // Pagination
+    .pagination-container .item-summary {
+        display: inline-block;
+        padding: $padding-base-vertical 0 0 0;
+    }
+
+    .pagination-container ul.pagination {
+        float: right;
+        margin: 0px;
+    }
+
+    .pagination-container ul.pagination li a,
+    .pagination-container ul.pagination li>span {
+        display: inline;
+        border: 0px;
+    }
+
+    .pagination-container ul.pagination li a[rel="prev"],
+    .pagination-container ul.pagination li a[rel="next"] {
+        font-size: 1em;
+        margin: 0px;
+    }
 }
 
 // Medium screen / desktop (992px)
@@ -602,24 +940,13 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
     .nav-container .branding a {
         margin-left: 50px;
     }
+
+    // Page heading
+    #page-header .page-title {
+        padding-bottom: 5px;
+    }
     
     // Breadcrumbs
-    .breadcrumb-container {
-        position: relative;
-        top: auto;
-        margin-bottom: 0px;
-    }
-
-    .breadcrumb {
-        position: relative;
-        display: block;
-        top: auto;
-        padding-left: 0px;
-        padding-top: 10px;
-        margin-bottom: 0px;
-        background-color: transparent;
-    }
-
     .breadcrumb li {
         display: inline;
     }
@@ -650,12 +977,10 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
     
     // Main content container
     .content-container {
-        margin-right: $navbar-width;
         padding-left: $layout-padding-width;
         padding-right: $layout-padding-width;
         padding-top: $layout-padding-width;
-    }  
-    
+    }      
 }
 
 // Large screen / wide desktop (1200px)
@@ -729,19 +1054,49 @@ ul.ui-autocomplete .ui-menu-item.ui-state-focus {
         margin-bottom: 2px;
         width: 100%;
     }
+
+    // Breadcrumb
+    .breadcrumb {
+        position: relative;
+        margin-left: $navbar-width;
+        margin-top: ($layout-padding-width * -1);
+    }
     
     // Main content container
     .content-container {
         margin-left: $navbar-width;
-        margin-right: $navbar-width;
         padding-left: $layout-padding-width;
         padding-right: $layout-padding-width;
-        padding-top: 0;
+        padding-top: $layout-padding-width;
     }    
     
     // Toolbar
     #toolbar-container {
         padding-top: 0;
         padding-bottom: 0;
+    }
+    
+    .entity-profile ul div.data-item {
+        padding: $layout-padding-width $layout-padding-width $layout-padding-width 60px;
+    }
+    
+    .entity-profile ul div.data-item hr {
+        display: block;
+        margin-right: ($layout-padding-width * -1);
+    }
+    
+    .entity-profile ul div.data-item .element {
+        margin-bottom: 0;
+    }
+    
+    .entity-profile li div.icon {
+        display: block;
+        width: 60px;
+        height: 60px;
+        float: left;
+        padding-top: $layout-padding-width;
+        text-align: center;
+        font-size: 2em;
+        color: $navigation-heading;
     }
 }

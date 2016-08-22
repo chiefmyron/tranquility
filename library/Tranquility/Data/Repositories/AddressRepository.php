@@ -26,7 +26,8 @@ class AddressRepository extends EntityRepository {
         // Get a list of any existing addresses that have the primary contact flag set
         $filters = array(
             ['primaryContact', '=', '1'],
-            ['category', '=', $entity->category]    
+            ['category', '=', $entity->category],
+            ['parentEntity', '=', $parentId]
         );
         $primaryContactAddresses = $this->all($filters);
         foreach ($primaryContactAddresses as $address) {

@@ -54,7 +54,7 @@ class UsersController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function listPeopleUsers(Request $request) {
+	public function index(Request $request) {
         // Get pagination details from request
         $pageNumber = $request->get('page', 1);
         $recordsPerPage = $request->get('recordsPerPage', 20);
@@ -73,12 +73,12 @@ class UsersController extends Controller {
 	 * @param int $id  Entity ID of the user to show
 	 * @return Response
 	 */
-	public function showPersonUser($id) {
+	public function show($id) {
 		$response = $this->_userService->find($id);
 		if ($response->containsErrors()) {
 			// Redirect to index with error message
 			Session::flash('messages', $response->getMessages());
-			return redirect()->action('Administration\UsersController@listPeopleUsers');
+			return redirect()->action('Administration\UsersController@index');
 		}
 
         // Set flag to indicate if this is viewing the record for the current user
@@ -105,12 +105,12 @@ class UsersController extends Controller {
 	 * @param int $id  Entity ID of the user to update
 	 * @return Response
 	 */
-	public function updatePersonUser($id) {
+	public function update($id) {
 		$response = $this->_userService->find($id);
 		if ($response->containsErrors()) {
 			// Redirect to index with error message
 			Session::flash('messages', $response->getMessages());
-			return redirect()->action('Administration\UsersController@listPeopleUsers');
+			return redirect()->action('Administration\UsersController@index');
 		}
 		return view('administration.users.update')->with('user', $response->getFirstContentItem());
 	}
@@ -120,7 +120,7 @@ class UsersController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function storePersonUser(Request $request) {
+	public function store(Request $request) {
 		// Save details of user
 		$params = $request->all();
 		$id = $request->input('id', 0);
@@ -150,8 +150,39 @@ class UsersController extends Controller {
         $user = $result->getFirstContentItem();
         Session::set('tranquility.localeFormatCode', $user->localeCode);
         Session::set('tranquility.timezoneFormatCode', $user->timezoneCode);
-		return redirect()->action('Administration\UsersController@showPersonUser', ['id' => $user->id]);
+		return redirect()->action('Administration\UsersController@show', ['id' => $user->id]);
 	}
+    
+    /** 
+     * Delete one or more user accounts
+     *
+     * @return Response
+     */
+    public function delete(Request $request) {
+        $id = $request->input('id', array());
+        if (count($id) > 1) {
+            return $this->_deleteMultiple($request);
+        }
+        
+        // Handle single user deletion
+        $params = array();
+		$params['type'] = EnumEntityType::User;
+		$params['updateBy'] = Auth::user();
+		$params['updateReason'] = 'delete single user';
+		$params['updateDateTime'] = Carbon::now();
+		$params['transactionSource'] = EnumTransactionSource::UIBackend;
+        $result = $this->_userService->delete($id[0], $params);
+        
+        // Flash messages to session, and check for errors
+		Session::flash('messages', $result->getMessages());
+		if ($result->containsErrors()) {
+			// Errors encountered - redisplay form with error messages
+			return redirect()->back()->withInput();
+		}
+		
+		// No errors - return to user list page
+		return redirect()->action('Administration\UsersController@index');
+    }
     
     public function changePassword($id, Request $request) {
         // Ensure this is received as an ajax request only
@@ -163,7 +194,7 @@ class UsersController extends Controller {
 		// AJAX response
 		$ajax = new \Tranquility\View\AjaxResponse();
 		$dialog = $this->_renderPartial('administration.users._partials.dialogs.change-password', ['id' => $id]);
-        $ajax->addContent('modal-content', $dialog, 'displayDialog');
+        $ajax->addContent('#modal-content', $dialog, 'displayDialog');
 		return Response::json($ajax->toArray());
     }
     
@@ -186,7 +217,7 @@ class UsersController extends Controller {
         $ajax = new \Tranquility\View\AjaxResponse();
         if ($response->containsErrors()) {
 			// Errors encountered - redisplay form with error messages
-            $ajax->addContent('modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('modal-dialog-container #process-message-container'));
+            $ajax->addContent('#modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('modal-dialog-container #process-message-container'));
 			$ajax->addMessages($response->getMessages());
             return Response::json($ajax->toArray());
 		}
@@ -194,9 +225,63 @@ class UsersController extends Controller {
         // Success response
         $ajax = new \Tranquility\View\AjaxResponse();
         $ajax->addCallback('hideElement', array('process-message-container'));
-        $ajax->addContent('main-content-container', $this->_renderPartial('administration.users._partials.panels.user-details', ['user' => $response->getFirstContentItem()]));
-        $ajax->addContent('process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+        $ajax->addContent('#main-content-container', $this->_renderPartial('administration.users._partials.panels.user-details', ['user' => $response->getFirstContentItem()]));
+        $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
         $ajax->addCallback('closeDialog');
         return Response::json($ajax->toArray());
     }
+    
+    /**
+     * Displays confirmation dialog when user attempts to delete or suspend
+     * one or more user accounts
+     *
+     * @param Request $request
+     * @return View
+     */
+    public function confirm($id, Request $request) {
+		// Ensure this is received as an ajax request only
+		if (!$request->ajax()) {
+			// TODO: Proper error handling here
+			throw new Exception('Access only via AJAX request!');
+		}
+        
+        // Get inputs from request
+        $action = $request->input('action', null);
+        
+        // Retrieve user
+        $ajax = new \Tranquility\View\AjaxResponse();
+        $response = $this->_userService->find($id);
+        $contentItems = $response->getContent();
+        if ($response->containsErrors() || count($response->getContent()) == 0) {
+            // Errors encountered - redisplay form with error messages
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+			$ajax->addMessages($response->getMessages());
+            return Response::json($ajax->toArray());
+        }
+        $data = array('user' => $response->getFirstContentItem());
+        
+        // Render dialog based on action
+        switch($action) {
+            case 'delete':
+                $dialog = $this->_renderPartial('administration.users._partials.dialogs.confirm-single-delete', $data);
+				break;
+			case 'logout':
+				$dialog = $this->_renderPartial('administration.people._partials.dialogs.confirm-single-logout', $data);
+				break;
+			case 'activate':
+				$dialog = $this->_renderPartial('administration.people._partials.dialogs.confirm-single-activate', $data);
+				break;
+			case 'deactivate':
+				$dialog = $this->_renderPartial('administration.people._partials.dialogs.confirm-single-deactivate', $data);
+				break;
+            default:
+                $dialog = '';
+                break;
+        }
+        
+        // Display dialog
+        $user = $response->getFirstContentItem();
+		$ajax->addContent('#modal-content', $dialog, 'displayDialog');
+		return Response::json($ajax->toArray());
+	}
 }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<record_list>
+  <site_version><![CDATA[15.2.2]]></site_version>
+  <each_record>
+    <category>bm_part</category>
+    <action>modify</action>
+    <company_associations/>
+    <part_number><![CDATA[10008655B001]]></part_number>
+    <direct_buy/>
+    <description>
+      <en><![CDATA[DMS Server 25-100 User v13]]></en>
+      <de/>
+      <fr/>
+    </description>
+    <units>
+      <en/>
+      <de/>
+      <fr/>
+    </units>
+    <file_one/>
+    <file_two/>
+    <file_three/>
+    <file_four/>
+    <lead_time/>
+    <_part_custom_field1><![CDATA[PCS]]></_part_custom_field1>
+    <_part_custom_field2><![CDATA[10008655B001]]></_part_custom_field2>
+    <_part_custom_field4><![CDATA[SERVICES]]></_part_custom_field4>
+    <_part_custom_field8><![CDATA[No]]></_part_custom_field8>
+    <_part_custom_field9><![CDATA[DMS Server 25-100 User v13]]></_part_custom_field9>
+    <_part_custom_field10><![CDATA[F115]]></_part_custom_field10>
+    <_part_custom_field11><![CDATA[P2000]]></_part_custom_field11>
+    <_part_custom_field12><![CDATA[]]></_part_custom_field12>
+    <_part_custom_field13><![CDATA[G3]]></_part_custom_field13>
+    <_part_custom_field14><![CDATA[Yes]]></_part_custom_field14>
+    <_part_custom_field15><![CDATA[No]]></_part_custom_field15>
+    <_part_custom_field18><![CDATA[PLATFORM]]></_part_custom_field18>
+    <_part_custom_field21/>
+    <_part_custom_field22><![CDATA[No]]></_part_custom_field22>
+    <_part_custom_field23/>
+    <_part_custom_field24><![CDATA[HWSW]]></_part_custom_field24>
+    <partner_part_id/>
+    <partner_std_pbook_entry_id/>
+    <partner_organization_id/>
+    <part_display_number/>
+    <price>
+      <USD/>
+      <EUR/>
+    </price>
+  </each_record>
+</record_list>

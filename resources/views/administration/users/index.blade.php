@@ -12,7 +12,7 @@
 
 @section('content')
         <div class="table-responsive">
-			<table class="table table-striped">
+			<table class="table table-striped data-table">
 				<tr>
 					<th class="checkboxcol">
 						<input type="checkbox" name="selectAll" id="selectAll" value="" class="selectAll checkbox" />
@@ -39,7 +39,7 @@
 						<input type="checkbox" name="id" value="{{ $user->id }}" class="record-select checkbox" />
 					</td>
 					<td>
-						<a href="{{ action('Administration\UsersController@showPersonUser', [$user->id]) }}">{{ $user->getDisplayName() }}</a>
+						<a href="{{ action('Administration\UsersController@show', [$user->id]) }}">{{ $user->getDisplayName() }}</a>
 					</td>
 					<td>
 						{{ $user->username }}
@@ -56,7 +56,7 @@
 				</tr>
 		@endforeach
 				<tr>
-					<td class="tablefooter" colspan="6"></td>
+					<td class="footer" colspan="6"></td>
 				</tr>
 			</table>
 		</div>

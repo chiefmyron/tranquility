@@ -106,29 +106,17 @@ class PersonService extends \Tranquility\Services\Service {
     }
 	
 	/**
-	 * Validate data for input fields - this includes checking mandatory fields and audit
-	 * trail fields
+	 * Person specific validation of inputs
 	 * 
-	 * @param array   $inputs    Array of data field values
-	 * @param boolean $newRecord True if creating validating fields for a new record
-	 * @return mixed  True if valid input, array of messages if invalid input
+	 * @param array   $inputs     Array of data field values
+	 * @param boolean $newRecord  True if creating validating fields for a new record
+	 * @return array  Error messages from validation. Empty array if no errors.
 	 */
-	public function validateInputFields($inputs, $newRecord = false) {
+	public function validateBusinessObjectRules($inputs, $newRecord) {
 		$messages = array();
-		
-		// Perform mandatory field and audit trail field validation
-		$result = parent::validateInputFields($inputs, $newRecord);
-		if ($result !== true) {
-			$messages = $result;
-		}
 		
 		// TODO: Validate title code against reference data table
 		
-		// If there are one or more messages, then there are errors - return messages
-		if (count($messages) > 0) {
-			return $messages;
-		}
-		
-		return true;
+		return $messages;
 	}
 }	

@@ -47,13 +47,13 @@ Breadcrumbs::register('admin.settings', function($breadcrumbs) {
 // Users controller
 Breadcrumbs::register('admin.settings.users', function($breadcrumbs) {
 	$breadcrumbs->parent('admin.settings');
-	$breadcrumbs->push(trans('administration.users_heading_users_people'), action('Administration\UsersController@listPeopleUsers'));
+	$breadcrumbs->push(trans('administration.users_heading_users_people'), action('Administration\UsersController@index'));
 });
 Breadcrumbs::register('admin.settings.users.show', function($breadcrumbs, $user) {
 	$breadcrumbs->parent('admin.settings.users');
-	$breadcrumbs->push($user->getDisplayName(), action('Administration\UsersController@showPersonUser', [$user->id]));
+	$breadcrumbs->push($user->getDisplayName(), action('Administration\UsersController@show', [$user->id]));
 });
 Breadcrumbs::register('admin.settings.users.update', function($breadcrumbs, $user) {
 	$breadcrumbs->parent('admin.settings.users.show', $user);
-	$breadcrumbs->push(trans('administration.users_command_update_user'), action('Administration\UsersController@updatePersonUser', [$user->id]));
+	$breadcrumbs->push(trans('administration.users_command_update_user'), action('Administration\UsersController@update', [$user->id]));
 });

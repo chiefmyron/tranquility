@@ -74,6 +74,50 @@ class UserRepository extends EntityRepository {
     }
     
     /**
+	 * Logically delete an existing entity record
+	 *
+	 * @param int   $id    Entity ID of the record to delete
+	 * @param array 
+	 */
+    public function delete($id, array $data) {
+        // Retrieve existing record
+        $entity = $this->find($id);
+        $entityName = $this->getEntityName();
+        
+        // Create historical version of entity
+        $historyClassName = call_user_func($entityName.'::getHistoricalEntityClass');
+        $historicalEntity = new $historyClassName($entity);
+        $historicalEntity->setAuditTrail($entity->getAuditTrail());
+        $historicalEntity->setAuthPassword($entity->getAuthPassword());
+        $this->_em->persist($historicalEntity);
+        
+        // Create new audit trail record
+		$auditTrail = new AuditTrail($data);
+        $this->_em->persist($auditTrail);
+        
+        // Remove reference to user from parent
+        $parent = $entity->getPerson();
+        $parent->setUserAccount(null);
+        $this->_em->persist($parent);
+        
+        // Make updates to user to mark it as deleted
+        unset($data['version']);
+        $data['deleted'] = 1;
+        $data['parent'] = null;
+        
+        // Update existing entity record with new details, incremented version number
+        // and new audit trail details
+        $entity->populate($data);
+        $entity->version = ($entity->version + 1);
+        $entity->setAuditTrail($auditTrail);
+        $this->_em->persist($entity);
+        $this->_em->flush();
+        
+        // Return updated entity
+        return $entity;
+    }
+    
+    /**
      * Update the "remember me" token for the given user in storage.
      *
      * @param  int     $id
