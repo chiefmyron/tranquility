@@ -9,7 +9,7 @@
 @stop
 
 @section('actionButton')
-	{{ ActionButton::setPrimaryAction('accounts_heading_create', 'toolbar-add-new-account', action('Administration\AccountsController@create'), null, 'pencil') }}
+	{{ ActionButton::setPrimaryAction('accounts_heading_create', 'toolbar-add-new-account', action('Administration\AccountsController@create'), 'ajax', 'pencil', true, ["data-ajax-preload-target" => "modal"]) }}
 	{!! ActionButton::render() !!}
 @stop
 

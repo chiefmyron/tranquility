@@ -96,6 +96,7 @@ return array(
     'accounts_heading_create' => 'Add a new account',
     'accounts_heading_update' => 'Update details for :name',
     'accounts_message_no_records' => 'Sorry, we couldn\'t find any account records...',
+    'accounts_command_create' => 'Create account',
     
     // Address strings
     'address_heading_physical_addresses' => 'Addresses',

@@ -87,11 +87,21 @@ class AccountsController extends Controller {
 	}
 	
 	/**
-	 * Display page for creating a new Account record
+	 * Display dialog for creating a new Account record
 	 *
 	 * @return Response
 	 */
-	public function create() {
+	public function create(Request $request) {
+		// If called via AJAX, display as a dialog
+		if ($request->ajax()) {
+			// Render dialog
+			$ajax = new AjaxResponse();
+			$dialog = $this->_renderPartial('administration.accounts._partials.dialogs.create');
+			$ajax->addContent('#modal-content', $dialog, 'displayDialog');
+			return Response::json($ajax->toArray());
+		}
+        
+        // Display full page
 		return view('administration.accounts.create');
 	}
 	
@@ -122,7 +132,7 @@ class AccountsController extends Controller {
 		$id = $request->input('id', 0);
 		
 		// Add in additional audit trail details
-		$params['type'] = EnumEntityType::Accoun;
+		$params['type'] = EnumEntityType::Account;
 		$params['updateBy'] = Auth::user();
 		$params['updateDateTime'] = Carbon::now();
 		$params['transactionSource'] = EnumTransactionSource::UIBackend;
@@ -130,10 +140,10 @@ class AccountsController extends Controller {
 		// Create or update record		
 		if ($id != 0) {
             $params['updateReason'] = 'backend account update';
-			$result = $this->_service->update($id, $params);
+			$result = $this->_accountService->update($id, $params);
 		} else {
             $params['updateReason'] = 'backend account create';
-			$result = $this->_service->create($params);
+			$result = $this->_accountService->create($params);
 		}
 		
 		// Flash messages to session, and check for errors
