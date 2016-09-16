@@ -15,6 +15,7 @@ use Tranquility\Exceptions\BusinessObjectException                          as B
 use Tranquility\Data\Objects\BusinessObjects\PersonBusinessObject           as Person;
 use Tranquility\Data\Objects\BusinessObjects\UserBusinessObject             as User;
 use Tranquility\Data\Objects\BusinessObjects\AccountBusinessObject          as Account;
+use Tranquility\Data\Objects\BusinessObjects\ContactBusinessObject          as Contact;
 use Tranquility\Data\Objects\BusinessObjects\AddressBusinessObject          as Address;
 use Tranquility\Data\Objects\BusinessObjects\AddressPhysicalBusinessObject  as AddressPhysical;
 
@@ -241,6 +242,7 @@ abstract class BusinessObject extends DataObject {
         $builder->addDiscriminatorMapClass(EnumEntityType::Person, Person::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::User, User::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::Account, Account::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::Contact, Contact::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::Address, Address::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhysical, AddressPhysical::class);
         

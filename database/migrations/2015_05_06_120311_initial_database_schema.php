@@ -87,7 +87,7 @@ class InitialDatabaseSchema extends Migration {
             $table->float('longitude')->default(0);
         });
         
-        // Person or contact
+        // Person 
         Schema::create('entity_people', function(Blueprint $table) {
             $table->bigInteger('id')->primary();
             $table->string('title', 50)->nullable();
@@ -115,14 +115,14 @@ class InitialDatabaseSchema extends Migration {
             $table->string('name', 255);
         });
 
-        // Entity cross-referencing with other entities
-        Schema::create('entity_entity_xref', function(Blueprint $table) {
-            $table->bigInteger('parentId');
-            $table->bigInteger('childId');
-            $table->string('childEntityType', 255);
-            $table->primary(['parentId', 'childId']);
+        // Contact (linkage of Person to Account)
+        Schema::create('entity_contacts', function(Blueprint $table) {
+            $table->bigInteger('personId');
+            $table->bigInteger('accountId');
+            $table->boolean('primaryContact');
+            $table->primary(['personId', 'accountId']);
         });
-        
+
         // Entity cross-referencing for tags
         Schema::create('entity_tags_xref', function(Blueprint $table) {
             $table->bigInteger('entityId');
@@ -179,7 +179,7 @@ class InitialDatabaseSchema extends Migration {
             $table->primary(['id', 'version']);
         });
         
-        // Person or contact
+        // Person
         Schema::create('history_entity_people', function(Blueprint $table) {
             $table->bigInteger('id');
             $table->integer('version');
@@ -203,6 +203,23 @@ class InitialDatabaseSchema extends Migration {
             $table->bigInteger('securityGroupId');
             $table->dateTime('registeredDateTime');
             $table->primary(['id', 'version']);
+        });
+
+        // Account
+        Schema::create('history_entity_accounts', function(Blueprint $table) {
+            $table->bigInteger('id');
+            $table->integer('version');
+            $table->string('name', 255);
+            $table->primary(['id', 'version']);
+        });
+
+        // Contact (linkage of Person to Account)
+        Schema::create('history_entity_contacts', function(Blueprint $table) {
+            $table->bigInteger('personId');
+            $table->bigInteger('accountId');
+            $table->integer('version');
+            $table->boolean('primaryContact');
+            $table->primary(['personId', 'accountId', 'version']);
         });
         
         /*************************************************************************
@@ -271,14 +288,16 @@ class InitialDatabaseSchema extends Migration {
         Schema::dropIfExists('ext_tags');
         Schema::dropIfExists('history_entity_users');
         Schema::dropIfExists('history_entity_people');
+        Schema::dropIfExists('history_entity_accounts');
+        Schema::dropIfExists('history_entity_contacts');
         Schema::dropIfExists('history_entity_addresses_physical');
         Schema::dropIfExists('history_entity_addresses');
         Schema::dropIfExists('history_entity');
-        Schema::dropIfExists('entity_entity_xref');
         Schema::dropIfExists('entity_tags_xref');
         Schema::dropIfExists('entity_users');
         Schema::dropIfExists('entity_people');
         Schema::dropIfExists('entity_accounts');
+        Schema::dropIfExists('entity_contacts');
         Schema::dropIfExists('entity_addresses_physical');
         Schema::dropIfExists('entity_addresses');
         Schema::dropIfExists('entity');

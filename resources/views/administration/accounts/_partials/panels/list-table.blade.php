@@ -1,23 +1,8 @@
 		<div>
-			<table class="table table-striped data-table entity-person">
+			<table class="table table-striped data-table entity-account">
 				<thead>
 					<tr class="action-strip">
 						<td colspan="5">
-							<div class="filter">
-								<h4>Filter results</h4>
-								<ul class="filter-items">
-									<li>
-										Show:
-										<select>
-											<option>All people</option>
-											<option>Only people with user accounts</option>
-										</select>
-									</li>
-									<li>
-										<input type="checkbox" class="checkbox" />Show names as <em>Last name, First name</em>
-									</li>
-								</ul>
-							</div>
 							<div class="actions-container">
 								<div class="actions">
 									<p><span id="item-selected-counter">0</span>{{ trans('administration.common_selection_num_items')}}: </p>
@@ -53,22 +38,21 @@
 						</td>
 					</tr>
 			@else
-				@foreach ($accounts as $person)
+				@foreach ($accounts as $account)
 <?php
-// Get primary contact details for person
-$emailAddress = $person->getPrimaryAddress('email');
+// Get primary contact details for account
+$emailAddress = $account->getPrimaryAddress('email');
 if (!is_null($emailAddress)) {
 	$emailAddress = $emailAddress->toString();
 }
-$userAccount = $person->getUserAccount();
 
 ?>		
 						<tr>
 							<td class="checkboxcol">
-								<input type="checkbox" name="id" value="{{ $person->id }}" class="record-select checkbox" />
+								<input type="checkbox" name="id" value="{{ $account->id }}" class="record-select checkbox" />
 							</td>
 							<td>
-								<a href="{{ action('Administration\PeopleController@show', [$person->id]) }}" data-secondary-info="{{ $emailAddress }}">{{ $person->firstName.' '.$person->lastName}}</a>
+								<a href="{{ action('Administration\AccountsController@show', [$account->id]) }}" data-secondary-info="{{ $emailAddress }}">{{ $account->name }}</a>
 							</td>
 							<td>
 								{{ $emailAddress or 'No email' }}

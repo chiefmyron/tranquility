@@ -213,6 +213,8 @@ abstract class EntityBusinessObject {
         $builder->setJoinedTableInheritance();
         $builder->setDiscriminatorColumn('type');
         $builder->addDiscriminatorMapClass(EnumEntityType::Person, PersonBusinessObject::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::Account, AccountBusinessObject::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::Contact, ContactBusinessObject::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::User, UserBusinessObject::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::Address, AddressBusinessObject::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhysical, AddressPhysicalBusinessObject::class);

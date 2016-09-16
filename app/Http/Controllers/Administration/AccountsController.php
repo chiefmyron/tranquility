@@ -154,7 +154,7 @@ class AccountsController extends Controller {
 		}
 		
 		// No errors - return to index page
-		return redirect()->action('Administration\AccountController@index');
+		return redirect()->action('Administration\AccountsController@index');
 	}
 	
     /**

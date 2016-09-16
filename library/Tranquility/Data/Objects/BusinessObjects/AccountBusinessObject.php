@@ -16,7 +16,7 @@ use Tranquility\Exceptions\BusinessObjectException                              
 use Tranquility\Data\Objects\BusinessObjects\History\AccountHistoricalBusinessObject as AccountHistory;
 
 // Tranquility related business objects
-use Tranquility\Data\Objects\BusinessObjects\PersonBusinessObject                    as Person;
+use Tranquility\Data\Objects\BusinessObjects\ContactBusinessObject                   as Contact;
 
 class AccountBusinessObject extends BusinessObject {
     use \Tranquility\Data\Objects\BusinessObjects\Traits\PropertyAccessorTrait;
@@ -25,7 +25,7 @@ class AccountBusinessObject extends BusinessObject {
     protected $name;
     
     // Related entities
-    protected $people;
+    protected $contacts;
     
     /**
      * Array of properties that are specific to the Account entity
@@ -155,6 +155,6 @@ class AccountBusinessObject extends BusinessObject {
         $builder->addField('name', 'string');
         
         // Add relationships
-        $builder->createOneToOne('people', Person::class)->addJoinColumn('userId','id')->build();
+        $builder->createOneToMany('contacts', Contact::class)->mappedBy('account')->build();
     }
 }
