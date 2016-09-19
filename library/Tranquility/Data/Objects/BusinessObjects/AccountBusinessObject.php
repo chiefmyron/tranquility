@@ -16,7 +16,7 @@ use Tranquility\Exceptions\BusinessObjectException                              
 use Tranquility\Data\Objects\BusinessObjects\History\AccountHistoricalBusinessObject as AccountHistory;
 
 // Tranquility related business objects
-use Tranquility\Data\Objects\BusinessObjects\ContactBusinessObject                   as Contact;
+use Tranquility\Data\Objects\ExtensionObjects\Contact                                as Contact;
 
 class AccountBusinessObject extends BusinessObject {
     use \Tranquility\Data\Objects\BusinessObjects\Traits\PropertyAccessorTrait;
@@ -78,6 +78,53 @@ class AccountBusinessObject extends BusinessObject {
      * @static
      */
     protected static $_entityType = EnumEntityType::Account;
+
+    /**
+     * Create a new instance of the Account
+     *
+     * @var array $data     [Optional] Initial values for object properties
+     * @var array $options  [Optional] Configuration options for the object
+     * @return void
+     */
+    public function __construct($data = array(), $options = array()) {
+        parent::__construct($data, $options);
+        
+        // Initialise collections for related entities
+        $this->contacts = new ArrayCollection();
+    }
+
+    /**
+     * Retreive a collection of contacts associated with this Account
+     *
+     * @return mixed
+     */
+    public function getContacts() {
+        return array_map(
+            function ($contact) {
+                $person = $contact->getPerson();
+                $person->primaryContact = $contact->primaryContact;
+                return $person;
+            },
+            $this->contacts->toArray()
+        );
+    }
+
+    /**
+     * Retrieve the primary contact for the Account
+     *
+     * @return mixed
+     */
+    public function getPrimaryContact() {
+        $criteria = Criteria::create()->where(Criteria::expr()->eq("primaryContact", true));
+        $contact = $this->contacts->matching($criteria);
+        if ($contact->count() > 0) {
+            $person = $contact[0]->getPerson();
+            $person->primaryContact = true;
+            return $person;
+        }
+
+        return null;
+    }
     
     /**
      * Retreive a collection of addresses associated with this Account
@@ -155,6 +202,6 @@ class AccountBusinessObject extends BusinessObject {
         $builder->addField('name', 'string');
         
         // Add relationships
-        $builder->createOneToMany('contacts', Contact::class)->mappedBy('account')->build();
+        $builder->createOneToMany('contacts', Contact::class)->mappedBy('account')->orphanRemoval(true)->build();
     }
 }

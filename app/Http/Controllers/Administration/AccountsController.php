@@ -75,11 +75,11 @@ class AccountsController extends Controller {
 	 * @return Response
 	 */
 	public function show($id) {
-		$response = $this->_service->find($id);
+		$response = $this->_accountService->find($id);
 		if ($response->containsErrors()) {
 			// Redirect to index with error message
 			Session::flash('messages', $response->getMessages());
-			return redirect()->action('Administration\AccountController@index');
+			return redirect()->action('Administration\AccountsController@index');
 		}
         
         // Display Account details

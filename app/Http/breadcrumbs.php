@@ -45,7 +45,7 @@ Breadcrumbs::register('admin.accounts', function($breadcrumbs) {
 });
 Breadcrumbs::register('admin.accounts.show', function($breadcrumbs, $account) {
 	$breadcrumbs->parent('admin.accounts');
-	$breadcrumbs->push($account->getFullName(), action('Administration\AccountsController@show', [$account->id]));
+	$breadcrumbs->push($account->name, action('Administration\AccountsController@show', [$account->id]));
 });
 Breadcrumbs::register('admin.accounts.create', function($breadcrumbs) {
 	$breadcrumbs->parent('admin.accounts');

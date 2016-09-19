@@ -242,7 +242,6 @@ abstract class BusinessObject extends DataObject {
         $builder->addDiscriminatorMapClass(EnumEntityType::Person, Person::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::User, User::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::Account, Account::class);
-        $builder->addDiscriminatorMapClass(EnumEntityType::Contact, Contact::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::Address, Address::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhysical, AddressPhysical::class);
         

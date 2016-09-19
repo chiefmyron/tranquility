@@ -1,4 +1,4 @@
-<?php namespace Tranquility\Data\Objects\BusinessObjects;
+<?php namespace Tranquility\Data\Objects\ExtensionObjects;
 
 // Doctrine 2 libraries
 use Doctrine\ORM\Mapping                                                             as ORM;
@@ -11,15 +11,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Tranquility\Enums\System\EntityType                                              as EnumEntityType;
 use Tranquility\Exceptions\BusinessObjectException                                   as BusinessObjectException;
 
-// Tranquility historical version of business object
-use Tranquility\Data\Objects\BusinessObjects\History\ContactHistoricalBusinessObject as ContactHistory;
-
 // Tranquility related business objects
 use Tranquility\Data\Objects\BusinessObjects\PersonBusinessObject                    as Person;
 use Tranquility\Data\Objects\BusinessObjects\AccountBusinessObject                   as Account;
 
-class ContactBusinessObject extends BusinessObject {
-    use \Tranquility\Data\Objects\BusinessObjects\Traits\PropertyAccessorTrait;
+class Contact extends ExtensionObject {
+    use \Tranquility\Data\Objects\ExtensionObjects\Traits\PropertyAccessorTrait;
     
     // Object properties
     protected $primaryContact;
@@ -64,14 +61,6 @@ class ContactBusinessObject extends BusinessObject {
      */
     protected static $_hiddenFields = array();
     
-    /**
-     * Name of the class responsible for representing historical versions of a AcContactcount entity
-     * 
-     * @var string
-     * @static
-     */
-    protected static $_historicalEntityClass = ContactHistory::class;
-    
     /** 
      * Type of entity represented by the business object
      *
@@ -79,6 +68,10 @@ class ContactBusinessObject extends BusinessObject {
      * @static
      */
     protected static $_entityType = EnumEntityType::Contact;
+
+    public function getPerson() {
+        return $this->person;
+    }
     
     /**
      * Metadata used to define object relationship to database
@@ -90,13 +83,13 @@ class ContactBusinessObject extends BusinessObject {
         $builder = new ClassMetadataBuilder($metadata);
         // Define table name
         $builder->setTable('entity_contacts');
-        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\ExtensionObjectRepository');
         
         // Define fields
         $builder->addField('primaryContact', 'boolean');
         
         // Add relationships
-        $builder->createManyToOne('person', Person::class)->addJoinColumn('personId', 'id')->build();
-        $builder->createManyToOne('account', Account::class)->addJoinColumn('accountId', 'id')->build();
+        $builder->createManyToOne('account', Account::class)->makePrimaryKey()->addJoinColumn('accountId', 'id')->inversedBy('contacts')->build();
+        $builder->createManyToOne('person', Person::class)->makePrimaryKey()->addJoinColumn('personId', 'id')->inversedBy('contacts')->build();
     }
 }
