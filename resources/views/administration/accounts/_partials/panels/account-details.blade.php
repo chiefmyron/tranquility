@@ -1,3 +1,10 @@
+<?php
+// Setup data for view
+$contacts = $account->getContacts();
+$primaryContact = $account->getPrimaryContact();
+$primaryAddresses = $account->getPrimaryAddresses();
+?>
+
             <div id="person-details-container">
                 <div class="profile-picture-container">
                     <a href="#"><img class="profile-picture" src="/backend/images/user-avatar-default.png" alt="..."></a>
@@ -5,25 +12,35 @@
                 
                 <div class="entity-profile">
                     <ul>
+                        {{-- Primary contact section --}}
+                        @if($primaryContact == null)
                         <li>
                             <div class="icon">
                                 <i class="icon-user"></i>
                             </div>
                             <div class="data-item">
-                                <span class="heading">{{ trans('administration.people_label_contacts') }}</span>
-                        @if(count($account->getContacts()) <= 0)     
-                                               
+                                <span class="heading">{{ trans('administration.accounts_label_primary_contact') }}</span>
                                 <span>{{ trans('administration.account_label_no_contacts') }}</span>
-                                <span class="action"><a href="{{ action('Administration\PeopleController@createUser', ['id' => $account->id]) }}" class="ajax" data-ajax-preload-target="modal"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.account_label_add_contact') }}</a></span>
+                                <span class="action"><a href="{{ action('Administration\PeopleController@create') }}" class="ajax" data-ajax-preload-target="modal"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.account_label_add_contact') }}</a></span>
                             </div>
                         </li>
                         @else
-                                <span><a href="{{ action('Administration\PeopleController@show', ['id' => $account->getPrimaryContact()->id]) }}">{{ $account->getPrimaryContact()->getFullName() }}</a></span><br />
+                                <p>{{ $primaryContact->getFullName() }}</p>
+                                @if (isset($primaryAddresses['email']))
+                                <p>
+                                    <a href="mailto:{{ $primaryAddresses['email']->addressText }}">{{ $primaryAddresses['email']->addressText }}</a>
+                                </p>
+                                @endif
+                                @if (isset($primaryAddresses['phone']))
+                                <p class="h-adr">
+                                    <a href="tel:{{ $primaryAddresses['phone']->addressText }}">{{ $primaryAddresses['phone']->addressText }}</a>
+                                </p>
+                                @endif
                             </div>
                         </li>
                         @endif
 
-                        <?php $primaryAddresses = $account->getPrimaryAddresses(); ?>
+                        {{-- Primary address section --}}
                         @if (count($primaryAddresses) > 0)
                         <li>
                             <div class="icon">
@@ -45,6 +62,7 @@
                         </li>
                         @endif
                         
+                        {{-- Tags section --}}
                         <li>
                             <div class="icon">
                                 <i class="icon-tag"></i>

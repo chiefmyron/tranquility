@@ -2,6 +2,8 @@
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
+use Illuminate\Support\Facades\Log;
+
 use Tranquility\Data\Objects\ExtensionObjects\Tags       as Tag;
 use Tranquility\Data\Objects\ExtensionObjects\AuditTrail as AuditTrail;
 
@@ -122,6 +124,9 @@ class EntityRepository extends \Doctrine\ORM\EntityRepository {
 	}
     
     public function addTag($id, $tag) {
+        Log::info('Adding tag "'.$tag.'" to entity ID '.$id);
+
+
         // Retrieve existing record
         $entity = $this->find($id);
         $entity->addTag($tag);

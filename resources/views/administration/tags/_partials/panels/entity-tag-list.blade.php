@@ -7,7 +7,7 @@
                             <span class="tag label-entity-user"><a href="{{ action('Administration\UsersController@index') }}">{{ trans('administration.common_entity_type_user') }}</a></span>    
                                 @endif
                             @elseif ($entity->getEntityType() == 'account')
-                            
+                            <span class="tag label-entity-account"><a href="{{ action('Administration\AccountsController@index') }}">{{ trans('administration.common_entity_type_'.$entity->getEntityType()) }}</a></span>
                             @endif
 
                             @foreach ($tags as $tag)

@@ -20,6 +20,7 @@ return array(
     'common_entity_type_person' => 'Person',
     'common_entity_type_user' => 'User',
     'common_entity_type_address' => 'Address',
+    'common_entity_type_account' => 'Account',
     'common_toggle_dropdown' => 'Show / hide dropdown menu',
     'common_quick_contact' => 'Quick contact',
     'common_pagination_summary' => 'Displaying all :totalItems records|Displaying :firstItem to :lastItem of :totalItems records',
@@ -98,6 +99,7 @@ return array(
     'accounts_heading_update' => 'Update details for :name',
     'accounts_message_no_records' => 'Sorry, we couldn\'t find any account records...',
     'accounts_command_create' => 'Create account',
+    'accounts_label_primary_contact' => 'Primary contact',
     
     // Address strings
     'address_heading_physical_addresses' => 'Addresses',

@@ -17,7 +17,7 @@ $brand-data-panel:           #f9f9f9;
 $brand-entity-person:        #6a1b9a;
 $brand-entity-user:          #e53935;
 $brand-entity-invoice:       #f1c40f;
-$brand-entity-accounts:      #27ae60;
+$brand-entity-account:       #27ae60;
 $brand-entity-pages:         #2980b9;
 $brand-entity-images:        #d35400;
 
@@ -789,6 +789,10 @@ div.tagsinput div {
 
 .label-entity-user {
     background-color: $brand-entity-user !important;
+}
+
+.label-entity-account {
+    background-color: $brand-entity-account !important;
 }
 
 // Forms
