@@ -4,7 +4,6 @@ use \Session as Session;
 use \Response as Response;
 use \Auth as Auth;
 use Illuminate\Http\Request as Request;
-use App\Http\Controllers\Controller;
 
 use Carbon\Carbon;
 use Tranquility\Utility;
@@ -111,14 +110,27 @@ class AccountsController extends Controller {
 	 * @param int $id  Entity ID of the Account to update
 	 * @return Response
 	 */
-	public function update($id) {
-		$response = $this->_service->find($id);
+	public function update(Request $request, $id) {
+		// Retrieve account details
+		$response = $this->_accountService->find($id);
 		if ($response->containsErrors()) {
 			// Redirect to index with error message
 			Session::flash('messages', $response->getMessages());
-			return redirect()->action('Administration\AccountController@index');
+			return redirect()->action('Administration\AccountsController@index');
 		}
-		return view('administration.accounts.update')->with('account', $response->getFirstContentItem());
+		$data = array('account' => $response->getFirstContentItem());
+		
+		// If called via AJAX, display as a dialog
+		if ($request->ajax()) {
+			// Render dialog
+			$ajax = new AjaxResponse();
+			$dialog = $this->_renderPartial('administration.accounts._partials.dialogs.update', $data);
+			$ajax->addContent('#modal-content', $dialog, 'displayDialog');
+			return Response::json($ajax->toArray());
+		}
+        
+        // Display full page
+		return view('administration.accounts.update')->with($data);
 	}
 	
 	/**
@@ -145,16 +157,30 @@ class AccountsController extends Controller {
             $params['updateReason'] = 'backend account create';
 			$result = $this->_accountService->create($params);
 		}
-		
-		// Flash messages to session, and check for errors
-		Session::flash('messages', $result->getMessages());
+
+		// If errors were encountered, display on the form
 		if ($result->containsErrors()) {
-			// Errors encountered - redisplay form with error messages
-			return redirect()->back()->withInput();
+			return $this->_renderFormErrors($request, $result->getMessages());
 		}
 		
-		// No errors - return to index page
-		return redirect()->action('Administration\AccountsController@index');
+		// Show updated record
+		$account = $result->getFirstContentItem();
+		if ($request->ajax()) {
+			// Render address panel for parent entity
+			$heading = $this->_renderPartial('administration._partials.heading', ['heading' => $account->name]);
+			$content = $this->_renderPartial('administration.accounts._partials.content.show', ['account' => $account]);
+			$messages = $this->_renderPartial('administration._partials.errors', ['messages' => $result->getMessages()]);
+
+			$ajax = new AjaxResponse(); 
+			$ajax->addContent('#page-header .page-title', $heading);
+			$ajax->addContent('#main-content-container', $content);
+			$ajax->addContent('#process-message-container', $messages, 'showElement', array('process-message-container'));
+			$ajax->addCallback('closeDialog');
+			return Response::json($ajax->toArray());
+		}
+
+		Session::flash('messages', $result->getMessages());		
+		return redirect()->action('Administration\AccountsController@show', ['id' => $account->id]);
 	}
 	
     /**

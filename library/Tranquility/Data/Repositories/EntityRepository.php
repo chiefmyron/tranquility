@@ -97,6 +97,13 @@ class EntityRepository extends Repository {
         return $this->update($id, $data);
 	}
     
+    /**
+     * Associate a tag with the entity
+     *
+     * @param int $id  Business object entity ID
+     * @param Tag $tag Tag to associate
+     * @return \Tranquility\Data\BusinessObjects\Entity
+     */ 
     public function addTag($id, $tag) {
         Log::info('Adding tag "'.$tag.'" to entity ID '.$id);
 
@@ -109,6 +116,13 @@ class EntityRepository extends Repository {
         return $entity;
     }
     
+    /**
+     * Disassociate a tag from an entity
+     *
+     * @param int $id  Business object entity ID
+     * @param Tag $tag Tag to disassociate
+     * @return \Tranquility\Data\BusinessObjects\Entity
+     */ 
     public function removeTag($id, $tag) {
         Log::info('Removing tag "'.$tag.'" from entity ID '.$id);
 
@@ -121,6 +135,13 @@ class EntityRepository extends Repository {
         return $entity;
     }
     
+    /**
+     * Sets the list of tags to be associated with an entity
+     * 
+     * @param int   $id             Business object entity ID
+     * @param array $tagCollection  Array of Tag objects to associate
+     * @return \Tranquility\Data\BusinessObjects\Entity
+     */
     public function setTags($id, array $tagCollection) {
         // Retrieve existing record
         $entity = $this->find($id);

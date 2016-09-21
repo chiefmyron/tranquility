@@ -52,7 +52,7 @@ Breadcrumbs::register('admin.accounts.create', function($breadcrumbs) {
 	$breadcrumbs->push(trans('administration.accounts_heading_create'), action('Administration\AccountsController@create'));
 });
 Breadcrumbs::register('admin.accounts.update', function($breadcrumbs, $account) {
-	$breadcrumbs->parent('admin.accounts.show', $person);
+	$breadcrumbs->parent('admin.accounts.show', $account);
 	$breadcrumbs->push(trans('administration.accounts_command_update'), action('Administration\AccountsController@update', [$account->id]));
 });
 

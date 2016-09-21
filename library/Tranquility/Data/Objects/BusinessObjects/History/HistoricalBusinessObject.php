@@ -15,6 +15,7 @@ use Tranquility\Exceptions\BusinessObjectException                              
 use Tranquility\Data\Objects\BusinessObjects\BusinessObject                                   as Entity;
 use Tranquility\Data\Objects\BusinessObjects\History\PersonHistoricalBusinessObject           as HistoricalPerson;
 use Tranquility\Data\Objects\BusinessObjects\History\UserHistoricalBusinessObject             as HistoricalUser;
+use Tranquility\Data\Objects\BusinessObjects\History\AccountHistoricalBusinessObject          as HistoricalAccount;
 use Tranquility\Data\Objects\BusinessObjects\History\AddressHistoricalBusinessObject          as HistoricalAddress;
 use Tranquility\Data\Objects\BusinessObjects\History\AddressPhysicalHistoricalBusinessObject  as HistoricalAddressPhysical;
 
@@ -139,6 +140,7 @@ abstract class HistoricalBusinessObject {
         $builder->setDiscriminatorColumn('type');
         $builder->addDiscriminatorMapClass(EnumEntityType::Person, HistoricalPerson::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::User, HistoricalUser::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::Account, HistoricalAccount::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::Address, HistoricalAddress::class);
         $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhysical, HistoricalAddressPhysical::class);
         

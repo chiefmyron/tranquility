@@ -99,6 +99,8 @@ return array(
     'accounts_heading_update' => 'Update details for :name',
     'accounts_message_no_records' => 'Sorry, we couldn\'t find any account records...',
     'accounts_command_create' => 'Create account',
+    'accounts_command_update' => 'Update account details',
+    'accounts_command_delete' => 'Delete account',
     'accounts_label_primary_contact' => 'Primary contact',
     
     // Address strings
