@@ -1,24 +1,6 @@
 <?php namespace Tranquility\Data\Repositories;
 
-use Doctrine\ORM\Tools\Pagination\Paginator;
-
-use Tranquility\Data\BusinessObjects\Extensions\Tags       as Tag;
-use Tranquility\Data\BusinessObjects\Extensions\AuditTrail as AuditTrail;
-
-class ExtensionObjectRepository extends \Doctrine\ORM\EntityRepository {
-
-    /**
-     * Gets a full set of records
-     */ 
-    public function all() {
-        // Start creation of query
-        $entityName = $this->getEntityName();
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select('e')->from($entityName, 'e');
-        $query = $queryBuilder->getQuery();
-        return $query->getResult();
-    }
-
+class ExtensionObjectRepository extends Repository {
     /**
      * Creates a new record
      * 
@@ -56,4 +38,14 @@ class ExtensionObjectRepository extends \Doctrine\ORM\EntityRepository {
         // Return updated entity
         return $entity;
     }
+
+    /**
+	 * Logically delete an existing entity record
+	 *
+	 * @param int   $id    Entity ID of the record to delete
+	 * @param array 
+	 */
+	public function delete($id, array $data) {
+        return parent::delete($id, $data);
+	}
 }

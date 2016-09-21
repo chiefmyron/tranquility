@@ -2,7 +2,11 @@
 // Setup data for view
 $contacts = $account->getContacts();
 $primaryContact = $account->getPrimaryContact();
-$primaryAddresses = $account->getPrimaryAddresses();
+
+$primaryContactAddresses = array();
+if ($primaryContact !== null) {
+    $primaryContactAddresses = $primaryContact->getPrimaryAddresses();
+}
 ?>
 
             <div id="person-details-container">
@@ -25,54 +29,32 @@ $primaryAddresses = $account->getPrimaryAddresses();
                             </div>
                         </li>
                         @else
+                        <li>
+                            <div class="icon">
+                                <i class="icon-user"></i>
+                            </div>
+                            <div class="data-item">
+                                <span class="heading">{{ trans('administration.accounts_label_primary_contact') }}</span>
                                 <p>{{ $primaryContact->getFullName() }}</p>
-                                @if (isset($primaryAddresses['email']))
+                                @if (isset($primaryContactAddresses['email']))
                                 <p>
-                                    <a href="mailto:{{ $primaryAddresses['email']->addressText }}">{{ $primaryAddresses['email']->addressText }}</a>
+                                    <a href="mailto:{{ $primaryContactAddresses['email']->addressText }}">{{ $primaryContactAddresses['email']->addressText }}</a>
                                 </p>
                                 @endif
-                                @if (isset($primaryAddresses['phone']))
+                                @if (isset($primaryContact->getPrimaryAddresses()['phone']))
                                 <p class="h-adr">
-                                    <a href="tel:{{ $primaryAddresses['phone']->addressText }}">{{ $primaryAddresses['phone']->addressText }}</a>
+                                    <a href="tel:{{ $primaryContactAddresses['phone']->addressText }}">{{ $primaryContactAddresses['phone']->addressText }}</a>
                                 </p>
                                 @endif
                             </div>
                         </li>
                         @endif
 
-                        {{-- Primary address section --}}
-                        @if (count($primaryAddresses) > 0)
-                        <li>
-                            <div class="icon">
-                                <i class="icon-envelope"></i>
-                            </div>
-                            <div class="data-item">
-                                <span class="heading">{{ trans('administration.common_quick_contact') }}</span>
-                                @if (isset($primaryAddresses['email']))
-                                <p>
-                                    <a href="mailto:{{ $primaryAddresses['email']->addressText }}">{{ $primaryAddresses['email']->addressText }}</a>
-                                </p>
-                                @endif
-                                @if (isset($primaryAddresses['phone']))
-                                <p class="h-adr">
-                                    <a href="tel:{{ $primaryAddresses['phone']->addressText }}">{{ $primaryAddresses['phone']->addressText }}</a>
-                                </p>
-                                @endif
-                            </div>
-                        </li>
-                        @endif
+                        {{-- Primary address / quick contact section --}}
+                        @include('administration.addresses._partials.panels.profile-primary-address', ['entity' => $account])
                         
                         {{-- Tags section --}}
-                        <li>
-                            <div class="icon">
-                                <i class="icon-tag"></i>
-                            </div>
-                            <div class="data-item">
-                                <span class="heading">{{ trans('administration.common_tags') }}</span>
-                                <span>@include('administration.tags._partials.panels.entity-tag-list', ['entity' => $account, 'tags' => $account->getTags()])</span>
-                                <span class="action"><a href="{{ action('Administration\TagsController@update', ['parentId' => $account->id]) }}" class="ajax" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.tags_command_add_tag') }}</a></span>
-                            </div>
-                        </li>
+                        @include('administration.tags._partials.panels.profile-tag-list', ['entity' => $account])
                     </ul>    
                 </div>
             </div>

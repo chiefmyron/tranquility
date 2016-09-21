@@ -1,5 +1,7 @@
 <?php namespace Tranquility\Services;
 
+use Illuminate\Support\Facades\Log;
+
 use \Tranquility\Utility                        as Utility;
 use \Tranquility\Enums\System\EntityType        as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel      as EnumMessageLevel;
@@ -61,15 +63,16 @@ class TagService extends \Tranquility\Services\Service {
         
         // Check that tag text is provided
         $messages = array();
-        $text = Utility::extractValue($data, 'text', null);
-        if (is_null($text)) {
+        $text = strtolower(Utility::extractValue($data, 'text', ''));
+        if ($text == '') {
             $response->addMessage(10002, EnumMessageLevel::Error, 'message_10002_mandatory_input_field_missing', array(), 'text');
             $response->setHttpResponseCode(EnumHttpStatusCode::BadRequest);
             return $response;
         }
                 
 		// Attempt to create the tag
-        $data['text'] = strtolower($data['text']);
+        Log::info('Creating new tag "'.$text.'"');
+        $data['text'] = $text;
         $entity = $this->_getRepository()->create($data);
 		$response->setContent($entity);
 		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
@@ -99,40 +102,41 @@ class TagService extends \Tranquility\Services\Service {
     public function setEntityTags($entityId, $tagValues) {
         // Set up response object
 		$response = new ServiceResponse();
-        
-        // Remove any tags that are set to an empty string
-        $tagSet = array();
-        foreach ($tagValues as $tagText) {
-            $tagText = trim(str_replace(array(",", ";"), "", $tagText));
-            if ($tagText != "") {
-                $tagSet[] = $tagText;
+
+        // Format tag values
+        $formattedTags = array();
+        foreach ($tagValues as $text) {
+            $text = trim(str_replace(array(',', ';'), '', $text));
+            if ($text !== '') {
+                $formattedTags[] = $text;
             }
         }
 
-        // Get the set of tags already created
-        $tagValues = array_map('strtolower', $tagSet);
-        $filter = array(['text', 'IN', $tagValues]);
-        $result = $this->all($filter);
-        $tags = $result->getContent();
-        
-        // Get list of existing tag values
-        $existingTagValues = array();
-        foreach ($tags as $tag) {
-            $existingTagValues[] = $tag->text;
+        // Set up the finalised list of tags for the entity
+        $entityTagSet = array();
+
+        // Get the set of tags objects that already exist based on the tag text provided
+        $existingTagText = array();
+        if (count($formattedTags) > 0) {
+            $filter = array(['text', 'IN', $formattedTags]);
+            $result = $this->all($filter)->getContent();
+            foreach($result as $tag) {
+                $entityTagSet[] = $tag;
+                $existingTagText[] = $tag->text;
+            }
         }
-        
-        // Create new tags if they don't exist already
-        foreach ($tagValues as $tagText) {
-            if (!in_array($tagText, $existingTagValues)) {
-                $result = $this->create(array('text' => $tagText));
-                $newTag = $result->getFirstContentItem();
-                $tags[] = $newTag;
+
+        // Create new tag objects for those that don't already exist
+        foreach ($formattedTags as $text) {
+            if (!in_array($text, $existingTagText)) {
+                $result = $this->create(array('text' => $text));
+                $entityTagSet[] = $result->getFirstContentItem();
             }
         }
         
 		// Replace tag collection for entity
         $repository = $this->_entityManager->getRepository(Entity::class);
-        $entity = $repository->setTags($entityId, $tags);
+        $entity = $repository->setTags($entityId, $entityTagSet);
 		$response->setContent($entity);
 		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
         $response->addMessage(10062, EnumMessageLevel::Success, 'message_10062_tag_collection_updated');
