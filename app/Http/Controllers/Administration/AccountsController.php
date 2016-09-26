@@ -202,22 +202,18 @@ class AccountsController extends Controller {
         $account = null;
         if (!is_array($id) && ($id > 0)) {
             // Confirmation is for a single Account only - retrieve details
-            $response = $this->_accountService->find($id);
-            if ($response->containsErrors()) {
-                // TODO: Proper error handling here
-                throw new Exception('Error:'.$response->getMessages());
+            $result = $this->_accountService->find($id);
+            if ($result->containsErrors()) {
+				// Display error to user
+				return $this->_renderFormErrors($request, $result->getMessages());
     		}
-            $account = $response->getFirstContentItem();
+            $account = $result->getFirstContentItem();
             $id = array($id);
         }
         
-        $data = array(
-            'selectedIds' => $id,
-            'account' => $account
-        );
-        
         // Render dialog
-		$dialog = $this->_renderPartial('administration.people._partials.dialogs.confirm-delete', $data);
+		$data = array('selectedIds' => $id, 'account' => $account);
+		$dialog = $this->_renderPartial('administration.accounts._partials.dialogs.confirm-delete', $data);
 
 		// AJAX response
 		$ajax = new \Tranquility\View\AjaxResponse();
@@ -241,15 +237,15 @@ class AccountsController extends Controller {
         $params['updateDateTime'] = Carbon::now();
         $params['transactionSource'] = EnumTransactionSource::UIBackend;
         if (count($inputIds) > 1) {
-            $response = $this->_service->deleteMultiple($inputIds, $params);
+            $response = $this->_accountService->deleteMultiple($inputIds, $params);
         } else {
-            $response = $this->_service->delete($inputIds[0], $params);
+            $response = $this->_accountService->delete($inputIds[0], $params);
         }
         
         // If AJAX request, send response
         if ($request->ajax()) {
             // Refresh index view
-            $responseArray = $this->_service->all()->toArray();
+            $responseArray = $this->_accountService->all()->toArray();
 
 			// AJAX response
 			$ajax = new \Tranquility\View\AjaxResponse();

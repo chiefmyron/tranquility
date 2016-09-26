@@ -27,6 +27,8 @@ return array(
     'common_pagination_previous' => 'Previous',
     'common_pagination_next' => 'Next',
     'common_selection_num_items' => ' item(s) selected',
+    'common_related_items' => 'Related items',
+    'common_activity_feed' => 'Activity feed',
 	
 	// Login text
 	'login_heading_login' => 'Login',
@@ -55,6 +57,7 @@ return array(
     'people_command_delete' => 'Delete record for this person',
     'people_command_switch_view_detail' => 'Switch to detail view',
     'people_command_switch_view_table' => 'Switch to list view',
+    'people_command_add_contact' => 'Add a contact',
     'people_message_delete_confirmation_single' => 'Are you sure you want to delete the record for :name?',
     'people_message_delete_confirmation_multiple' => 'Are you sure you want to delete the :count records currently selected?',
     'people_message_has_active_user_account' => ':name has had a user account on your site since :registeredDateTime.',
@@ -102,6 +105,9 @@ return array(
     'accounts_command_update' => 'Update account details',
     'accounts_command_delete' => 'Delete account',
     'accounts_label_primary_contact' => 'Primary contact',
+    'accounts_message_delete_confirmation_single' => 'Are you sure you want to delete the account for :name?',
+    'accounts_message_delete_confirmation_multiple' => 'Are you sure you want to delete the :count accounts currently selected?',
+    'accounts_message_no_contacts' => 'There are no contacts for this account',
     
     // Address strings
     'address_heading_physical_addresses' => 'Addresses',
@@ -113,6 +119,7 @@ return array(
     'address_heading_update_address' => 'Update address details',
     'address_heading_update_phone' => 'Update phone number',
     'address_heading_update_email' => 'Update email address',
+    'address_heading_contact_details' => 'Contact details',
     'address_label_address_type' => 'Address type',
     'address_label_work_address' => 'Business address',
     'address_label_home_address' => 'Home address',
