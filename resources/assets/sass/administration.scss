@@ -668,6 +668,10 @@ p.h-adr span {
     text-transform: lowercase;
 }
 
+.data-item .data-header span.heading {
+    font-weight: 800;
+}
+
 .data-action {
     padding: $layout-padding-width;
 }

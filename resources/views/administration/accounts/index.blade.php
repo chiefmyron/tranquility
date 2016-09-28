@@ -16,5 +16,5 @@
 @section('breadcrumbs', Breadcrumbs::render('admin.accounts'))
 
 @section('content')
-	@include('administration.accounts._partials.panels.list-table', ['accounts' => $accounts])
+	@include('administration.accounts._partials.panels.index', ['accounts' => $accounts])
 @stop

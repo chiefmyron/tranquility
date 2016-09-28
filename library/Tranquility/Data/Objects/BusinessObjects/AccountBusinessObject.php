@@ -9,7 +9,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 // Tranquility libraries
 use Tranquility\Enums\System\EntityType                                              as EnumEntityType;
-use Tranquility\Enums\BusinessObjects\Address\AddressTypes                           as EnumAddressType;
 use Tranquility\Exceptions\BusinessObjectException                                   as BusinessObjectException;
 
 // Tranquility historical version of business object
@@ -124,66 +123,6 @@ class AccountBusinessObject extends BusinessObject {
         }
 
         return null;
-    }
-    
-    /**
-     * Retreive a collection of addresses associated with this Account
-     *
-     * @var string $type  Type of address collection to return
-     * @return mixed
-     */
-    public function getAddresses($type) {
-        // Build criteria to ensure we only retrieve active address records
-        $addresses = array();
-        $criteria = Criteria::create()->where(Criteria::expr()->eq("deleted", 0));
-        if ($type == EnumAddressType::Physical) {
-            $addresses = $this->physicalAddresses->matching($criteria);
-        } else {
-            $criteria = $criteria->andWhere(Criteria::expr()->eq("category", $type))->orderBy(array("primaryContact" => Criteria::DESC));
-            $addresses = $this->addresses->matching($criteria);
-        }
-        return $addresses->toArray();
-    }
-
-    /**
-     * Retreive only the set of primary contact addresses
-     *
-     * @var string $type  Type of address collection to return
-     * @return mixed
-     */
-    public function getPrimaryAddresses() {
-        // Build criteria to ensure we only get the active and primary address records
-        $criteria = Criteria::create()->where(Criteria::expr()->eq("deleted", 0));
-        $criteria = $criteria->andWhere(Criteria::expr()->eq("primaryContact", true));
-        $result = $this->addresses->matching($criteria);
-
-        $addresses = array();
-        foreach ($result as $address) {
-            $addresses[$address->category] = $address;
-        }
-
-        return $addresses;
-    }
-
-    /**
-     * Retreive the primary address for the spcified address type
-     *
-     * @var string $type  Type of address collection to return
-     * @return mixed
-     */
-    public function getPrimaryAddress($type) {
-        // Build criteria to ensure we only get the active and primary address records
-        $criteria = Criteria::create()->where(Criteria::expr()->eq("deleted", 0));
-        $criteria = $criteria->andWhere(Criteria::expr()->eq("primaryContact", true));
-        $criteria = $criteria->andWhere(Criteria::expr()->eq("category", $type));
-        $result = $this->addresses->matching($criteria);
-
-        // If no primary address is set, return null
-        if (count($result) <= 0) {
-            return null;
-        }
-
-        return $result[0];
     }
     
     /**

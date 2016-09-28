@@ -6241,6 +6241,9 @@ p.h-adr span {
   float: right;
   text-transform: lowercase; }
 
+.data-item .data-header span.heading {
+  font-weight: 800; }
+
 .data-action {
   padding: 15px; }
 

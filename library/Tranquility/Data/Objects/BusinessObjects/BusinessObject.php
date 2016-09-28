@@ -5,9 +5,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 
 // Tranquility libraries
 use Tranquility\Enums\System\EntityType                                     as EnumEntityType;
+use Tranquility\Enums\BusinessObjects\Address\AddressTypes                  as EnumAddressType;
 use Tranquility\Data\Objects\DataObject                                     as DataObject;
 use Tranquility\Exceptions\BusinessObjectException                          as BusinessObjectException;
 
@@ -188,6 +190,78 @@ abstract class BusinessObject extends DataObject {
         }
         
         return $this;
+    }
+
+    /**
+     * Retreive a collection of addresses associated with this entity
+     *
+     * @var string $category  [Optional] Category of address collection to return
+     * @var string $type      [Optional] Type of address underneath the category
+     * @var bool   $primary   [Optional] Returns addresses with the primary contact flag set this way (null to return all addresses)
+     * @return mixed
+     */
+    public function getAddresses($category = null, $type = null, $primary = null) {
+        // Build criteria to ensure we only retrieve active address records
+        $addresses = array();
+        
+        // Only show addresses that have not been logically deleted
+        $criteria = Criteria::create()->where(Criteria::expr()->eq("deleted", 0));
+        
+        // Filter by address type (if specified)
+        if (!is_null($type)) {
+            $crieria = $criteria->andWhere(Criteria::expr()->eq("addressType", $type));
+        }
+
+        // If request is for physical addresses, no more criteria can apply - return now
+        if ($category == EnumAddressType::Physical) {
+            $addresses = $this->physicalAddresses->matching($criteria);
+            return $addresses->toArray();
+        }
+
+        // Add additional filters for non-physical addresses
+        if (!is_null($category)) {
+            $criteria = $criteria->andWhere(Criteria::expr()->eq("category", $category));
+        }
+        if (!is_null($primary)) {
+            $criteria = $criteria->andWhere(Criteria::expr()->eq("primaryContact", $primary));
+        }
+
+        // Order to show primary contact first, and return
+        $criteria = $criteria->orderBy(array("primaryContact" => Criteria::DESC));
+        $addresses = $this->addresses->matching($criteria);
+        return $addresses->toArray();
+    }
+
+    /**
+     * Wrapper - retrieves only primary addresses for non-physical addresses
+     *
+     * @return mixed
+     */
+    public function getPrimaryAddresses() {
+        $result = $this->getAddresses(null, null, true);
+
+        // Format into key => value array, using address category as the key
+        foreach ($result as $address) {
+            $addresses[$address->category] = $address;
+        }
+
+        return $addresses;
+    }
+
+    /** 
+     * Wrapper - return only the primary address for the specified address category
+     *
+     * @return mixed
+     */
+    public function getPrimaryAddress($category) {
+        $addresses = $this->getAddresses($category, null, true);
+        
+        // If no primary address is set, return null
+        if (count($addresses) <= 0) {
+            return null;
+        }
+
+        return $addresses[0];
     }
     
     /**

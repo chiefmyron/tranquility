@@ -17,7 +17,7 @@
             <div class="data-item">
         @endif
                 <div class="data-header">
-                    <h4>{{ trans('administration.address_label_'.$addresses[$i]->addressType.'_phone') }}</h4>
+                    <span class="heading">{{ trans('administration.address_label_'.$addresses[$i]->addressType.'_phone') }}</span>
                     <span class="action">
                             <a href="{{ action('Administration\AddressController@confirm', ['id' => $addresses[$i]->id, 'type' => 'phone']) }}" class="ajax" data-ajax-preload-target="modal">{{ trans('administration.common_delete') }}</a>
                             | <a href="{{ action('Administration\AddressController@update', ['id' => $addresses[$i]->id, 'type' => 'phone']) }}" class="ajax" data-ajax-preload-target="modal">{{ trans('administration.common_update') }}</a>
