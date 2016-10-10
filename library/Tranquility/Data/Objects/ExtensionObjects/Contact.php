@@ -72,6 +72,10 @@ class Contact extends ExtensionObject {
     public function getPerson() {
         return $this->person;
     }
+
+    public function getAccount() {
+        return $this->account;
+    }
     
     /**
      * Metadata used to define object relationship to database

@@ -15,7 +15,7 @@
 	{!! Form::text('lastName', null, ['class' => 'form-control']) !!}
 	{!! FormError::inline('lastName', Session::get('messages')) !!}	
 </div>	
-	
+
 <div class="form-group">
 	{!! Form::label('position', 'Position:') !!}
 	{!! Form::text('position', null, ['class' => 'form-control']) !!}	

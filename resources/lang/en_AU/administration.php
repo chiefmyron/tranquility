@@ -108,6 +108,11 @@ return array(
     'accounts_message_delete_confirmation_single' => 'Are you sure you want to delete the account for :name?',
     'accounts_message_delete_confirmation_multiple' => 'Are you sure you want to delete the :count accounts currently selected?',
     'accounts_message_no_contacts' => 'There are no contacts for this account',
+
+    // Search strings
+    'search_heading_search' => 'Search',
+    'search_heading_results' => 'Search results',
+    'search_label_placeholder' => 'Search...',
     
     // Address strings
     'address_heading_physical_addresses' => 'Addresses',

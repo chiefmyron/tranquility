@@ -56,7 +56,17 @@ Breadcrumbs::register('admin.accounts.update', function($breadcrumbs, $account) 
 	$breadcrumbs->push(trans('administration.accounts_command_update'), action('Administration\AccountsController@update', [$account->id]));
 });
 
-// Settings breadcrumbs
+// Search controller
+Breadcrumbs::register('admin.search', function($breadcrumbs) {
+	$breadcrumbs->parent('admin.home');
+	$breadcrumbs->push(trans('administration.search_heading_search'), action('Administration\SearchController@index'));
+});
+Breadcrumbs::register('admin.search.results', function($breadcrumbs) {
+	$breadcrumbs->parent('admin.search');
+	$breadcrumbs->push(trans('administration.search_heading_results'), action('Administration\SearchController@index'));
+});
+
+// Settings controller
 Breadcrumbs::register('admin.settings', function($breadcrumbs) {
 	$breadcrumbs->parent('admin.home');
 	$breadcrumbs->push(trans('administration.settings_heading_dashboard'), action('Administration\SettingsController@index'));

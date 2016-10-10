@@ -42,6 +42,20 @@ abstract class BusinessObject extends DataObject {
     // Related extension data objects
     protected $auditTrail;
     protected $tags;
+
+
+    /**
+     * Property definition for object
+     * 
+     * @static
+     * @var array
+     */
+    protected static $_fieldDefinitions = array(
+        'id'      => array('mandatoryUpdate'),
+        'type'    => array('mandatoryUpdate', 'mandatoryCreate', 'hidden'),
+        'version' => array('mandatoryUpdate'),
+        'deleted' => array('mandatoryUpdate' => false, 'mandatoryCreate' => false, 'hidden' => false, 'searchable' => false)
+    );
     
     /**
      * List of properties that can be accessed via getters and setters
@@ -49,12 +63,7 @@ abstract class BusinessObject extends DataObject {
      * @static
      * @var array
      */
-    protected static $_fields = array(
-        'id',
-        'type',
-        'version',
-        'deleted',
-    );
+    protected static $_fields;
     
     /**
      * Array of common properties that all Business Objects will require
@@ -63,7 +72,15 @@ abstract class BusinessObject extends DataObject {
      * @static
      * @var array
      */
-    protected static $_mandatoryFields = array();
+    protected static $_mandatoryFields;
+
+    /**
+     * List of properties that are searchable
+     *
+     * @static
+     * @var array
+     */
+    protected static $_searchableFields;
     
     /**
      * List of properties that are not publically accessible
@@ -71,7 +88,7 @@ abstract class BusinessObject extends DataObject {
      * @static
      * @var array
      */
-     protected static $_hiddenFields = array();
+     protected static $_hiddenFields;
     
     /**
      * Create a new instance of the Business Object
@@ -241,6 +258,7 @@ abstract class BusinessObject extends DataObject {
         $result = $this->getAddresses(null, null, true);
 
         // Format into key => value array, using address category as the key
+        $addresses = array();
         foreach ($result as $address) {
             $addresses[$address->category] = $address;
         }
@@ -339,7 +357,13 @@ abstract class BusinessObject extends DataObject {
      * @return array
      */
     public static function getFields() {
-        return array_merge(self::$_fields, AuditTrail::getFields());
+        if (static::$_fields === null) {
+            // Generate list of fields from definitions
+            $entityFields = array_keys(self::$_fieldDefinitions);
+            static::$_fields = array_merge($entityFields, AuditTrail::getFields());
+        }
+
+        return static::$_fields;
     }
     
     /**
@@ -350,6 +374,30 @@ abstract class BusinessObject extends DataObject {
      * @return array
      */
     public static function getMandatoryFields($newRecord = false) {
+        if (static::$_mandatoryFields === null) {
+            // Generate list of mandatory fields from definitions
+            $entityFields = self::getFields();
+
+            $mandatoryFields = array('update' => array(), 'create' => array());
+            foreach ($entityFields as $fieldName => $definition) {
+                if (array_key_exists('mandatoryUpdate', $definition)) {
+                    $mandatoryFields['update'][] = $fieldName;
+                }
+                if (array_key_exists('mandatoryCreate', $defintion)) {
+                    $mandatoryFields['create'][] = $fieldName;
+                }
+            }
+            static::$_mandatoryFields = $mandatoryFields;
+        }
+
+        if ($newRecord) {
+            return static::$_mandatoryFields['create'];
+        } else {
+            return static::$_mandatoryFields['update'];
+        }
+
+
+
         if (!$newRecord) {
             // ID will be mandatory for any updates to records
             $mandatoryFields = self::$_mandatoryFields;
@@ -357,6 +405,16 @@ abstract class BusinessObject extends DataObject {
             return $mandatoryFields;
         }
         return array_merge(self::$_mandatoryFields, AuditTrail::getMandatoryFields($newRecord));
+    }
+
+    /**
+     * Returns a list of fields used for search
+     *
+     * @static
+     * @return array
+     */
+    public static function getSearchableFields() {
+        return self::$_searchableFields;
     }
     
     /**

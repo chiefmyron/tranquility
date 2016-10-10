@@ -122,6 +122,24 @@ class PersonBusinessObject extends BusinessObject {
         $this->user = $user;
         return $this;
     }
+
+    /**
+     * Retrieve the Account object associated with this person
+     *
+     * @return \Tranquility\Data\BusinessObjects\AccountBusinessObject
+     */
+    public function getAccount() {
+        $contacts = $this->contacts;
+        if (count($contacts) > 0) {
+            return $contacts[0]->getAccount();
+        }
+
+        return null;
+    }
+
+    public function _getAccount() {
+        return $this->getAccount();
+    }
  
     /**
      * Metadata used to define object relationship to database

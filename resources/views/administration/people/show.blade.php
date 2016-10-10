@@ -1,6 +1,7 @@
 @extends('administration.app')
 <?php
 $user = $person->getUserAccount();
+$account = $person->getAccount();
 ?>
 
 @section('menu')

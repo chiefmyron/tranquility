@@ -47,4 +47,43 @@ class FormBuilder extends \Collective\Html\FormBuilder {
                     
         return $this->select($name, $list, $selected, $options);
     }
+
+    public function selectFromEntity($entityType, $name, $value = null, $options = []) {
+        // Retrieve value for the field
+        $value = $this->getValueAttribute($name, $value);
+
+        // Retrieve entity details
+        
+
+
+        if (! in_array($type, $this->skipValueTypes)) {
+            
+        }
+
+        // Retrieve entity details
+
+
+        // Add display options        
+        if (! isset($options['name'])) {
+            $options['name'] = $name;
+        }
+        $options['id'] = $this->getIdAttribute($name, $options);
+
+        
+
+
+        // We will get the appropriate value for the given field. We will look for the
+        // value in the session for the value in the old input data then we'll look
+        // in the model instance if one is set. Otherwise we will just use empty.
+
+
+        // Once we have the type, value, and ID we can merge them into the rest of the
+        // attributes array so we can convert them into their HTML attribute format
+        // when creating the HTML element. Then, we will return the entire input.
+        $merge = compact('type', 'value', 'id');
+
+        $options = array_merge($options, $merge);
+
+        return $this->toHtmlString('<input' . $this->html->attributes($options) . '>');
+    }
 }

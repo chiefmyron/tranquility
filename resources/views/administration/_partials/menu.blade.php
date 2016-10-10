@@ -23,12 +23,12 @@
 
                     <div class="navigation collapse" id="nav-toggleable-sm">
                         <!-- Site wide search form -->
-                        <form class="site-search">
-                            <input class="form-control" type="text" placeholder="Search...">
+                        {!! Form::open(['action' => 'Administration\SearchController@index', 'class' => 'site-search', 'method' => 'GET']) !!}
+                            <input class="form-control" type="text" name="q" placeholder="{{ trans('administration.search_label_placeholder') }}">
                             <button type="submit" class="submit-btn">
                                 <span class="glyphicon glyphicon-search"></span>
                             </button>
-                        </form>
+                        {!! Form::close() !!}
                         
                         <!-- Navigation menu items -->
                         <div class="nav-items">

@@ -34,8 +34,8 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	 * @abstract
 	 * @return string
 	 */
-	abstract function businessObject(); 
-	
+	abstract function businessObject();
+
 	/**
 	 * Validate data for input fields - this includes checking mandatory fields and audit
 	 * trail fields
@@ -160,10 +160,10 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	/**
 	 * Retrieve all entities of this type
 	 *
-	 * @param int $resultsPerPage If zero or less, or null, the full result set will be returned
-	 * @param int $startRecordIndex Index of the record to start the result set from. Defaults to zero.
 	 * @param array $filter Used to specify additional filters to the set of results
 	 * @param array $order Used to specify order parameters to the set of results
+	 * @param int $resultsPerPage If zero or less, or null, the full result set will be returned
+	 * @param int $startRecordIndex Index of the record to start the result set from. Defaults to zero.
 	 * @return \Tranquility\Service\ServiceResponse
 	 */
 	public function all($filterConditions = array(), $orderConditions = array(), $resultsPerPage = 0, $startRecordIndex = 0) {
@@ -196,16 +196,6 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	}
     
     /**
-	 * Find a single entity by ID
-	 *
-	 * @param int $id Entity ID of the object to retrieve
-	 * @return \Tranquility\Services\ServiceResponse
-	 */
-	public function find($id) {
-        return $this->findBy('id', $id);
-	}
-	
-    /**
      * Find a single entity by a specified field
      *
      * @param string $fieldName   Name of the field to search against
@@ -222,6 +212,31 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 		$entity = $this->_getRepository()->findBy($searchOptions);
 		return $this->_findResponse($entity);
 	}
+
+	/**
+	 * Find a single entity by ID
+	 *
+	 * @param int $id Entity ID of the object to retrieve
+	 * @return \Tranquility\Services\ServiceResponse
+	 */
+	public function find($id) {
+        return $this->findBy('id', $id);
+	}
+
+	/**
+	 * Perform a text search on the entity
+	 *
+	 * @param string $searchTerm        Text string to search the entity for
+	 * @param array  $order             Used to specify order parameters to the set of results
+	 * @param int    $resultsPerPage    If zero or less, or null, the full result set will be returned
+	 * @param int    $startRecordIndex  Index of the record to start the result set from. Defaults to zero.
+	 * @return \Tranquility\Service\ServiceResponse
+	 */
+	public function search($searchTerm, $order = array(), $resultsPerPage = 0, $startRecordIndex = 0) {
+
+	}
+
+
     
     /**
      * Use the address service to find the parent entity for an address
@@ -356,6 +371,15 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	protected function _getMandatoryFields($newRecord = false) {
 		$className = $this->businessObject();
 		return $className::getMandatoryFields($newRecord);
+	}
+
+	/**
+	 * Get a list of fields that are used for search
+	 * @return array
+	 */
+	protected function _getSearchableFields() {
+		$className = $this->businessObject();
+		return $className::getSearchableFields();
 	}
     
     /**
