@@ -227,13 +227,21 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	 * Perform a text search on the entity
 	 *
 	 * @param string $searchTerm        Text string to search the entity for
-	 * @param array  $order             Used to specify order parameters to the set of results
+	 * @param array  $orderConditions   Used to specify order parameters to the set of results
 	 * @param int    $resultsPerPage    If zero or less, or null, the full result set will be returned
 	 * @param int    $startRecordIndex  Index of the record to start the result set from. Defaults to zero.
 	 * @return \Tranquility\Service\ServiceResponse
 	 */
-	public function search($searchTerm, $order = array(), $resultsPerPage = 0, $startRecordIndex = 0) {
+	public function search($searchTerm, $orderConditions = array(), $resultsPerPage = 0, $startRecordIndex = 0) {
+		$fields = $this->_getSearchableFields();
 
+		// Set up search terms
+		$filterConditions = array();
+		foreach ($fields as $fieldName) {
+			$filterConditions[] = array($fieldName, 'LIKE', '%'.$searchTerm.'%', 'OR');
+		}
+
+		return $this->all($filterConditions, $orderConditions, $resultsPerPage, $startRecordIndex);
 	}
 
 

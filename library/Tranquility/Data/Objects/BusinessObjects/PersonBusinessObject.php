@@ -27,61 +27,11 @@ class PersonBusinessObject extends BusinessObject {
     protected $firstName;
     protected $lastName;
     protected $position;
-    protected $primaryContact;
     
     // Related entities
     protected $user;
     protected $contacts;
-    
-    /**
-     * Array of properties that are specific to the Person entity
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_fields = array(
-        'title',
-        'firstName',
-        'lastName',
-        'position',
-        'primaryContact'
-    );
-    
-    /**
-     * Array of properties that are mandatory when creating or updating a Person entity
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_mandatoryFields = array(
-		'firstName',
-        'lastName'
-    );
-    
-    /**
-     * Array of properties that are additionally mandatory only when creating a new Person entity
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_mandatoryFieldsNewEntity = array();
-    
-    /**
-     * Array of properties that will not be displayed externally
-     *
-     * @static
-     * @var array
-     */
-    protected static $_hiddenFields = array();
-    
-    /**
-     * Name of the class responsible for representing historical versions of a Person entity
-     * 
-     * @var string
-     * @static
-     */
-    protected static $_historicalEntityClass = PersonHistory::class;
-    
+
     /** 
      * Type of entity represented by the business object
      *
@@ -89,6 +39,54 @@ class PersonBusinessObject extends BusinessObject {
      * @static
      */
     protected static $_entityType = EnumEntityType::Person;
+
+    /**
+     * Name of the class responsible for representing historical versions of a Person entity
+     * 
+     * @var string
+     * @static
+     */
+    protected static $_historicalEntityClass = PersonHistory::class;
+
+    /**
+     * Property definition for object
+     * 
+     * @static
+     * @var array
+     */
+    protected static $_fieldDefinitions = array(
+        'title'     => array(),
+        'firstName' => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
+        'lastName'  => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
+        'position'  => array('searchable')
+    );
+
+    /**
+     * Metadata used to define object relationship to database
+     *
+     * @var \Doctrine\ORM\Mapping\ClassMetadata $metadata  Metadata to be passed to Doctrine
+     * @return void
+     */
+    public static function loadMetadata(ClassMetadata $metadata) {
+        $builder = new ClassMetadataBuilder($metadata);
+        // Define table name
+        $builder->setTable('entity_people');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
+        
+        // Define fields
+        $builder->createField('title', 'string')->nullable()->build();
+        $builder->addField('firstName', 'string');
+        $builder->addField('lastName', 'string');
+        $builder->addField('position', 'string');
+        
+        // Add relationships
+        $builder->createOneToOne('user', User::class)->addJoinColumn('userId','id')->build();
+        $builder->createOneToMany('contacts', Contact::class)->mappedBy('person')->orphanRemoval(true)->fetchLazy()->build();
+    }
+
+    //*************************************************************************
+    // Class-specific getter methods                                          *
+    //*************************************************************************
     
     /**
      * Retrieve formatted name for person
@@ -139,28 +137,5 @@ class PersonBusinessObject extends BusinessObject {
 
     public function _getAccount() {
         return $this->getAccount();
-    }
- 
-    /**
-     * Metadata used to define object relationship to database
-     *
-     * @var \Doctrine\ORM\Mapping\ClassMetadata $metadata  Metadata to be passed to Doctrine
-     * @return void
-     */
-    public static function loadMetadata(ClassMetadata $metadata) {
-        $builder = new ClassMetadataBuilder($metadata);
-        // Define table name
-        $builder->setTable('entity_people');
-        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
-        
-        // Define fields
-        $builder->createField('title', 'string')->nullable()->build();
-        $builder->addField('firstName', 'string');
-        $builder->addField('lastName', 'string');
-        $builder->addField('position', 'string');
-        
-        // Add relationships
-        $builder->createOneToOne('user', User::class)->addJoinColumn('userId','id')->build();
-        $builder->createOneToMany('contacts', Contact::class)->mappedBy('person')->orphanRemoval(true)->fetchLazy()->build();
     }
 }

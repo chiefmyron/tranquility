@@ -58,7 +58,6 @@ class SearchController extends Controller {
 	public function index(Request $request) {
 		// Get search term
 		$searchTerm = trim($request->get('q', ''));
-		
 
 		// If no search term is provided, start with the default page
 		if ($searchTerm == '') {
@@ -67,17 +66,18 @@ class SearchController extends Controller {
 		}
 
 		// Get any additional search parameters
+		$orderConditions = array();
 		$pageNumber = $request->get('page', 1);
         $recordsPerPage = $request->get('recordsPerPage', 20);
 
 		$searchResults = array();
 		foreach ($this->_searchableEntities as $entityType) {
-			$response = $this->_services[$entityType]->search($searchTerm, $recordsPerPage, $pageNumber);
+			$response = $this->_services[$entityType]->search($searchTerm, $orderConditions, $recordsPerPage, $pageNumber);
 			$searchResults[$entityType] = $response->getContent();
 		}
 
 		// Display results
-		return view('administration.search.results', ['results' => $searchResults]);
+		return view('administration.search.results', ['query' => array('searchTerm' => $searchTerm), 'results' => $searchResults]);
 	}
 
 }

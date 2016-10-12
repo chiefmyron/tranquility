@@ -8,30 +8,6 @@ use Tranquility\Exceptions\DataObjectException as BusinessObjectException;
 
 abstract class DataObject {
     /**
-     * List of properties that can be accessed via getters and setters
-     * 
-     * @static
-     * @var array
-     */
-    protected static $_fields = array();
-    
-    /**
-     * List of properties required when creating or updating
-     *
-     * @static
-     * @var array
-     */
-    protected static $_mandatoryFields = array();
-    
-    /**
-     * List of properties that are not publically accessible
-     *
-     * @static
-     * @var array
-     */
-     protected static $_hiddenFields = array();
-    
-    /**
      * Create a new instance of the Data Object
      *
      * @var array $data     [Optional] Initial values for object properties

@@ -6207,6 +6207,9 @@ div.data-item span.sub,
   text-transform: lowercase;
   font-variant: small-caps; }
 
+div.search-form-container {
+  margin-bottom: 15px; }
+
 div.search-form-container form.search-form button.submit-btn {
   position: absolute;
   top: 0;

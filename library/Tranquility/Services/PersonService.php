@@ -1,6 +1,5 @@
 <?php namespace Tranquility\Services;
 
-use \Tranquility\Utility                   as Utility;
 use \Tranquility\Enums\System\EntityType   as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 

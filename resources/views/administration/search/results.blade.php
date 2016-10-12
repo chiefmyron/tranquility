@@ -1,7 +1,7 @@
 @extends('administration.app')
 
 @section('menu')
-	@include('administration._partials.menu')
+	@include('administration._partials.menu', ['active' => 'search'])
 @stop
 
 @section('heading')

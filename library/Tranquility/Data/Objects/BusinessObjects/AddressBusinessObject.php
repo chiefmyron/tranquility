@@ -26,49 +26,20 @@ class AddressBusinessObject extends Entity {
 
     // Related entities
     protected $parentEntity;
-    
+
     /**
-     * Array of properties that are specific to the Address entity
+     * Property definition for object
      * 
-     * @var array
      * @static
+     * @var array
      */
-    protected static $_fields = array(
-        'category',
-        'addressType',
-        'addressText',
-        'primaryContact',
+    protected static $_fieldDefinitions = array(
+        'category'       => array('mandatoryUpdate', 'mandatoryCreate'),
+        'addressType'    => array('mandatoryUpdate', 'mandatoryCreate'),
+        'addressText'    => array('mandatoryUpdate', 'mandatoryCreate'),
+        'primaryContact' => array(),
+        'parent'         => array('mandatoryCreate')
     );
-    
-    /**
-     * Array of properties that are mandatory when creating or updating an Address entity
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_mandatoryFields = array(
-        'category',
-		'addressType',
-        'addressText',
-    );
-    
-    /**
-     * Array of properties that are additionally mandatory only when creating a new Address entity
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_mandatoryFieldsNewEntity = array(
-        'parent'
-    );
-    
-    /**
-     * Array of properties that will not be displayed externally
-     *
-     * @static
-     * @var array
-     */
-    protected static $_hiddenFields = array();
     
     /**
      * Name of the class responsible for representing historical versions of this business entity

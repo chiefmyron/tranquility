@@ -25,42 +25,16 @@ class AccountBusinessObject extends BusinessObject {
     
     // Related entities
     protected $contacts;
-    
+
     /**
-     * Array of properties that are specific to the Account entity
+     * Property definition for object
      * 
-     * @var array
      * @static
+     * @var array
      */
-    protected static $_fields = array(
-        'name',
+    protected static $_fieldDefinitions = array(
+        'name' => array('mandatoryUpdate', 'mandatoryCreate', 'searchable')
     );
-    
-    /**
-     * Array of properties that are mandatory when creating or updating a Account entity
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_mandatoryFields = array(
-		'name',
-    );
-    
-    /**
-     * Array of properties that are additionally mandatory only when creating a new Account entity
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_mandatoryFieldsNewEntity = array();
-    
-    /**
-     * Array of properties that will not be displayed externally
-     *
-     * @static
-     * @var array
-     */
-    protected static $_hiddenFields = array();
     
     /**
      * Name of the class responsible for representing historical versions of a Account entity

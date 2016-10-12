@@ -43,7 +43,6 @@ abstract class BusinessObject extends DataObject {
     protected $auditTrail;
     protected $tags;
 
-
     /**
      * Property definition for object
      * 
@@ -54,41 +53,8 @@ abstract class BusinessObject extends DataObject {
         'id'      => array('mandatoryUpdate'),
         'type'    => array('mandatoryUpdate', 'mandatoryCreate', 'hidden'),
         'version' => array('mandatoryUpdate'),
-        'deleted' => array('mandatoryUpdate' => false, 'mandatoryCreate' => false, 'hidden' => false, 'searchable' => false)
+        'deleted' => array()
     );
-    
-    /**
-     * List of properties that can be accessed via getters and setters
-     * 
-     * @static
-     * @var array
-     */
-    protected static $_fields;
-    
-    /**
-     * Array of common properties that all Business Objects will require
-     * when creating or updating
-     *
-     * @static
-     * @var array
-     */
-    protected static $_mandatoryFields;
-
-    /**
-     * List of properties that are searchable
-     *
-     * @static
-     * @var array
-     */
-    protected static $_searchableFields;
-    
-    /**
-     * List of properties that are not publically accessible
-     *
-     * @static
-     * @var array
-     */
-     protected static $_hiddenFields;
     
     /**
      * Create a new instance of the Business Object
@@ -357,13 +323,8 @@ abstract class BusinessObject extends DataObject {
      * @return array
      */
     public static function getFields() {
-        if (static::$_fields === null) {
-            // Generate list of fields from definitions
-            $entityFields = array_keys(self::$_fieldDefinitions);
-            static::$_fields = array_merge($entityFields, AuditTrail::getFields());
-        }
-
-        return static::$_fields;
+        $fields = array_keys(self::$_fieldDefinitions);
+        return array_merge($fields, AuditTrail::getFields());
     }
     
     /**
@@ -374,37 +335,23 @@ abstract class BusinessObject extends DataObject {
      * @return array
      */
     public static function getMandatoryFields($newRecord = false) {
-        if (static::$_mandatoryFields === null) {
-            // Generate list of mandatory fields from definitions
-            $entityFields = self::getFields();
+        $entityFields = self::$_fieldDefinitions;
 
-            $mandatoryFields = array('update' => array(), 'create' => array());
-            foreach ($entityFields as $fieldName => $definition) {
-                if (array_key_exists('mandatoryUpdate', $definition)) {
-                    $mandatoryFields['update'][] = $fieldName;
-                }
-                if (array_key_exists('mandatoryCreate', $defintion)) {
-                    $mandatoryFields['create'][] = $fieldName;
-                }
+        $mandatoryFields = array('update' => array(), 'create' => array());
+        foreach ($entityFields as $fieldName => $definition) {
+            if (array_key_exists('mandatoryUpdate', $definition)) {
+                $mandatoryFields['update'][] = $fieldName;
             }
-            static::$_mandatoryFields = $mandatoryFields;
+            if (array_key_exists('mandatoryCreate', $defintion)) {
+                $mandatoryFields['create'][] = $fieldName;
+            }
         }
 
         if ($newRecord) {
-            return static::$_mandatoryFields['create'];
+            return array_merge($mandatoryFields['create'], AuditTrail::getMandatoryFields($newRecord));
         } else {
-            return static::$_mandatoryFields['update'];
+            return array_merge($mandatoryFields['update'], AuditTrail::getMandatoryFields($newRecord));
         }
-
-
-
-        if (!$newRecord) {
-            // ID will be mandatory for any updates to records
-            $mandatoryFields = self::$_mandatoryFields;
-            array_unshift($mandatoryFields, 'id');
-            return $mandatoryFields;
-        }
-        return array_merge(self::$_mandatoryFields, AuditTrail::getMandatoryFields($newRecord));
     }
 
     /**
@@ -414,7 +361,15 @@ abstract class BusinessObject extends DataObject {
      * @return array
      */
     public static function getSearchableFields() {
-        return self::$_searchableFields;
+        $entityFields = self::$_fieldDefinitions;
+
+        $searchableFields = array();
+        foreach ($entityFields as $fieldName => $definition) {
+            if (in_array('searchable', $definition)) {
+                $searchableFields[] = $fieldName;
+            }
+        }
+        return $searchableFields;
     }
     
     /**
@@ -424,6 +379,14 @@ abstract class BusinessObject extends DataObject {
      * @return array
      */
     protected static function _getHiddenFields() {
-        return self::$_hiddenFields;
+        $entityFields = self::$_fieldDefinitions;
+
+        $hiddenFields = array();
+        foreach ($entityFields as $fieldName => $definition) {
+            if (in_array('hidden', $definition)) {
+                $hiddenFields[] = $fieldName;
+            }
+        }
+        return $hiddenFields;
     }
 }

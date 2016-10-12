@@ -33,57 +33,27 @@ class AddressPhysicalBusinessObject extends Entity {
     
     // Related entities
     protected $parentEntity;
-    
+
     /**
-     * Array of properties that are specific to the Physical Address entity
+     * Property definition for object
      * 
-     * @var array
      * @static
+     * @var array
      */
-    protected static $_fields = array(
-        'addressType',
-        'addressLine1',
-        'addressLine2',
-        'addressLine3',
-        'addressLine4',
-        'city',
-        'state',
-        'postcode',
-        'country',
-        'latitude',
-        'longitude'
+    protected static $_fieldDefinitions = array(
+        'addressType'  => array('mandatoryUpdate', 'mandatoryCreate'),
+        'addressLine1' => array('mandatoryUpdate', 'mandatoryCreate'),
+        'addressLine2' => array(),
+        'addressLine3' => array(),
+        'addressLine4' => array(),
+        'city'         => array('mandatoryCreate'),
+        'state'        => array(),
+        'postcode'     => array(),
+        'country'      => array('mandatoryCreate'),
+        'latitude'     => array(),
+        'longitude'    => array(),
+        'parent'       => array('mandatoryCreate')
     );
-    
-    /**
-     * Array of properties that are mandatory when creating or updating a Physical Address entity
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_mandatoryFields = array(
-		'addressType',
-        'addressLine1',
-        'city',
-        'country',
-    );
-    
-    /**
-     * Array of properties that are additionally mandatory only when creating a new Physical Address entity
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_mandatoryFieldsNewEntity = array(
-        'parent'
-    );
-    
-    /**
-     * Array of properties that will not be displayed externally
-     *
-     * @static
-     * @var array
-     */
-    protected static $_hiddenFields = array();
     
     /**
      * Name of the class responsible for representing historical versions of this business entity
