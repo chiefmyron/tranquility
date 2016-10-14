@@ -250,8 +250,6 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 
 		return $this->all($filterConditions, $orderConditions, $resultsPerPage, $startRecordIndex);
 	}
-
-
     
     /**
      * Use the address service to find the parent entity for an address

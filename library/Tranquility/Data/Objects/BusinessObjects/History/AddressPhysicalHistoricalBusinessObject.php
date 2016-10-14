@@ -24,25 +24,25 @@ class AddressPhysicalHistoricalBusinessObject extends HistoricalBusinessObject {
     
     // Related entities
     protected $parentEntity;
-    
+
     /**
-     * Array of properties that are specific to a business object of a particular entity type
+     * Property definition for object
      * 
-     * @var array
      * @static
+     * @var array
      */
-    protected static $_fields = array(
-        'addressType',
-        'addressLine1',
-        'addressLine2',
-        'addressLine3',
-        'addressLine4',
-        'city',
-        'state',
-        'postcode',
-        'country',
-        'latitude',
-        'longitude'
+    protected static $_fieldDefinitions = array(
+        'addressType'  => array('mandatoryUpdate', 'mandatoryCreate'),
+        'addressLine1' => array('mandatoryUpdate', 'mandatoryCreate'),
+        'addressLine2' => array(),
+        'addressLine3' => array(),
+        'addressLine4' => array(),
+        'city'         => array('mandatoryCreate'),
+        'state'        => array(),
+        'postcode'     => array(),
+        'country'      => array('mandatoryCreate'),
+        'latitude'     => array(),
+        'longitude'    => array()
     );
     
     /**

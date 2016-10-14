@@ -30,18 +30,18 @@ abstract class HistoricalBusinessObject {
     protected $deleted;
     protected $auditTrail;
     protected $locks;
-    
+
     /**
-     * List of properties that can be accessed via getters and setters
+     * Property definition for object
      * 
      * @static
      * @var array
      */
-    protected static $_fields = array(
-        'id',
-        'type',
-        'version',
-        'deleted',
+    protected static $_fieldDefinitions = array(
+        'id'      => array('mandatoryUpdate'),
+        'type'    => array('mandatoryUpdate', 'mandatoryCreate', 'hidden'),
+        'version' => array('mandatoryUpdate', 'mandatoryCreate'),
+        'deleted' => array()
     );
     
     /**
@@ -152,7 +152,7 @@ abstract class HistoricalBusinessObject {
         // Add relationships
         $builder->createOneToOne('auditTrail', AuditTrail::class)->addJoinColumn('transactionId','transactionId')->build();
     }
-    
+
     /**
      * Returns a list of all available fields for the business object
      *
@@ -160,7 +160,8 @@ abstract class HistoricalBusinessObject {
      * @return array
      */
     public static function getFields() {
-        return array_merge(self::$_fields, AuditTrail::getFields());
+        $fields = array_keys(self::$_fieldDefinitions);
+        return array_merge($fields, AuditTrail::getFields());
     }
     
     /**
@@ -171,12 +172,22 @@ abstract class HistoricalBusinessObject {
      * @return array
      */
     public static function getMandatoryFields($newRecord = false) {
-        if (!$newRecord) {
-            // ID will be mandatory for any updates to records
-            $mandatoryFields = self::$_mandatoryFields;
-            array_unshift($mandatoryFields, 'id');
-            return $mandatoryFields;
+        $entityFields = self::$_fieldDefinitions;
+
+        $mandatoryFields = array('update' => array(), 'create' => array());
+        foreach ($entityFields as $fieldName => $definition) {
+            if (array_key_exists('mandatoryUpdate', $definition)) {
+                $mandatoryFields['update'][] = $fieldName;
+            }
+            if (array_key_exists('mandatoryCreate', $defintion)) {
+                $mandatoryFields['create'][] = $fieldName;
+            }
         }
-        return array_merge(self::$_mandatoryFields, AuditTrail::getMandatoryFields());
+
+        if ($newRecord) {
+            return array_merge($mandatoryFields['create'], AuditTrail::getMandatoryFields($newRecord));
+        } else {
+            return array_merge($mandatoryFields['update'], AuditTrail::getMandatoryFields($newRecord));
+        }
     }
 }

@@ -15,20 +15,20 @@ class UserHistoricalBusinessObject extends HistoricalBusinessObject  {
     protected $active;
     protected $securityGroupId;
     protected $registeredDateTime;
-    
-    /**
-     * Array of properties that are specific to a business object of a particular entity type
+
+        /**
+     * Property definition for object
      * 
-     * @var array
      * @static
+     * @var array
      */
-    protected static $_fields = array(
-        'username',
-        'timezoneCode',
-        'localeCode',
-        'active',
-        'securityGroupId',
-        'registeredDateTime',
+    protected static $_fieldDefinitions = array(
+        'username'           => array('mandatoryUpdate', 'mandatoryCreate'),
+        'timezoneCode'       => array('mandatoryUpdate', 'mandatoryCreate'),
+        'localeCode'         => array('mandatoryUpdate', 'mandatoryCreate'),
+        'active'             => array('mandatoryUpdate', 'mandatoryCreate'),
+        'securityGroupId'    => array('mandatoryUpdate', 'mandatoryCreate'),
+        'registeredDateTime' => array(),
     );
     
     /**

@@ -55,10 +55,11 @@ class PersonBusinessObject extends BusinessObject {
      * @var array
      */
     protected static $_fieldDefinitions = array(
-        'title'     => array(),
-        'firstName' => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
-        'lastName'  => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
-        'position'  => array('searchable')
+        'title'          => array(),
+        'firstName'      => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
+        'lastName'       => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
+        'position'       => array('searchable'),
+        'primaryContact' => array() // Only set when loaded via Contact relationship with an Account
     );
 
     /**

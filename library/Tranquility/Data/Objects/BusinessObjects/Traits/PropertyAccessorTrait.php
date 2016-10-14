@@ -157,10 +157,10 @@ trait PropertyAccessorTrait {
 
             $entityFields = self::$_fieldDefinitions;
             foreach ($entityFields as $fieldName => $definition) {
-                if (array_key_exists('mandatoryUpdate', $definition)) {
+                if (in_array('mandatoryUpdate', $definition)) {
                     $mandatoryFields['update'][] = $fieldName;
                 }
-                if (array_key_exists('mandatoryCreate', $defintion)) {
+                if (in_array('mandatoryCreate', $definition)) {
                     $mandatoryFields['create'][] = $fieldName;
                 }
             }

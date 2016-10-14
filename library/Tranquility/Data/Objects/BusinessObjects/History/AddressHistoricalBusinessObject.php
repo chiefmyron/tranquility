@@ -17,18 +17,18 @@ class AddressHistoricalBusinessObject extends HistoricalBusinessObject {
     
     // Related entities
     protected $parentEntity;
-    
+
     /**
-     * Array of properties that are specific to a business object of a particular entity type
+     * Property definition for object
      * 
-     * @var array
      * @static
+     * @var array
      */
-    protected static $_fields = array(
-        'category',
-        'addressType',
-        'addressText',
-        'primaryContact',
+    protected static $_fieldDefinitions = array(
+        'category'       => array('mandatoryUpdate', 'mandatoryCreate'),
+        'addressType'    => array('mandatoryUpdate', 'mandatoryCreate'),
+        'addressText'    => array('mandatoryUpdate', 'mandatoryCreate'),
+        'primaryContact' => array(),
     );
     
     /**

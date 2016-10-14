@@ -12,18 +12,18 @@ class PersonHistoricalBusinessObject extends HistoricalBusinessObject {
     protected $firstName;
     protected $lastName;
     protected $position;
-    
+
     /**
-     * Array of properties that are specific to a business object of a particular entity type
+     * Property definition for object
      * 
-     * @var array
      * @static
+     * @var array
      */
-    protected static $_fields = array(
-        'title',
-        'firstName',
-        'lastName',
-        'position'
+    protected static $_fieldDefinitions = array(
+        'title'     => array(),
+        'firstName' => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
+        'lastName'  => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
+        'position'  => array('searchable')
     );
     
     /**
