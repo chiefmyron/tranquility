@@ -12,6 +12,6 @@
 
 @section('content')
 	<div class="search-form-container">
-		@include('administration.search._partials.panels.form', ['query' => $query])
+		@include('administration.search._partials.panels.form', ['searchParams' => $searchParams])
 	</div>
 @stop

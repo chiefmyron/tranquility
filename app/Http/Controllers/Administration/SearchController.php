@@ -57,13 +57,17 @@ class SearchController extends Controller {
 	 */
 	public function index(Request $request) {
 		// Get search term
-		$searchTerm = trim($request->get('q', ''));
+		$queryString = trim($request->get('q', ''));
 
 		// If no search term is provided, start with the default page
-		if ($searchTerm == '') {
-			$query = array('searchTerm' => $searchTerm);
-			return view('administration.search.index', ['query' => $query]);
+		if ($queryString == '') {
+			$searchParams = array('queryString' => $queryString);
+			return view('administration.search.index', ['searchParams' => $searchParams]);
 		}
+
+		// Get search terms from string (@see http://stackoverflow.com/questions/7943424/parse-search-string-for-phrases-and-keywords)
+		preg_match_all('~(?|"([^"]+)"|(\S+))~', $queryString, $matches);
+		$searchTerms = $matches[1];
 
 		// Get any additional search parameters
 		$orderConditions = array();
@@ -71,13 +75,15 @@ class SearchController extends Controller {
         $recordsPerPage = $request->get('recordsPerPage', 20);
 
 		$searchResults = array();
+		$totalResults = 0;
 		foreach ($this->_searchableEntities as $entityType) {
-			$response = $this->_services[$entityType]->search($searchTerm, $orderConditions, $recordsPerPage, $pageNumber);
+			$response = $this->_services[$entityType]->search($searchTerms, $orderConditions, $recordsPerPage, $pageNumber);
 			$searchResults[$entityType] = $response->getContent();
+			$totalResults = $totalResults + count($searchResults[$entityType]);
 		}
 
 		// Display results
-		return view('administration.search.results', ['query' => array('searchTerm' => $searchTerm), 'results' => $searchResults]);
+		return view('administration.search.results', ['searchParams' => array('queryString' => $queryString), 'results' => $searchResults, 'totalResults' => $totalResults]);
 	}
 
 }

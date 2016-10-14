@@ -113,6 +113,8 @@ return array(
     'search_heading_search' => 'Search',
     'search_heading_results' => 'Search results',
     'search_label_placeholder' => 'Search...',
+    'search_message_no_results' => 'Sorry, but our detective hamsters weren\'t able to find any results for your search...',
+    'search_message_num_results' => '1 matching record found.|:total matching records found in total.',
     
     // Address strings
     'address_heading_physical_addresses' => 'Addresses',

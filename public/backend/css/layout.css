@@ -6216,6 +6216,32 @@ div.search-form-container form.search-form button.submit-btn {
   right: 0;
   margin-right: 15px; }
 
+.search-results.no-results {
+  font-size: 1.5em;
+  text-align: center;
+  margin-top: 3em; }
+
+.search-results h3 {
+  margin-top: 15px; }
+
+.search-results .search-result-item {
+  margin-top: 15px;
+  border-left: 2px solid;
+  padding-left: 5px; }
+
+.search-results .search-result-item.entity-person {
+  border-color: #6a1b9a; }
+
+.search-results .search-result-item.entity-account {
+  border-color: #27ae60; }
+
+.search-results .search-result-item p.primary {
+  font-size: 1.2em;
+  margin: 0; }
+
+.search-results .search-result-item p.secondary {
+  margin: 0; }
+
 .profile-picture-container {
   text-align: center; }
 

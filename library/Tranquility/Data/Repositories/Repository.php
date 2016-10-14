@@ -1,6 +1,7 @@
 <?php namespace Tranquility\Data\Repositories;
 
-use \Tranquility\Utility                                    as Utility;
+use \Tranquility\Utility as Utility;
+use Illuminate\Support\Facades\Log;
 use \Doctrine\ORM\Tools\Pagination\Paginator;
 
 abstract class Repository extends \Doctrine\ORM\EntityRepository {
@@ -75,6 +76,7 @@ abstract class Repository extends \Doctrine\ORM\EntityRepository {
 	 */
 	protected function _addQueryFilters($queryBuilder, $filterConditions = array(), $orderConditions = array()) {
 		$parameters = array();
+        $parameterCounter = 0;
         
         // Add filter conditions
 		foreach ($filterConditions as $filter) {
@@ -95,23 +97,27 @@ abstract class Repository extends \Doctrine\ORM\EntityRepository {
                     $whereType = trim(strtoupper(Utility::extractValue($filter, 2, 'AND')));
                     break;
                 case 'IN':
-                    $expression = $queryBuilder->expr()->in('e.'.$fieldName, ':'.$fieldName);
-                    $parameters[$fieldName] = $filter[2];
+                    $expression = $queryBuilder->expr()->in('e.'.$fieldName, '?'.$parameterCounter);
+                    $parameters[$parameterCounter] = $filter[2];
+                    $parameterCounter++;
                     $whereType = trim(strtoupper(Utility::extractValue($filter, 3, 'AND')));
                     break;
                 case 'NOT IN':
-                    $expression = $queryBuilder->expr()->notIn('e.'.$fieldName, ':'.$fieldName);
-                    $parameters[$fieldName] = $filter[2];
+                    $expression = $queryBuilder->expr()->notIn('e.'.$fieldName, '?'.$parameterCounter);
+                    $parameters[$parameterCounter] = $filter[2];
+                    $parameterCounter++;
                     $whereType = trim(strtoupper(Utility::extractValue($filter, 3, 'AND')));
                     break;
                 case 'LIKE':
-                    $expression = $queryBuilder->expr()->like('LOWER(e.'.$fieldName.')', ':'.$fieldName);
-                    $parameters[$fieldName] = strtolower($filter[2]); // Case-insensitive searching
+                    $expression = $queryBuilder->expr()->like('LOWER(e.'.$fieldName.')', '?'.$parameterCounter);
+                    $parameters[$parameterCounter] = strtolower($filter[2]); // Case-insensitive searching
+                    $parameterCounter++;
                     $whereType = trim(strtoupper(Utility::extractValue($filter, 3, 'AND')));
                     break;
                 case 'NOT LIKE':
-                    $expression = $queryBuilder->expr()->notLike('LOWER(e.'.$fieldName.')', ':'.$fieldName);
-                    $parameters[$fieldName] = strtolower($filter[2]); // Case-insensitive searching
+                    $expression = $queryBuilder->expr()->notLike('LOWER(e.'.$fieldName.')', '?'.$parameterCounter);
+                    $parameters[$parameterCounter] = strtolower($filter[2]); // Case-insensitive searching
+                    $parameterCounter++;
                     $whereType = trim(strtoupper(Utility::extractValue($filter, 3, 'AND')));
                     break;
             }
@@ -128,14 +134,15 @@ abstract class Repository extends \Doctrine\ORM\EntityRepository {
                 // Standard SQL comparision 
                 $whereType = trim(strtoupper(Utility::extractValue($filter, 3, 'AND')));
                 if ($whereType == 'AND') {
-                    $queryBuilder = $queryBuilder->andWhere('e.'.$fieldName.' '.$filter[1].' :'.$fieldName);
+                    $queryBuilder = $queryBuilder->andWhere('e.'.$fieldName.' '.$filter[1].' ?'.$parameterCounter);
                 } elseif ($whereType == 'OR') {
-                    $queryBuilder = $queryBuilder->orWhere('e.'.$fieldName.' '.$filter[1].' :'.$fieldName);
+                    $queryBuilder = $queryBuilder->orWhere('e.'.$fieldName.' '.$filter[1].' ?'.$parameterCounter);
                 }
-                $parameters[$fieldName] = $filter[2];
+                $parameters[$parameterCounter] = $filter[2];
+                $parameterCounter++;
             }
 		}
-		
+
 		// Add order statements
 		foreach ($orderConditions as $order) {
             $queryBuilder = $queryBuilder->addOrderBy('e.'.$order[0], $order[1]);
@@ -145,6 +152,9 @@ abstract class Repository extends \Doctrine\ORM\EntityRepository {
         foreach ($parameters as $key => $value) {
             $queryBuilder = $queryBuilder->setParameter($key, $value);
         }
+
+        // Log generated query
+        Log::debug($queryBuilder->getQuery()->getSQL());
 		
 		return $queryBuilder;
 	}

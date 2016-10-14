@@ -232,13 +232,20 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	 * @param int    $startRecordIndex  Index of the record to start the result set from. Defaults to zero.
 	 * @return \Tranquility\Service\ServiceResponse
 	 */
-	public function search($searchTerm, $orderConditions = array(), $resultsPerPage = 0, $startRecordIndex = 0) {
+	public function search($searchTerms, $orderConditions = array(), $resultsPerPage = 0, $startRecordIndex = 0) {
 		$fields = $this->_getSearchableFields();
+
+		// Handle multiple search terms
+		if (is_string($searchTerms)) {
+			$searchTerms = array($searchTerms);
+		}
 
 		// Set up search terms
 		$filterConditions = array();
 		foreach ($fields as $fieldName) {
-			$filterConditions[] = array($fieldName, 'LIKE', '%'.$searchTerm.'%', 'OR');
+			foreach ($searchTerms as $term) {
+				$filterConditions[] = array($fieldName, 'LIKE', '%'.$term.'%', 'OR');
+			}
 		}
 
 		return $this->all($filterConditions, $orderConditions, $resultsPerPage, $startRecordIndex);

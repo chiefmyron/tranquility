@@ -11,6 +11,12 @@
 @section('breadcrumbs', Breadcrumbs::render('admin.search'))
 
 @section('content')
-	@include('administration.search._partials.panels.form', ['query' => $query])
-	@include('administration.search._partials.panels.results', ['query' => $query, 'resultSet' => $results])
+	@include('administration.search._partials.panels.form', ['searchParams' => $searchParams])
+	@if ($totalResults > 0)
+		@include('administration.search._partials.panels.results', ['searchParams' => $searchParams, 'resultSet' => $results])
+	@else
+		<div class="search-results no-results">
+			{{ trans('administration.search_message_no_results') }}
+		</div>
+	@endif
 @stop
