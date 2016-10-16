@@ -230,13 +230,11 @@ class PeopleController extends Controller {
         if ($request->ajax()) {
             // Refresh index view
             $responseArray = $this->_service->all()->toArray();
-            $responseArray['viewType'] = $request->session()->get('people.index.viewType', 'table');;
 
 			// AJAX response
 			$ajax = new \Tranquility\View\AjaxResponse();
             $ajax->addCallback('hideElement', array('process-message-container'));
-			$ajax->addContent('#main-content-container', $this->_renderPartial('administration.people._partials.panels.list-'.$responseArray['viewType'], $responseArray));
-			$ajax->addContent('#toolbar-container', $this->_renderPartial('administration.people._partials.toolbars.index-'.$responseArray['viewType']), 'attachCommonHandlers');
+			$ajax->addContent('#main-content-container', $this->_renderPartial('administration.people._partials.panels.list-table', $responseArray));
             $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
             $ajax->addCallback('closeDialog');
 			return Response::json($ajax->toArray());

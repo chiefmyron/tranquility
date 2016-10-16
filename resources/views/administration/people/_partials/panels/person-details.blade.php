@@ -11,7 +11,11 @@
                             </div>
                             <div class="data-item">
                                 <span class="heading">{{ trans('administration.people_label_company') }}</span>
-                                <span>Works at Company</span>
+                        @if(is_null($account))        
+                                <span>No company</span>
+                        @else
+                                <span>{{ $person->position }} at <a href="{{ action('Administration\AccountsController@show', ['id' => $account->id]) }}">{{ $account->name }}</a></span>
+                        @endif
                             </div>
                         </li>
 
@@ -37,38 +41,11 @@
                         </li>
                         @endif
 
-                        <?php $primaryAddresses = $person->getPrimaryAddresses(); ?>
-                        @if (count($primaryAddresses) > 0)
-                        <li>
-                            <div class="icon">
-                                <i class="icon-envelope"></i>
-                            </div>
-                            <div class="data-item">
-                                <span class="heading">{{ trans('administration.common_quick_contact') }}</span>
-                                @if (isset($primaryAddresses['email']))
-                                <p>
-                                    <a href="mailto:{{ $primaryAddresses['email']->addressText }}">{{ $primaryAddresses['email']->addressText }}</a>
-                                </p>
-                                @endif
-                                @if (isset($primaryAddresses['phone']))
-                                <p class="h-adr">
-                                    <a href="tel:{{ $primaryAddresses['phone']->addressText }}">{{ $primaryAddresses['phone']->addressText }}</a>
-                                </p>
-                                @endif
-                            </div>
-                        </li>
-                        @endif
-                        
-                        <li>
-                            <div class="icon">
-                                <i class="icon-tag"></i>
-                            </div>
-                            <div class="data-item">
-                                <span class="heading">{{ trans('administration.common_tags') }}</span>
-                                <span>@include('administration.tags._partials.panels.entity-tag-list', ['entity' => $person, 'tags' => $person->getTags()])</span>
-                                <span class="action"><a href="{{ action('Administration\TagsController@update', ['parentId' => $person->id]) }}" class="ajax" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> {{ trans('administration.tags_command_add_tag') }}</a></span>
-                            </div>
-                        </li>
+                        {{-- Primary address / quick contact section --}}
+                        @include('administration.addresses._partials.panels.profile-primary-address', ['entity' => $person])
+
+                        {{-- Tags section --}}
+                        @include('administration.tags._partials.panels.profile-tag-list', ['entity' => $person])
                     </ul>    
                 </div>
             </div>

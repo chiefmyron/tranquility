@@ -3,6 +3,7 @@
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 
+use Collective\Html\FormFacade                 as Form;
 use Tranquility\Html\Form\FormBuilder          as FormBuilder;
 use Tranquility\Html\FormError\Builder         as FormErrorBuilder;
 use Tranquility\Html\DateTimeFormatter\Builder as HtmlDateTimeFormatterBuilder;
@@ -35,6 +36,15 @@ class HtmlServiceProvider extends \Collective\Html\HtmlServiceProvider {
 		$this->app->alias('form', 'Tranquility\Html\Form\FormBuilder');
 		$this->app->alias('form-error', 'Tranquility\Html\FormError\Builder');
         $this->app->alias('html-datetime', 'Tranquility\Html\DateTimeFormatter\Builder');
+	}
+
+	/**
+	 * Bootstrap any application services
+	 *
+	 * @return void
+	 */
+	public function boot() {
+		Form::component('entitySelect', 'administration._partials.form.entitySelect', ['name', 'entityType', 'value' => null, 'attributes' => []]);
 	}
     
     /**

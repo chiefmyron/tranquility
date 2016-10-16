@@ -21,7 +21,6 @@ return array(
     
     'message_10030_user_record_created_successfully' => 'New user account added for :name',
     'message_10031_user_record_updated_successfully' => 'User account for :name has been updated',
-    
     'message_10033_user_already_exists' => 'This person already has a user account!',
     'message_10034_user_viewing_own_record' => 'Hey good looking! Checking out your own record? Can\'t say we blame you...',
     'message_10035_password_not_long_enough' => 'Your new password must be at least :length characters long',
@@ -40,4 +39,7 @@ return array(
     'message_10048_electronic_address_record_deleted_successfully' => 'Electronic address deleted successfully',
     'message_10049_phone_address_primary_contact_updated' => 'Primary phone number updated to :addressText',
     'message_10050_electronic_address_primary_contact_updated' => 'Primary email address updated to :addressText',
+
+    'message_10071_account_record_updated_successfully' => 'Account updated successfully',
+    'message_10072_account_record_deleted_successfully' => 'Account deleted successfully',
 );

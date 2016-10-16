@@ -64,14 +64,10 @@ class TagsController extends Controller {
         }
         $entity = $response->getFirstContentItem();
         $tags = $entity->getTags();
-        $entityTypes = array($entity->getEntityType());
-        if ($entity->getEntityType() == EnumEntityType::Person && $entity->getUserAccount() != null) {
-            $entityTypes[] = EnumEntityType::User;
-        }
         
 		// AJAX response
 		$ajax = new \Tranquility\View\AjaxResponse();
-		$dialog = $this->_renderPartial('administration.tags._partials.dialogs.update', ['tags' => $tags, 'entityTypes' => $entityTypes, 'parentId' => $parentId]);
+		$dialog = $this->_renderPartial('administration.tags._partials.dialogs.update', ['tags' => $tags, 'parentId' => $parentId]);
         $ajax->addContent('#modal-content', $dialog, 'displayDialog', [null, "large"]);
 		return Response::json($ajax->toArray());
 	}
@@ -95,7 +91,7 @@ class TagsController extends Controller {
         
         // Extract individual tags
         $tags = array();
-        if (!is_null($tagString)) {
+        if (!is_null($tagString) && $tagString !== "") {
             $tags = explode(',', $tagString);
             $tags = array_map('trim', $tags);
         }

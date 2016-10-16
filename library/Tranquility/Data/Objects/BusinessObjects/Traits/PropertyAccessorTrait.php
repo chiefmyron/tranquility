@@ -6,6 +6,39 @@ use Tranquility\Exceptions\BusinessObjectException                 as BusinessOb
 
 trait PropertyAccessorTrait {
     /**
+     * List of properties that can be accessed via getters and setters
+     * 
+     * @static
+     * @var array
+     */
+    protected static $_fields;
+    
+    /**
+     * Array of common properties that all Business Objects will require
+     * when creating or updating
+     *
+     * @static
+     * @var array
+     */
+    protected static $_mandatoryFields;
+
+    /**
+     * List of properties that are searchable
+     *
+     * @static
+     * @var array
+     */
+    protected static $_searchableFields;
+    
+    /**
+     * List of properties that are not publically accessible
+     *
+     * @static
+     * @var array
+     */
+     protected static $_hiddenFields;
+     
+    /**
      * Set the value for an object property
      * 
      * @param string $name  Property name
@@ -101,7 +134,13 @@ trait PropertyAccessorTrait {
      * @return array
      */
     public static function getFields() {
-        return array_merge(Entity::getFields(), self::$_fields);
+        // If getting for the first time, build a static list of entity fields
+        if (static::$_fields === null) {
+            // Generate list of fields from definitions
+            $entityFields = array_keys(self::$_fieldDefinitions);
+            static::$_fields = array_merge(Entity::getFields(), $entityFields);
+        }
+        return static::$_fields;
     }
     
     /**
@@ -112,25 +151,80 @@ trait PropertyAccessorTrait {
      * @return array
      */
     public static function getMandatoryFields($newRecord = false) {
-        $fields = array_merge(Entity::getMandatoryFields($newRecord), self::$_mandatoryFields);
-        if ($newRecord) {
-            $fields = array_merge($fields, self::$_mandatoryFieldsNewEntity);
+        // If getting for the first time, build a static list of mandatory fields
+        if (static::$_mandatoryFields === null) {
+            $mandatoryFields = array('update' => array(), 'create' => array());
+
+            $entityFields = self::$_fieldDefinitions;
+            foreach ($entityFields as $fieldName => $definition) {
+                if (in_array('mandatoryUpdate', $definition)) {
+                    $mandatoryFields['update'][] = $fieldName;
+                }
+                if (in_array('mandatoryCreate', $definition)) {
+                    $mandatoryFields['create'][] = $fieldName;
+                }
+            }
+
+            if ($newRecord) {
+                $mandatoryFields['create'] = array_merge($mandatoryFields['create'], AuditTrail::getMandatoryFields($newRecord));
+            } else {
+                $mandatoryFields['update'] = array_merge($mandatoryFields['update'], AuditTrail::getMandatoryFields($newRecord));
+            }
+            static::$_mandatoryFields = $mandatoryFields;
         }
-        return $fields;
+
+        // Get mandatory fields (different for create / update actions)
+        if ($newRecord) {
+            return static::$_mandatoryFields['create'];
+        } else {
+            return static::$_mandatoryFields['update'];
+        }
+    }
+    
+    /**
+     * Returns a list of fields used for search
+     *
+     * @static
+     * @return array
+     */
+    public static function getSearchableFields() {
+        // If getting for the first time, build a static list of mandatory fields
+        if (static::$_searchableFields === null) {
+            $searchableFields = array();
+
+            $entityFields = self::$_fieldDefinitions;
+            foreach ($entityFields as $fieldName => $definition) {
+                if (in_array('searchable', $definition)) {
+                    $searchableFields[] = $fieldName;
+                }
+            }
+            static::$_searchableFields = array_merge($searchableFields, Entity::getSearchableFields());
+        }
+
+        return static::$_searchableFields;
     }
     
     /**
      * Returns a list of fields that will not be exposed publically
      *
      * @static
-     * @abstract
      * @return array
      */
-    protected static function _getHiddenFields() {
-        if (!isset(self::$_hiddenFields)) {
-            return array();
+    public static function getHiddenFields() {
+        // If getting for the first time, build a static list of mandatory fields
+        if (static::$_hiddenFields === null) {
+            $hiddenFields = array();
+
+            $entityFields = self::$_fieldDefinitions;
+            foreach ($entityFields as $fieldName => $definition) {
+                if (in_array('hidden', $definition)) {
+                    $hiddenFields[] = $fieldName;
+                }
+            }
+            static::$_hiddenFields = array_merge($hiddenFields, Entity::getHiddenFields());
         }
-        return self::$_hiddenFields;
+
+        return static::$_hiddenFields;
     }
     
     /**

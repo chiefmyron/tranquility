@@ -17,6 +17,7 @@ use Tranquility\Data\Objects\BusinessObjects\History\PersonHistoricalBusinessObj
 
 // Tranquility related business objects
 use Tranquility\Data\Objects\BusinessObjects\UserBusinessObject                     as User;
+use Tranquility\Data\Objects\ExtensionObjects\Contact                               as Contact;
 
 class PersonBusinessObject extends BusinessObject {
     use \Tranquility\Data\Objects\BusinessObjects\Traits\PropertyAccessorTrait;
@@ -29,55 +30,8 @@ class PersonBusinessObject extends BusinessObject {
     
     // Related entities
     protected $user;
-    
-    /**
-     * Array of properties that are specific to the Person entity
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_fields = array(
-        'title',
-        'firstName',
-        'lastName',
-        'position'
-    );
-    
-    /**
-     * Array of properties that are mandatory when creating or updating a Person entity
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_mandatoryFields = array(
-		'firstName',
-        'lastName'
-    );
-    
-    /**
-     * Array of properties that are additionally mandatory only when creating a new Person entity
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_mandatoryFieldsNewEntity = array();
-    
-    /**
-     * Array of properties that will not be displayed externally
-     *
-     * @static
-     * @var array
-     */
-    protected static $_hiddenFields = array();
-    
-    /**
-     * Name of the class responsible for representing historical versions of a Person entity
-     * 
-     * @var string
-     * @static
-     */
-    protected static $_historicalEntityClass = PersonHistory::class;
-    
+    protected $contacts;
+
     /** 
      * Type of entity represented by the business object
      *
@@ -85,6 +39,55 @@ class PersonBusinessObject extends BusinessObject {
      * @static
      */
     protected static $_entityType = EnumEntityType::Person;
+
+    /**
+     * Name of the class responsible for representing historical versions of a Person entity
+     * 
+     * @var string
+     * @static
+     */
+    protected static $_historicalEntityClass = PersonHistory::class;
+
+    /**
+     * Property definition for object
+     * 
+     * @static
+     * @var array
+     */
+    protected static $_fieldDefinitions = array(
+        'title'          => array(),
+        'firstName'      => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
+        'lastName'       => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
+        'position'       => array('searchable'),
+        'primaryContact' => array() // Only set when loaded via Contact relationship with an Account
+    );
+
+    /**
+     * Metadata used to define object relationship to database
+     *
+     * @var \Doctrine\ORM\Mapping\ClassMetadata $metadata  Metadata to be passed to Doctrine
+     * @return void
+     */
+    public static function loadMetadata(ClassMetadata $metadata) {
+        $builder = new ClassMetadataBuilder($metadata);
+        // Define table name
+        $builder->setTable('entity_people');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
+        
+        // Define fields
+        $builder->createField('title', 'string')->nullable()->build();
+        $builder->addField('firstName', 'string');
+        $builder->addField('lastName', 'string');
+        $builder->addField('position', 'string');
+        
+        // Add relationships
+        $builder->createOneToOne('user', User::class)->addJoinColumn('userId','id')->build();
+        $builder->createOneToMany('contacts', Contact::class)->mappedBy('person')->orphanRemoval(true)->fetchLazy()->build();
+    }
+
+    //*************************************************************************
+    // Class-specific getter methods                                          *
+    //*************************************************************************
     
     /**
      * Retrieve formatted name for person
@@ -118,74 +121,22 @@ class PersonBusinessObject extends BusinessObject {
         $this->user = $user;
         return $this;
     }
-    
+
     /**
-     * Retreive a collection of addresses associated with this person
+     * Retrieve the Account object associated with this person
      *
-     * @var string $type  Type of address collection to return
-     * @return mixed
+     * @return \Tranquility\Data\BusinessObjects\AccountBusinessObject
      */
-    public function getAddresses($type) {
-        // Build criteria to ensure we only retrieve active address records
-        $addresses = array();
-        $criteria = Criteria::create()->where(Criteria::expr()->eq("deleted", 0));
-        if ($type == EnumAddressType::Physical) {
-            $addresses = $this->physicalAddresses->matching($criteria);
-        } else {
-            $criteria = $criteria->andWhere(Criteria::expr()->eq("category", $type))->orderBy(array("primaryContact" => Criteria::DESC));
-            $addresses = $this->addresses->matching($criteria);
-        }
-        return $addresses->toArray();
-    }
-
-    public function getPrimaryAddresses() {
-        // Build criteria to ensure we only get the active and primary address records
-        $criteria = Criteria::create()->where(Criteria::expr()->eq("deleted", 0));
-        $criteria = $criteria->andWhere(Criteria::expr()->eq("primaryContact", true));
-        $result = $this->addresses->matching($criteria);
-
-        $addresses = array();
-        foreach ($result as $address) {
-            $addresses[$address->category] = $address;
+    public function getAccount() {
+        $contacts = $this->contacts;
+        if (count($contacts) > 0) {
+            return $contacts[0]->getAccount();
         }
 
-        return $addresses;
+        return null;
     }
 
-    public function getPrimaryAddress($type) {
-        // Build criteria to ensure we only get the active and primary address records
-        $criteria = Criteria::create()->where(Criteria::expr()->eq("deleted", 0));
-        $criteria = $criteria->andWhere(Criteria::expr()->eq("primaryContact", true));
-        $criteria = $criteria->andWhere(Criteria::expr()->eq("category", $type));
-        $result = $this->addresses->matching($criteria);
-
-        // If no primary address is set, return null
-        if (count($result) <= 0) {
-            return null;
-        }
-
-        return $result[0];
-    }
-    
-    /**
-     * Metadata used to define object relationship to database
-     *
-     * @var \Doctrine\ORM\Mapping\ClassMetadata $metadata  Metadata to be passed to Doctrine
-     * @return void
-     */
-    public static function loadMetadata(ClassMetadata $metadata) {
-        $builder = new ClassMetadataBuilder($metadata);
-        // Define table name
-        $builder->setTable('entity_people');
-        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
-        
-        // Define fields
-        $builder->createField('title', 'string')->nullable()->build();
-        $builder->addField('firstName', 'string');
-        $builder->addField('lastName', 'string');
-        $builder->addField('position', 'string');
-        
-        // Add relationships
-        $builder->createOneToOne('user', User::class)->addJoinColumn('userId','id')->build();
+    public function _getAccount() {
+        return $this->getAccount();
     }
 }

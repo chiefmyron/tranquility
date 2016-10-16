@@ -53,6 +53,19 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
 	Route::get ('/users/{id}/update',                'Administration\UsersController@update');
     Route::get ('/users/{id}/update/password',       'Administration\UsersController@changePassword');
     Route::post('/users/{id}/update/password',       'Administration\UsersController@saveNewPassword');
+
+    // Accounts controller
+    Route::get ('/accounts',                         'Administration\AccountsController@index');
+	Route::post('/accounts',                         'Administration\AccountsController@store');
+	Route::get ('/accounts/create',                  'Administration\AccountsController@create');
+	Route::post('/accounts/delete',                  'Administration\AccountsController@delete');
+    Route::get ('/accounts/delete/confirm',          'Administration\AccountsController@confirmDelete');
+    Route::post('/accounts/delete/confirm',          'Administration\AccountsController@confirmDelete');
+	Route::get ('/accounts/{id}',                    'Administration\AccountsController@show');
+	Route::get ('/accounts/{id}/update',             'Administration\AccountsController@update');
+
+    // Search controller
+    Route::any ('/search',                           'Administration\SearchController@index');
     
     // Address controller
     Route::post('/address',                          'Administration\AddressController@store');

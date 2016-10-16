@@ -23,12 +23,12 @@
 
                     <div class="navigation collapse" id="nav-toggleable-sm">
                         <!-- Site wide search form -->
-                        <form class="site-search">
-                            <input class="form-control" type="text" placeholder="Search...">
+                        {!! Form::open(['action' => 'Administration\SearchController@index', 'class' => 'site-search', 'method' => 'GET']) !!}
+                            <input class="form-control" type="text" name="q" placeholder="{{ trans('administration.search_label_placeholder') }}">
                             <button type="submit" class="submit-btn">
                                 <span class="glyphicon glyphicon-search"></span>
                             </button>
-                        </form>
+                        {!! Form::close() !!}
                         
                         <!-- Navigation menu items -->
                         <div class="nav-items">
@@ -58,9 +58,9 @@
                                     </a>
                                 </li>
                                 <li class="nav-item accounts{{ strtolower($active) == "accounts" ? " active" : ""}}">
-                                    <a href="#" class="nav-link">
+                                    <a href="{{ action('Administration\AccountsController@index') }}" class="nav-link">
                                         <i class="icon-briefcase"></i>
-                                        <span class="title">Accounts</span>
+                                        <span class="title">{{ trans('administration.accounts_heading_accounts') }}</span>
                                     </a>
                                 </li>
                                 <li class="heading">

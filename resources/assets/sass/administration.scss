@@ -17,7 +17,7 @@ $brand-data-panel:           #f9f9f9;
 $brand-entity-person:        #6a1b9a;
 $brand-entity-user:          #e53935;
 $brand-entity-invoice:       #f1c40f;
-$brand-entity-accounts:      #27ae60;
+$brand-entity-account:       #27ae60;
 $brand-entity-pages:         #2980b9;
 $brand-entity-images:        #d35400;
 
@@ -225,7 +225,7 @@ body {
 .nav-container .nav-items ul.nav.nav-stacked > li.active a {
     background-color: #ffffff;
     font-weight: 500;
-    padding-left: 10px;
+    color: $brand-navigation;
 }
 
 .nav-container .nav-items ul.nav.nav-stacked > li.active.people a {
@@ -431,6 +431,7 @@ table.data-table tr td:nth-child(2) a:after {
     color: $text-color;
 }
 
+table.data-table th.checkboxcol,
 table.data-table td.checkboxcol {
     width: 1%;
 }
@@ -622,6 +623,50 @@ div.data-item span.sub,
     font-variant: small-caps;
 }
 
+// Search page format
+div.search-form-container {
+    margin-bottom: $layout-padding-width;
+}
+
+div.search-form-container form.search-form button.submit-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-right: $layout-padding-width;
+}
+
+.search-results.no-results {
+    font-size: 1.5em;
+    text-align: center;
+    margin-top: 3em;
+}
+
+.search-results h3 {
+    margin-top: $layout-padding-width;
+}
+
+.search-results .search-result-item {
+    margin-top: $layout-padding-width;
+    border-left: 2px solid;
+    padding-left: 5px;
+}
+
+.search-results .search-result-item.entity-person {
+    border-color: $brand-entity-person;
+}
+.search-results .search-result-item.entity-account {
+    border-color: $brand-entity-account;
+}
+
+.search-results .search-result-item p.primary {
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.search-results .search-result-item p.secondary {
+    margin: 0;
+}
+
 // Profile pictures
 .profile-picture-container {
     text-align: center;    
@@ -665,6 +710,10 @@ p.h-adr span {
 .data-item .data-header span.action {
     float: right;
     text-transform: lowercase;
+}
+
+.data-item .data-header span.heading {
+    font-weight: 800;
 }
 
 .data-action {
@@ -788,6 +837,10 @@ div.tagsinput div {
 
 .label-entity-user {
     background-color: $brand-entity-user !important;
+}
+
+.label-entity-account {
+    background-color: $brand-entity-account !important;
 }
 
 // Forms

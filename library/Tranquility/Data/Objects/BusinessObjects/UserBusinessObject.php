@@ -40,58 +40,23 @@ class UserBusinessObject extends BusinessObject implements UserContract {
     
     // Related extension data objects
     protected $userTokens;
-    
+
     /**
-     * Array of properties that are specific to the User entity
+     * Property definition for object
      * 
-     * @var array
-     * @static
-     */
-    protected static $_fields = array(
-        'username',
-        'password',
-        'timezoneCode',
-        'localeCode',
-        'active',
-        'securityGroupId',
-        'registeredDateTime',
-    );
-    
-    /**
-     * Array of properties that are mandatory when creating or updating a User entity
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_mandatoryFields = array(
-        'username',
-		'timezoneCode',
-		'localeCode',
-		'active',
-		'securityGroupId'
-    );
-    
-    /**
-     * Array of properties that are additionally mandatory only when creating a new User entity
-     * 
-     * @var array
-     * @static
-     */
-    protected static $_mandatoryFieldsNewEntity = array(
-        'password', 
-		'passwordConfirm', 
-		'parentId'
-    );
-    
-    /**
-     * Array of properties that will not be displayed externally
-     *
      * @static
      * @var array
      */
-    protected static $_hiddenFields = array(
-        'type', 
-        'password'
+    protected static $_fieldDefinitions = array(
+        'username'           => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
+        'password'           => array('mandatoryUpdate', 'mandatoryCreate'),
+        'passwordConfirm'    => array('mandatoryCreate'),
+        'parentId'           => array('mandatoryCreate'),
+        'timezoneCode'       => array('mandatoryUpdate', 'mandatoryCreate'),
+        'localeCode'         => array('mandatoryUpdate', 'mandatoryCreate'),
+        'active'             => array('mandatoryUpdate', 'mandatoryCreate'),
+        'securityGroupId'    => array('mandatoryUpdate', 'mandatoryCreate'),
+        'registeredDateTime' => array(),
     );
     
     /**
