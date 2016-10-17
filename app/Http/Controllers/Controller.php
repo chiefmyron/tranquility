@@ -5,6 +5,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
+use Tranquility\Utility;
 use Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
 abstract class Controller extends BaseController {
@@ -47,4 +48,39 @@ abstract class Controller extends BaseController {
         Session::flash('messages', $messages);
     }
 
+    protected function _renderInlineMessages($messages) {
+        $messageText = array(
+            'error' => array(), 
+            'warning' => array(), 
+            'success' => array(), 
+            'info' => array()
+        );
+
+        // Group messages by level, and then by field
+        foreach ($messages as $message) {
+            $fieldId = Utility::extractValue($message, 'fieldId', null);
+            $level = Utility::extractValue($message, 'level', 'error');
+
+            if ($fieldId !== null) {
+                $messageText[$level][$fieldId][] = $message['text'];
+            }
+        }
+
+        // Render a single message per level / field combination
+        $newMessages = array();
+        foreach ($messageText as $messageLevel => $fields) {
+            foreach ($fields as $fieldId => $messageStrings) {
+                $newMessages[] = array(
+                    'code' => '',
+                    'text' => implode(', ', $messageStrings),
+                    'level' => $messageLevel,
+                    'fieldId' => $fieldId,
+                    'target' => null,
+                    'html' => $this->_renderPartial('administration._partials.errors-inline', ['fieldId' => $fieldId, 'messages' => $messageStrings, 'level' => $level])
+                );
+            }
+        }
+
+        return $newMessages;
+    }
 }

@@ -331,7 +331,7 @@ class PeopleController extends Controller {
                 if ($response->containsErrors()) {
                     // Errors encountered - redisplay form with error messages
                     $ajax->addContent('#modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('modal-dialog-container #process-message-container'));
-                    $ajax->addMessages($response->getMessages());
+                    $ajax->addMessages($this->_renderInlineMessages($response->getMessages()));
                     return Response::json($ajax->toArray());
                 }
             }
@@ -349,7 +349,7 @@ class PeopleController extends Controller {
         if ($response->containsErrors()) {
             // Errors encountered - redisplay form with error messages
             $ajax->addContent('#modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('modal-dialog-container #process-message-container'));
-            $ajax->addMessages($response->getMessages());
+            $ajax->addMessages($this->_renderInlineMessages($response->getMessages()));
             return Response::json($ajax->toArray());
         }
         

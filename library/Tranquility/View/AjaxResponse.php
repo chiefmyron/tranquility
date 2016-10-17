@@ -1,5 +1,6 @@
 <?php namespace Tranquility\View;
 
+use \Tranquility\Utility;
 use \Tranquility\Exceptions\ViewException     as ViewException;
 use \Tranquility\Enums\System\MessageLevel    as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode  as EnumHttpStatusCode;
@@ -148,7 +149,8 @@ class AjaxResponse {
      */
     public function addMessages(array $messages, $target = null) {
         foreach ($messages as $message) {
-            $this->addMessage($message['code'], $message['text'], $message['level'], $message['fieldId'], $target);
+            $html = Utility::extractValue($message, 'html', null);
+            $this->addMessage($message['code'], $message['text'], $message['level'], $message['fieldId'], $target, $html);
         }
     }
     
@@ -160,9 +162,10 @@ class AjaxResponse {
      * @param string $level   Message level (@see \Tranquility\Enums\System\MessageLevel)
      * @param string $fieldId [Optional] HTML entity ID to associate message with
      * @param string $target  [Optional] Target for message. Blank for main page, 'dialog' to display inside modal
+     * @param string $html    [Optional] Rendered HTML for message
      * @return void 
      */
-    public function addMessage($code, $text, $level, $fieldId, $target = null) {
+    public function addMessage($code, $text, $level, $fieldId, $target = null, $html = null) {
         // Validate message level
         if (!EnumMessageLevel::isValidValue($level)) {
             throw new ViewException('Message level "'.$level.'" is not valid');
@@ -174,7 +177,8 @@ class AjaxResponse {
             'text' => $text,
             'level' => $level,
             'fieldId' => $fieldId,
-            'target' => $target
+            'target' => $target,
+            'html' => $html
         );
         $this->messages[] = $message;
     }

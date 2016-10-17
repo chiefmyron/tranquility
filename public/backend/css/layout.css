@@ -6399,6 +6399,10 @@ label + .checkbox {
   .alert-error .alert-link {
     color: #843534; }
 
+.alert-inline {
+  padding: 5px;
+  border-top: none; }
+
 ul.ui-autocomplete {
   z-index: 1051;
   padding: 5px 0;

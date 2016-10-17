@@ -861,7 +861,13 @@ label + .checkbox {
 
 // Process messages
 .alert-error {
-  @include alert-variant($alert-danger-bg, $alert-danger-border, $alert-danger-text);
+    @include alert-variant($alert-danger-bg, $alert-danger-border, $alert-danger-text);
+}
+
+// Inline form validation messages
+.alert-inline {
+    padding: 5px;
+    border-top: none;
 }
 
 // Autocomplete
