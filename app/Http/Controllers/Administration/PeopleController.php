@@ -4,7 +4,7 @@ use \Session as Session;
 use \Response as Response;
 use \Auth as Auth;
 use Illuminate\Http\Request as Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Administration\Controller;
 
 use Carbon\Carbon;
 use Tranquility\Utility;
@@ -229,12 +229,14 @@ class PeopleController extends Controller {
         // If AJAX request, send response
         if ($request->ajax()) {
             // Refresh index view
-            $responseArray = $this->_service->all()->toArray();
+            $pageNumber = $request->get('page', 1);
+            $recordsPerPage = $request->get('recordsPerPage', 20);
+            $response = $this->_service->all(array(), array(), $recordsPerPage, $pageNumber);
 
 			// AJAX response
 			$ajax = new \Tranquility\View\AjaxResponse();
             $ajax->addCallback('core.hideElement', array('process-message-container'));
-			$ajax->addContent('#main-content-container', $this->_renderPartial('administration.people._partials.panels.list-table', $responseArray));
+			$ajax->addContent('#main-content-container', $this->_renderPartial('administration.people._partials.panels.list-table', ['people' => $response->getContent()]));
             $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
             $ajax->addCallback('core.closeDialog');
 			return Response::json($ajax->toArray());

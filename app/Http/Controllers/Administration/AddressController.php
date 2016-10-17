@@ -5,7 +5,7 @@ use \Session as Session;
 use \Response as Response;
 use \Auth as Auth;
 use Illuminate\Http\Request as Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Administration\Controller;
 
 use Carbon\Carbon;
 use Tranquility\View\AjaxResponse                          as AjaxResponse;

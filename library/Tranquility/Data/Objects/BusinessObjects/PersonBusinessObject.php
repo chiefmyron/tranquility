@@ -27,6 +27,9 @@ class PersonBusinessObject extends BusinessObject {
     protected $firstName;
     protected $lastName;
     protected $position;
+
+    // Temporary property (not persisted)
+    protected $primaryContact;
     
     // Related entities
     protected $user;
@@ -58,8 +61,7 @@ class PersonBusinessObject extends BusinessObject {
         'title'          => array(),
         'firstName'      => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
         'lastName'       => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
-        'position'       => array('searchable'),
-        'primaryContact' => array() // Only set when loaded via Contact relationship with an Account
+        'position'       => array('searchable')
     );
 
     /**
@@ -138,5 +140,13 @@ class PersonBusinessObject extends BusinessObject {
 
     public function _getAccount() {
         return $this->getAccount();
+    }
+
+    public function setPrimaryContact($value) {
+        $this->primaryContact = $value;
+    }
+
+    public function isPrimaryContact() {
+        return $this->primaryContact;
     }
 }

@@ -75,7 +75,7 @@ class AccountBusinessObject extends BusinessObject {
         return array_map(
             function ($contact) {
                 $person = $contact->getPerson();
-                $person->primaryContact = $contact->primaryContact;
+                $person->setPrimaryContact($contact->primaryContact);
                 return $person;
             },
             $this->contacts->toArray()
@@ -92,7 +92,7 @@ class AccountBusinessObject extends BusinessObject {
         $contact = $this->contacts->matching($criteria);
         if ($contact->count() > 0) {
             $person = $contact[0]->getPerson();
-            $person->primaryContact = true;
+            $person->setPrimaryContact(true);
             return $person;
         }
 

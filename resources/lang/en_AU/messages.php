@@ -41,6 +41,7 @@ return array(
     'message_10050_electronic_address_primary_contact_updated' => 'Primary email address updated to :addressText',
     'message_10051_email_address_format_invalid' => 'Invalid email address - check for typos, and make sure it contains an "@" symbol',
 
+    'message_10070_account_record_created_successfully' => 'New account created successfully',
     'message_10071_account_record_updated_successfully' => 'Account updated successfully',
     'message_10072_account_record_deleted_successfully' => 'Account deleted successfully',
 );

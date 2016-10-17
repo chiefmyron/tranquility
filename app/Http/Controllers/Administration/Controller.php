@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers\Administration;
 
 use \Session;
 use Illuminate\Foundation\Bus\DispatchesJobs;
