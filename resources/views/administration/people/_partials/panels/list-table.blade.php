@@ -30,7 +30,7 @@
 				<tbody>
 					<tr>
 						<th class="checkboxcol">
-							<input type="checkbox" name="selectAll" id="selectAll" value="" class="selectAll checkbox" />
+							<input type="checkbox" name="selectAll" value="" class="record-select-all checkbox" />
 						</th>
 						<th>
 							{{ trans('administration.people_name') }}	

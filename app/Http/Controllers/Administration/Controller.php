@@ -56,7 +56,7 @@ abstract class Controller extends BaseController {
         if ($request->ajax()) {
             $ajax = new AjaxResponse();
             $html = $this->_renderPartial('administration._partials.errors', ['messages' => $messages]);
-            $ajax->addContent('#modal-dialog-container #process-message-container', $html, 'showElement', array('modal-dialog-container #process-message-container'));
+            $ajax->addContent('#modal-dialog-container #process-message-container', $html, 'core.showElement', array('modal-dialog-container #process-message-container'));
             $ajax->addMessages($response->getMessages());
             return Response::json($ajax->toArray());
         }

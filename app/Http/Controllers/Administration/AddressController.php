@@ -68,14 +68,14 @@ class AddressController extends Controller {
         $response = $this->_getService(EnumAddressType::Physical)->find($id);
         if ($response->containsErrors()) {
             $ajax->addMessages($result->getMessages());
-            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
             return $ajax;
         }
         
 		// AJAX response
 		$ajax = new \Tranquility\View\AjaxResponse();
 		$dialog = $this->_renderPartial('administration.addresses._partials.dialogs.show-map', ['address' => $response->getFirstContentItem()]);
-        $ajax->addContent('#modal-content', $dialog, 'displayDialog', [null, "large"]);
+        $ajax->addContent('#modal-content', $dialog, 'core.displayDialog', [null, "large"]);
 		return Response::json($ajax->toArray());
 	}
     
@@ -111,7 +111,7 @@ class AddressController extends Controller {
             );
             $dialog = $this->_renderPartial('administration.addresses._partials.dialogs.create-address', $data);
         }
-        $ajax->addContent('#modal-content', $dialog, 'displayDialog');
+        $ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
         return Response::json($ajax->toArray());
     }
     
@@ -133,7 +133,7 @@ class AddressController extends Controller {
         $ajax = new \Tranquility\View\AjaxResponse();
         $response = $this->_getService($category)->find($id);
         if ($response->containsErrors()) {
-            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
             return Response::json($ajax->toArray());
         }
         
@@ -146,7 +146,7 @@ class AddressController extends Controller {
             $dialog = $this->_renderPartial('administration.addresses._partials.dialogs.update-address', $data);
         }
         
-        $ajax->addContent('#modal-content', $dialog, 'displayDialog');
+        $ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
         return Response::json($ajax->toArray());
     }
     
@@ -182,7 +182,7 @@ class AddressController extends Controller {
         $ajax = new \Tranquility\View\AjaxResponse();
         if ($response->containsErrors()) {
 			// Errors encountered - redisplay form with error messages
-            $ajax->addContent('#modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('modal-dialog-container #process-message-container'));
+            $ajax->addContent('#modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('modal-dialog-container #process-message-container'));
 			$ajax->addMessages($response->getMessages());
             return Response::json($ajax->toArray());
 		}
@@ -190,8 +190,8 @@ class AddressController extends Controller {
         // Render address panel for person
         $address = $response->getFirstContentItem();
         $ajax = $this->_refreshAddressList($parentId, $category);
-        $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
-        $ajax->addCallback('closeDialog');
+        $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
+        $ajax->addCallback('core.closeDialog');
         return Response::json($ajax->toArray());
 	}
     
@@ -211,7 +211,7 @@ class AddressController extends Controller {
 		// AJAX response
         $dialog = $this->_renderPartial('administration.addresses._partials.dialogs.confirm-delete', ['id' => $id, 'type' => $category]);
 		$ajax = new \Tranquility\View\AjaxResponse();
-		$ajax->addContent('#modal-content', $dialog, 'displayDialog');
+		$ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
 		return Response::json($ajax->toArray());
 	}
     
@@ -223,7 +223,7 @@ class AddressController extends Controller {
         $ajax = new \Tranquility\View\AjaxResponse();
         $response = $this->_getService($type)->find($id);
         if ($response->containsErrors()) {
-            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
             return Response::json($ajax->toArray());
         }
         $address = $response->getFirstContentItem();
@@ -240,15 +240,15 @@ class AddressController extends Controller {
         $response = $this->_getService($type)->delete($id, $params);
         if ($response->containsErrors()) {
 			// Errors encountered - redisplay form with error messages
-            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
 			$ajax->addMessages($response->getMessages());
             return Response::json($ajax->toArray());
 		}
         
         // Render address panel for parent entity
         $ajax = $this->_refreshAddressList($parentEntity, $type);
-        $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
-        $ajax->addCallback('closeDialog');
+        $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
+        $ajax->addCallback('core.closeDialog');
         return Response::json($ajax->toArray());
     }
     
@@ -272,7 +272,7 @@ class AddressController extends Controller {
         $response = $this->_getService($type)->makePrimary($id, $params);
         if ($response->containsErrors()) {
 			// Errors encountered - redisplay form with error messages
-            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
 			$ajax->addMessages($response->getMessages());
             return Response::json($ajax->toArray());
 		}
@@ -280,8 +280,8 @@ class AddressController extends Controller {
         // Render address panel for parent entity
         $address = $response->getFirstContentItem();
         $ajax = $this->_refreshAddressList($address->getParentEntity(), $type);
-        $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
-        $ajax->addCallback('closeDialog');
+        $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
+        $ajax->addCallback('core.closeDialog');
         return Response::json($ajax->toArray());
     }
     
@@ -298,7 +298,7 @@ class AddressController extends Controller {
             // Retrieve parent entity details
             $response = $this->_getService($type)->findParentEntity($parent);
             if ($response->containsErrors()) {
-                $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+                $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
                 return $ajax;
             }
             $parent = $response->getFirstContentItem();
@@ -306,7 +306,7 @@ class AddressController extends Controller {
         
         // Render refreshed address list panel
         $ajax = new \Tranquility\View\AjaxResponse();
-        $ajax->addContent("#".$type.'-addresses-container', $this->_renderPartial('administration.addresses._partials.panels.'.$type.'-address', ['addresses' => $parent->getAddresses($type), 'parentId' => $parent->id]), 'attachCommonHandlers');
+        $ajax->addContent("#".$type.'-addresses-container', $this->_renderPartial('administration.addresses._partials.panels.'.$type.'-address', ['addresses' => $parent->getAddresses($type), 'parentId' => $parent->id]));
         return $ajax;
     }
 }

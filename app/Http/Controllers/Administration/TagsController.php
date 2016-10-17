@@ -59,7 +59,7 @@ class TagsController extends Controller {
         $response = $this->_service->findParentEntity($parentId);
         if ($response->containsErrors()) {
             $ajax->addMessages($result->getMessages());
-            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
             return $ajax;
         }
         $entity = $response->getFirstContentItem();
@@ -68,7 +68,7 @@ class TagsController extends Controller {
 		// AJAX response
 		$ajax = new \Tranquility\View\AjaxResponse();
 		$dialog = $this->_renderPartial('administration.tags._partials.dialogs.update', ['tags' => $tags, 'parentId' => $parentId]);
-        $ajax->addContent('#modal-content', $dialog, 'displayDialog', [null, "large"]);
+        $ajax->addContent('#modal-content', $dialog, 'core.displayDialog', [null, "large"]);
 		return Response::json($ajax->toArray());
 	}
     
@@ -101,15 +101,15 @@ class TagsController extends Controller {
         $response = $this->_service->setEntityTags($parentId, $tags);
         if ($response->containsErrors()) {
 			// Errors encountered - redisplay form with error messages
-            $ajax->addContent('#modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('modal-dialog-container #process-message-container'));
+            $ajax->addContent('#modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('modal-dialog-container #process-message-container'));
 			$ajax->addMessages($response->getMessages());
             return Response::json($ajax->toArray());
 		}
 
         // Render updated tag list
         $entity = $response->getFirstContentItem();
-        $ajax->addContent('#tag-container', $this->_renderPartial('administration.tags._partials.panels.entity-tag-list', ['entity' => $entity, 'tags' => $entity->getTags()]), 'attachCommonHandlers');
-        $ajax->addCallback('closeDialog');
+        $ajax->addContent('#tag-container', $this->_renderPartial('administration.tags._partials.panels.entity-tag-list', ['entity' => $entity, 'tags' => $entity->getTags()]));
+        $ajax->addCallback('core.closeDialog');
         return Response::json($ajax->toArray());
 	}
     
@@ -131,15 +131,15 @@ class TagsController extends Controller {
         $response = $this->_service->removeTag($parentId, $id);
         if ($response->containsErrors()) {
 			// Errors encountered - redisplay form with error messages
-            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
 			$ajax->addMessages($response->getMessages());
             return Response::json($ajax->toArray());
 		}
 
         // Render updated tag list
         $entity = $response->getFirstContentItem();
-        $ajax->addContent('#tag-container', $this->_renderPartial('administration.tags._partials.panels.entity-tag-list', ['entity' => $entity, 'tags' => $entity->getTags()]), 'attachCommonHandlers');
-        $ajax->addCallback('closeDialog');
+        $ajax->addContent('#tag-container', $this->_renderPartial('administration.tags._partials.panels.entity-tag-list', ['entity' => $entity, 'tags' => $entity->getTags()]));
+        $ajax->addCallback('core.closeDialog');
         return Response::json($ajax->toArray());
     }
     
@@ -154,7 +154,7 @@ class TagsController extends Controller {
         $response = $this->_service->all($filter);
         if ($response->containsErrors()) {
 			// Errors encountered - redisplay form with error messages
-            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
 			$ajax->addMessages($response->getMessages());
             return Response::json($ajax->toArray());
 		}

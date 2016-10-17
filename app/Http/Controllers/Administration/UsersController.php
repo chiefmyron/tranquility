@@ -194,7 +194,7 @@ class UsersController extends Controller {
 		// AJAX response
 		$ajax = new \Tranquility\View\AjaxResponse();
 		$dialog = $this->_renderPartial('administration.users._partials.dialogs.change-password', ['id' => $id]);
-        $ajax->addContent('#modal-content', $dialog, 'displayDialog');
+        $ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
 		return Response::json($ajax->toArray());
     }
     
@@ -217,17 +217,17 @@ class UsersController extends Controller {
         $ajax = new \Tranquility\View\AjaxResponse();
         if ($response->containsErrors()) {
 			// Errors encountered - redisplay form with error messages
-            $ajax->addContent('#modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('modal-dialog-container #process-message-container'));
+            $ajax->addContent('#modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('modal-dialog-container #process-message-container'));
 			$ajax->addMessages($response->getMessages());
             return Response::json($ajax->toArray());
 		}
         
         // Success response
         $ajax = new \Tranquility\View\AjaxResponse();
-        $ajax->addCallback('hideElement', array('process-message-container'));
+        $ajax->addCallback('core.hideElement', array('process-message-container'));
         $ajax->addContent('#main-content-container', $this->_renderPartial('administration.users._partials.panels.user-details', ['user' => $response->getFirstContentItem()]));
-        $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
-        $ajax->addCallback('closeDialog');
+        $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
+        $ajax->addCallback('core.closeDialog');
         return Response::json($ajax->toArray());
     }
     
@@ -254,7 +254,7 @@ class UsersController extends Controller {
         $contentItems = $response->getContent();
         if ($response->containsErrors() || count($response->getContent()) == 0) {
             // Errors encountered - redisplay form with error messages
-            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
 			$ajax->addMessages($response->getMessages());
             return Response::json($ajax->toArray());
         }
@@ -281,7 +281,7 @@ class UsersController extends Controller {
         
         // Display dialog
         $user = $response->getFirstContentItem();
-		$ajax->addContent('#modal-content', $dialog, 'displayDialog');
+		$ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
 		return Response::json($ajax->toArray());
 	}
 }

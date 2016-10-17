@@ -81,16 +81,6 @@
         <!-- End of modal dialog -->
         
         <!-- Add JavaScript at the bottom to prevent page load blocking -->
-        @if(App::environment('local'))
-        <script src="/backend/js/local/jquery.1.12.1.min.js"></script>
-        <script src="/backend/js/local/bootstrap.3.3.6.min.js"></script>
-        @else
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-        @endif
-        <!--<script src="/backend/js/typeahead.bundle.min.js"></script>-->
-        <script src="/backend/js/jquery-ui.min.js"></script>
-        <script src="/backend/js/jquery.tagsinput.min.js"></script>
-        <script src="/backend/js/core.js"></script>
+        <script src="/backend/js/lib/require.js" data-main="/backend/js/app"></script>
     </body>
 </html>   

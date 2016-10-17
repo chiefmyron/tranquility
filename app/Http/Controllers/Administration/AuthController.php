@@ -59,7 +59,7 @@ class AuthController extends Controller {
             // AJAX response
             $dialog = $this->_renderPartial('administration.auth._partials.dialogs.dialog-login');
 			$ajax = new \Tranquility\View\AjaxResponse();
-			$ajax->addContent('#modal-content', $dialog, 'displayDialog');
+			$ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
             $ajax->addContent('#dialog-process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $messages]));
 			return Response::json($ajax->toArray());
 		}
