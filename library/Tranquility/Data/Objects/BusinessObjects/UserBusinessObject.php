@@ -41,6 +41,22 @@ class UserBusinessObject extends BusinessObject implements UserContract {
     // Related extension data objects
     protected $userTokens;
 
+    /** 
+     * Type of entity represented by the business object
+     *
+     * @var string
+     * @static
+     */
+    protected static $_entityType = EnumEntityType::User;
+
+    /**
+     * Name of the class responsible for representing historical versions of this business entity
+     * 
+     * @var string
+     * @static
+     */
+    protected static $_historicalEntityClass = UserHistory::class;
+
     /**
      * Property definition for object
      * 
@@ -60,20 +76,34 @@ class UserBusinessObject extends BusinessObject implements UserContract {
     );
     
     /**
-     * Name of the class responsible for representing historical versions of this business entity
-     * 
-     * @var string
-     * @static
-     */
-    protected static $_historicalEntityClass = UserHistory::class;
-    
-    /** 
-     * Type of entity represented by the business object
+     * Metadata used to define object relationship to database
      *
-     * @var string
-     * @static
+     * @var \Doctrine\ORM\Mapping\ClassMetadata $metadata  Metadata to be passed to Doctrine
+     * @return void
      */
-    protected static $_entityType = EnumEntityType::User;
+    public static function loadMetadata(ClassMetadata $metadata) {
+        $builder = new ClassMetadataBuilder($metadata);
+        // Define table name
+        $builder->setTable('entity_users');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\UserRepository');
+        
+        // Define fields
+        $builder->addField('username', 'string');
+        $builder->addField('password', 'string');
+        $builder->addField('timezoneCode', 'string');
+        $builder->addField('localeCode', 'string');
+        $builder->addField('active', 'boolean');
+        $builder->addField('securityGroupId', 'integer');
+        $builder->addField('registeredDateTime', 'datetime');
+        
+        // Add relationships
+        $builder->createOneToOne('person', Person::class)->mappedBy('user')->build();
+        $builder->createOneToMany('userTokens', UserToken::class)->mappedBy('user')->build();
+    }
+    
+    //*************************************************************************
+    // Class-specific getter methods                                          *
+    //*************************************************************************
     
     /**
      * Create a new instance of the User entity
@@ -192,31 +222,5 @@ class UserBusinessObject extends BusinessObject implements UserContract {
         }
         
         $token->setToken($type, $value);
-    }
-    
-    /**
-     * Metadata used to define object relationship to database
-     *
-     * @var \Doctrine\ORM\Mapping\ClassMetadata $metadata  Metadata to be passed to Doctrine
-     * @return void
-     */
-    public static function loadMetadata(ClassMetadata $metadata) {
-        $builder = new ClassMetadataBuilder($metadata);
-        // Define table name
-        $builder->setTable('entity_users');
-        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\UserRepository');
-        
-        // Define fields
-        $builder->addField('username', 'string');
-        $builder->addField('password', 'string');
-        $builder->addField('timezoneCode', 'string');
-        $builder->addField('localeCode', 'string');
-        $builder->addField('active', 'boolean');
-        $builder->addField('securityGroupId', 'integer');
-        $builder->addField('registeredDateTime', 'datetime');
-        
-        // Add relationships
-        $builder->createOneToOne('person', Person::class)->mappedBy('user')->build();
-        $builder->createOneToMany('userTokens', UserToken::class)->mappedBy('user')->build();
     }
 }

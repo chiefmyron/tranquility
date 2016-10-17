@@ -34,6 +34,22 @@ class AddressPhysicalBusinessObject extends Entity {
     // Related entities
     protected $parentEntity;
 
+    /** 
+     * Type of entity represented by the business object
+     *
+     * @var string
+     * @static
+     */
+    protected static $_entityType = EnumEntityType::AddressPhysical;
+
+    /**
+     * Name of the class responsible for representing historical versions of this business entity
+     * 
+     * @var string
+     * @static
+     */
+    protected static $_historicalEntityClass = AddressHistory::class;
+
     /**
      * Property definition for object
      * 
@@ -55,20 +71,37 @@ class AddressPhysicalBusinessObject extends Entity {
     );
     
     /**
-     * Name of the class responsible for representing historical versions of this business entity
-     * 
-     * @var string
-     * @static
-     */
-    protected static $_historicalEntityClass = AddressHistory::class;
-    
-    /** 
-     * Type of entity represented by the business object
+     * Metadata used to define object relationship to database
      *
-     * @var string
-     * @static
+     * @var \Doctrine\ORM\Mapping\ClassMetadata $metadata  Metadata to be passed to Doctrine
+     * @return void
      */
-    protected static $_entityType = EnumEntityType::AddressPhysical;
+    public static function loadMetadata(ClassMetadata $metadata) {
+        $builder = new ClassMetadataBuilder($metadata);
+        // Define table name
+        $builder->setTable('entity_addresses_physical');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
+        
+        // Define fields
+        $builder->addField('addressType', 'string');
+        $builder->addField('addressLine1', 'string');
+        $builder->addField('addressLine2', 'string');
+        $builder->addField('addressLine3', 'string');
+        $builder->addField('addressLine4', 'string');
+        $builder->addField('city', 'string');
+        $builder->addField('state', 'string');
+        $builder->addField('postcode', 'string');
+        $builder->addField('country', 'string');
+        $builder->addField('latitude', 'float');
+        $builder->addField('longitude', 'float');
+        
+        // Add relationships
+        $builder->createManyToOne('parentEntity', Entity::class)->addJoinColumn('parentId', 'id')->inversedBy('physicalAddresses')->build();
+    }
+    
+    //*************************************************************************
+    // Class-specific getter methods                                          *
+    //*************************************************************************
     
     /**
      * Sets values for object properties, based on the inputs provided
@@ -108,7 +141,21 @@ class AddressPhysicalBusinessObject extends Entity {
             'long' => $this->longitude
         );
     }
+
+    /**
+     * String representation of address
+     *
+     * @return string
+     */
+    public function toString() {
+        return $this->getSingleLineAddress();
+    }
     
+    /**
+     * Get address as a single string, with parts separated by commas
+     *
+     * @return string
+     */
     public function getSingleLineAddress() {
         return $this->_joinAddressParts(", ");
     }
@@ -154,34 +201,5 @@ class AddressPhysicalBusinessObject extends Entity {
 
         // Glue address parts together and return
         return implode($separator, $addressParts);
-    }
-    
-    /**
-     * Metadata used to define object relationship to database
-     *
-     * @var \Doctrine\ORM\Mapping\ClassMetadata $metadata  Metadata to be passed to Doctrine
-     * @return void
-     */
-    public static function loadMetadata(ClassMetadata $metadata) {
-        $builder = new ClassMetadataBuilder($metadata);
-        // Define table name
-        $builder->setTable('entity_addresses_physical');
-        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
-        
-        // Define fields
-        $builder->addField('addressType', 'string');
-        $builder->addField('addressLine1', 'string');
-        $builder->addField('addressLine2', 'string');
-        $builder->addField('addressLine3', 'string');
-        $builder->addField('addressLine4', 'string');
-        $builder->addField('city', 'string');
-        $builder->addField('state', 'string');
-        $builder->addField('postcode', 'string');
-        $builder->addField('country', 'string');
-        $builder->addField('latitude', 'float');
-        $builder->addField('longitude', 'float');
-        
-        // Add relationships
-        $builder->createManyToOne('parentEntity', Entity::class)->addJoinColumn('parentId', 'id')->inversedBy('physicalAddresses')->build();
     }
 }

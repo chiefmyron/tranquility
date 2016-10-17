@@ -25,6 +25,22 @@ class AccountBusinessObject extends BusinessObject {
     
     // Related entities
     protected $contacts;
+    
+    /** 
+     * Type of entity represented by the business object
+     *
+     * @var string
+     * @static
+     */
+    protected static $_entityType = EnumEntityType::Account;
+
+    /**
+     * Name of the class responsible for representing historical versions of a Account entity
+     * 
+     * @var string
+     * @static
+     */
+    protected static $_historicalEntityClass = AccountHistory::class;
 
     /**
      * Property definition for object
@@ -35,22 +51,29 @@ class AccountBusinessObject extends BusinessObject {
     protected static $_fieldDefinitions = array(
         'name' => array('mandatoryUpdate', 'mandatoryCreate', 'searchable')
     );
-    
+
     /**
-     * Name of the class responsible for representing historical versions of a Account entity
-     * 
-     * @var string
-     * @static
-     */
-    protected static $_historicalEntityClass = AccountHistory::class;
-    
-    /** 
-     * Type of entity represented by the business object
+     * Metadata used to define object relationship to database
      *
-     * @var string
-     * @static
+     * @var \Doctrine\ORM\Mapping\ClassMetadata $metadata  Metadata to be passed to Doctrine
+     * @return void
      */
-    protected static $_entityType = EnumEntityType::Account;
+    public static function loadMetadata(ClassMetadata $metadata) {
+        $builder = new ClassMetadataBuilder($metadata);
+        // Define table name
+        $builder->setTable('entity_accounts');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
+        
+        // Define fields
+        $builder->addField('name', 'string');
+        
+        // Add relationships
+        $builder->createOneToMany('contacts', Contact::class)->mappedBy('account')->orphanRemoval(true)->build();
+    }
+    
+    //*************************************************************************
+    // Class-specific getter methods                                          *
+    //*************************************************************************
 
     /**
      * Create a new instance of the Account
@@ -72,14 +95,7 @@ class AccountBusinessObject extends BusinessObject {
      * @return mixed
      */
     public function getContacts() {
-        return array_map(
-            function ($contact) {
-                $person = $contact->getPerson();
-                $person->setPrimaryContact($contact->primaryContact);
-                return $person;
-            },
-            $this->contacts->toArray()
-        );
+        return $this->contacts;
     }
 
     /**
@@ -91,30 +107,9 @@ class AccountBusinessObject extends BusinessObject {
         $criteria = Criteria::create()->where(Criteria::expr()->eq("primaryContact", true));
         $contact = $this->contacts->matching($criteria);
         if ($contact->count() > 0) {
-            $person = $contact[0]->getPerson();
-            $person->setPrimaryContact(true);
-            return $person;
+            return $contact;
         }
 
         return null;
-    }
-    
-    /**
-     * Metadata used to define object relationship to database
-     *
-     * @var \Doctrine\ORM\Mapping\ClassMetadata $metadata  Metadata to be passed to Doctrine
-     * @return void
-     */
-    public static function loadMetadata(ClassMetadata $metadata) {
-        $builder = new ClassMetadataBuilder($metadata);
-        // Define table name
-        $builder->setTable('entity_accounts');
-        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
-        
-        // Define fields
-        $builder->addField('name', 'string');
-        
-        // Add relationships
-        $builder->createOneToMany('contacts', Contact::class)->mappedBy('account')->orphanRemoval(true)->build();
     }
 }
