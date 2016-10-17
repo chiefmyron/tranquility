@@ -51,8 +51,7 @@ class AddressPhysicalBusinessObject extends Entity {
         'postcode'     => array(),
         'country'      => array('mandatoryCreate'),
         'latitude'     => array(),
-        'longitude'    => array(),
-        'parent'       => array('mandatoryCreate')
+        'longitude'    => array()
     );
     
     /**

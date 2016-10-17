@@ -37,8 +37,7 @@ class AddressBusinessObject extends Entity {
         'category'       => array('mandatoryUpdate', 'mandatoryCreate'),
         'addressType'    => array('mandatoryUpdate', 'mandatoryCreate'),
         'addressText'    => array('mandatoryUpdate', 'mandatoryCreate'),
-        'primaryContact' => array(),
-        'parent'         => array('mandatoryCreate')
+        'primaryContact' => array()
     );
     
     /**
