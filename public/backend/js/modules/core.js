@@ -293,6 +293,9 @@ define(['bootstrap', 'jquery'], function() {
                 }
             }
         });
+
+        // Remove any existing inline error messages
+        $('div.alert-inline').slideUp().remove();
         
         // Display inline error messages
         $.each(response.messages, function(i, message) {
@@ -301,9 +304,6 @@ define(['bootstrap', 'jquery'], function() {
                 if (message.html == null || message.html == 'undefined') {
                     message.html = '<div class="alert-inline alert-' + message.level + '" style="display: none;">' + message.text + '</div>'; 
                 }
-
-                // Remove any existing inline error messages for this field
-                $('div.alert-inline[data-form-validation-element="#' + message.fieldId + '"]').slideUp().remove();
 
                 // Add new inline error message (hidden by default)
                 $("#" + message.fieldId).after(message.html);

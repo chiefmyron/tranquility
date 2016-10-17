@@ -13,8 +13,8 @@ $account = $person->getAccount();
 @stop
 
 @section('actionButton')
-    {{ ActionButton::setPrimaryAction('people_command_update', 'update-person-details', action('Administration\PeopleController@update', ["id" => $person->id]), '', 'pencil', true) }}
-	{{ ActionButton::addLink('people_command_delete', 'toolbar-delete-record', action('Administration\PeopleController@confirmAction', ['id' => $person->id, 'action' => 'delete']), 'ajax', 'trash', true, ["data-ajax-preload-target" => "modal"]) }}
+    {{ ActionButton::setPrimaryAction('people_command_update', 'update-person-details', action('Administration\PeopleController@update', ['id' => $person->id]), '', 'pencil', true) }}
+	{{ ActionButton::addLink('people_command_delete', 'toolbar-delete-record', action('Administration\PeopleController@confirmAction', ['id' => $person->id, 'action' => 'delete']), 'ajax', 'trash', true, ['data-ajax-preload-target' => 'modal']) }}
 	{!! ActionButton::render() !!}
 @stop
 

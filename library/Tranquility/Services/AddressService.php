@@ -23,20 +23,31 @@ class AddressService extends \Tranquility\Services\Service {
 	 * @return \Tranquility\Services\ServiceResponse
 	 */
 	public function create(array $data) {
-        // Retrieve parent entity
         $parentId = Utility::extractValue($data, 'parentId', 0);
-        $response = $this->findParentEntity($parentId);
+		$category = Utility::extractValue($data, 'category', null);
+        
+		// Retrieve parent entity
+		$response = $this->findParentEntity($parentId);
         if ($response->containsErrors()) {
             return $response;
         }
+
+		// If parent entity does not have any addresses in this category already, this address becomes primary by default
+		$data['parent'] = $response->getFirstContentItem();
+		if (count($data['parent']->getAddresses($category)) <= 0) {
+			$data['primaryContact'] = true;
+		}
         
         // Create address
-        $data['parent'] = $response->getFirstContentItem();
 		$response = parent::create($data);
 		
 		// Add entity specific success code
 		if (!$response->containsErrors()) {
-			$response->addMessage(10043, EnumMessageLevel::Success, 'message_10043_phone_address_record_created_successfully');
+			if ($category == EnumAddressType::Email) {
+				$response->addMessage(10046, EnumMessageLevel::Success, 'message_10046_electronic_address_record_created_successfully');
+			} else {
+				$response->addMessage(10043, EnumMessageLevel::Success, 'message_10043_phone_address_record_created_successfully');
+			}
 		}
 		
 		return $response;
@@ -54,7 +65,11 @@ class AddressService extends \Tranquility\Services\Service {
 		
 		// Add entity specific success code
 		if (!$response->containsErrors()) {
-			$response->addMessage(10044, EnumMessageLevel::Success, 'message_10044_phone_address_record_updated_successfully');
+			if ($data['category'] == EnumAddressType::Email) {
+				$response->addMessage(10047, EnumMessageLevel::Success, 'message_10047_electronic_address_record_updated_successfully');
+			} else {
+				$response->addMessage(10044, EnumMessageLevel::Success, 'message_10044_phone_address_record_updated_successfully');
+			}
 		}
 		
 		return $response;
@@ -73,7 +88,12 @@ class AddressService extends \Tranquility\Services\Service {
         
         // Add entity specific success code
         if (!$response->containsErrors()) {
-			$response->addMessage(10045, EnumMessageLevel::Success, 'message_10045_phone_address_record_deleted_successfully');
+			$category = $response->getFirstContentItem()->category;
+			if ($category == EnumAddressType::Email) {
+				$response->addMessage(10048, EnumMessageLevel::Success, 'message_10048_electronic_address_record_deleted_successfully');
+			} else {
+				$response->addMessage(10045, EnumMessageLevel::Success, 'message_10045_phone_address_record_deleted_successfully');
+			}
 		}
         
 		return $response;
