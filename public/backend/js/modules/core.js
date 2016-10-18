@@ -1,7 +1,7 @@
 /**
  * Main javascript function library for the BackOffice application
  */
-define(['bootstrap', 'jquery'], function() {
+define(['modules/controls', 'bootstrap', 'jquery'], function(controls) {
     var loggingEnabled = true;
     
     // Holds any typeahead instances for autocomplete controls
@@ -23,17 +23,27 @@ define(['bootstrap', 'jquery'], function() {
     /**
      * Render dynamic / JS enabled controls
      */
-    var renderControls = function(context) {
+    var renderCustomControls = function(context) {
         // If no context is provided, use the document
         if (context == 'undefined' || context == null) {
             context = document;
         }
 
-        // Autocomplete fields
+        // Check for custom controls
+        $(context).find('[data-custom-control]').each(function() {
+            elementType = $(this).attr("data-custom-control");
+            switch (elementType) {
+                case 'tag-input':
+                    controls.renderTagInput(this);
+                    break;
+                case 'entity-select':
 
+                    break;
+                case 'date-input':
 
-        // Date input fields
-
+                    break;
+            }
+        });
     }
 
     /**
@@ -179,8 +189,8 @@ define(['bootstrap', 'jquery'], function() {
     function _refreshControls(event) {
         // Get the container element
         container = event.target;
-        console.log(container);
-
+        _log("Refreshing bindings for controls inside element " + event.target);
+        renderCustomControls(event.target);
     }
 
     /**
@@ -489,7 +499,7 @@ define(['bootstrap', 'jquery'], function() {
     return {
         init: init,
         attachCommonHandlers: attachCommonHandlers,
-        renderControls: renderControls,
+        renderCustomControls: renderCustomControls,
         displayDialog: displayDialog,
         closeDialog: closeDialog,
         showElement: showElement,
