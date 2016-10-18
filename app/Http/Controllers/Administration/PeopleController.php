@@ -106,24 +106,37 @@ class PeopleController extends Controller {
 		return view('administration.people.create');
 	}
 	
-	/**
-	 * Displays page for updating details of an existing person record
+    /**
+	 * Displays page for updating details of an existing Person record
 	 *
-	 * @param int $id  Entity ID of the person to update
+	 * @param int $id  Entity ID of the Person to update
 	 * @return Response
 	 */
-	public function update($id) {
+	public function update(Request $request, $id) {
+		// Retrieve account details
 		$response = $this->_service->find($id);
 		if ($response->containsErrors()) {
 			// Redirect to index with error message
 			Session::flash('messages', $response->getMessages());
 			return redirect()->action('Administration\PeopleController@index');
 		}
-		return view('administration.people.update')->with('person', $response->getFirstContentItem());
+		$data = array('person' => $response->getFirstContentItem());
+		
+		// If called via AJAX, display as a dialog
+		if ($request->ajax()) {
+			// Render dialog
+			$ajax = new AjaxResponse();
+			$dialog = $this->_renderPartial('administration.people._partials.dialogs.update', $data);
+			$ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
+			return Response::json($ajax->toArray());
+		}
+        
+        // Display full page
+		return view('administration.peoplle.update')->with($data);
 	}
 	
 	/**
-	 * Store details of a new or updated person record
+	 * Store details of a new or updated Person record
 	 *
 	 * @return Response
 	 */
@@ -133,7 +146,7 @@ class PeopleController extends Controller {
 		$id = $request->input('id', 0);
 		
 		// Add in additional audit trail details
-		$params['type'] = EnumEntityType::Person;
+		$params['type'] = EnumEntityType::Account;
 		$params['updateBy'] = Auth::user();
 		$params['updateDateTime'] = Carbon::now();
 		$params['transactionSource'] = EnumTransactionSource::UIBackend;
@@ -146,16 +159,30 @@ class PeopleController extends Controller {
             $params['updateReason'] = 'backend person create';
 			$result = $this->_service->create($params);
 		}
-		
-		// Flash messages to session, and check for errors
-		Session::flash('messages', $result->getMessages());
+
+		// If errors were encountered, display on the form
 		if ($result->containsErrors()) {
-			// Errors encountered - redisplay form with error messages
-			return redirect()->back()->withInput();
+			return $this->_renderFormErrors($request, $result->getMessages());
 		}
 		
-		// No errors - return to index page
-		return redirect()->action('Administration\PeopleController@index');
+		// Show updated record
+		$person = $result->getFirstContentItem();
+		if ($request->ajax()) {
+			// Render address panel for parent entity
+			$heading = $this->_renderPartial('administration._partials.heading', ['heading' => $person->getFullName()]);
+			$content = $this->_renderPartial('administration.people._partials.content.show', ['person' => $person]);
+			$messages = $this->_renderPartial('administration._partials.errors', ['messages' => $result->getMessages()]);
+
+			$ajax = new AjaxResponse(); 
+			$ajax->addContent('#page-header .page-title', $heading);
+			$ajax->addContent('#main-content-container', $content);
+			$ajax->addContent('#process-message-container', $messages, 'core.showElement', array('process-message-container'));
+			$ajax->addCallback('core.closeDialog');
+			return Response::json($ajax->toArray());
+		}
+
+		Session::flash('messages', $result->getMessages());		
+		return redirect()->action('Administration\PeopleController@show', ['id' => $person->id]);
 	}
 	
 	public function confirmAction(Request $request) {

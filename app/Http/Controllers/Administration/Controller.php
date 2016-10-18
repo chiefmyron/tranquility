@@ -1,11 +1,14 @@
 <?php namespace App\Http\Controllers\Administration;
 
 use \Session;
+use \Response;
+use Illuminate\Http\Request as Request;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
 use Tranquility\Utility;
+use Tranquility\View\AjaxResponse as AjaxResponse;
 use Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
 abstract class Controller extends BaseController {
@@ -46,6 +49,23 @@ abstract class Controller extends BaseController {
         $messages = Session::pull('messages');
         $messages[] = array('text' => $text, 'level' => $level);
         Session::flash('messages', $messages);
+    }
+
+    protected function _renderFormErrors(Request $request, $messages) {
+        // Flash messages to session
+		Session::flash('messages', $messages);
+        
+        // If request was from an AJAX call, return errors messages only
+        if ($request->ajax()) {
+            $ajax = new AjaxResponse();
+            $html = $this->_renderPartial('administration._partials.errors', ['messages' => $messages]);
+            $ajax->addContent('#modal-dialog-container #process-message-container', $html, 'core.showElement', array('modal-dialog-container #process-message-container'));
+            $ajax->addMessages($this->_renderInlineMessages($messages));
+            return Response::json($ajax->toArray());
+        }
+
+        // Use a redirect to go back to the form
+        return redirect()->back()->withInput();
     }
 
     protected function _renderInlineMessages($messages) {

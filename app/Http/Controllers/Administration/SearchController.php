@@ -1,6 +1,6 @@
 <?php namespace App\Http\Controllers\Administration;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Administration\Controller;
 use Illuminate\Http\Request as Request;
 
 use Tranquility\Enums\System\EntityType as EnumEntityType;

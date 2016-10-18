@@ -7,7 +7,7 @@ use Illuminate\Http\Request as Request;
 use Illuminate\Contracts\Auth\Guard;
 
 use App\Events\AdminUserLogin;
-use App\Http\Controllers\Controller;	
+use App\Http\Controllers\Administration\Controller;	
 
 use Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
