@@ -6414,8 +6414,30 @@ span.tag a {
   margin-left: 8px;
   cursor: pointer; }
 
+.bootstrap-tagsinput .tag.single-select {
+  position: relative;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: block;
+  margin-right: -6px;
+  margin-left: -6px;
+  margin-top: -4px;
+  padding-top: 5px;
+  margin-bottom: -4px;
+  padding-bottom: 5px;
+  font-size: 14px;
+  line-height: 1.428571429;
+  color: #555555;
+  text-transform: none;
+  font-variant: normal;
+  background-color: #eef1f4; }
+
+.bootstrap-tagsinput .tag.single-select [data-role="remove"] {
+  float: right; }
+
 .bootstrap-tagsinput .tag [data-role="remove"]:after {
-  content: "x";
+  content: "\00d7";
   padding: 0px 2px; }
 
 .bootstrap-tagsinput .tag [data-role="remove"]:hover {

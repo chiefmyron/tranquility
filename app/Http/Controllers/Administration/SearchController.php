@@ -86,4 +86,49 @@ class SearchController extends Controller {
 		return view('administration.search.results', ['searchParams' => array('queryString' => $queryString), 'results' => $searchResults, 'totalResults' => $totalResults]);
 	}
 
+	/**
+	 * Used as remote datasource for autocomplete on entity selection controls
+	 *
+	 * @return Response
+	 */
+	public function autocomplete(Request $request) {
+		// Ensure this is received as an ajax request only
+		if (!$request->ajax()) {
+			// TODO: Proper error handling here
+			throw new Exception('Access only via AJAX request!');
+		}
+
+		// Make sure entity type is searchable
+		$entityType = $request->get('entity', null);
+		if (!in_array($entityType, $this->_searchableEntities)) {
+			return;
+		}
+
+		// Get search terms from string (@see http://stackoverflow.com/questions/7943424/parse-search-string-for-phrases-and-keywords)
+		$queryString = $request->get('q', '');
+		preg_match_all('~(?|"([^"]+)"|(\S+))~', $queryString, $matches);
+		$searchTerms = $matches[1];
+
+		// Perform search on entity
+		$response = $this->_services[$entityType]->search($searchTerms);
+		$searchResults = $response->getContent();
+
+		// Format results, based on entity type
+		$results = array();
+		switch ($entityType) {
+			case EnumEntityType::Person:
+				foreach ($searchResults as $person) {
+					$results[] = array('id' => $person->id, 'label' => $person->getFullName());
+				}
+				break;
+			case EnumEntityType::Account:
+				foreach ($searchResults as $account) {
+					$results[] = array('id' => $account->id, 'label' => $account->name);
+				}
+				break;
+		}
+
+		echo json_encode($results);
+		return;
+    }
 }

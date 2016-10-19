@@ -48,6 +48,7 @@ return array(
     'people_label_title' => 'Title',
     'people_label_first_name' => 'First name',
     'people_label_last_name' => 'Last name',
+    'people_label_position' => 'Job description',
     'people_label_user_account' => 'User account',
     'people_label_no_user_account' => 'No user account',
     'people_label_company' => 'Company',

@@ -36,8 +36,8 @@ define(['modules/controls', 'bootstrap', 'jquery'], function(controls) {
                 case 'tag-input':
                     controls.renderTagInput(this);
                     break;
-                case 'entity-select':
-
+                case 'entity-select-single':
+                    controls.renderEntitySelect(this);
                     break;
                 case 'date-input':
 
