@@ -24,8 +24,8 @@ define(['tagsinput', 'typeahead', 'bloodhound'], function() {
                     url: (url + '?term=%QUERY'),
                     wildcard: '%QUERY',
                     filter: function(list) {
-                        return $.map(list, function(cityname) {
-                            return { name: cityname }; 
+                        return $.map(list, function(tagname) {
+                            return { name: tagname }; 
                         });
                     }
                 }
@@ -36,6 +36,7 @@ define(['tagsinput', 'typeahead', 'bloodhound'], function() {
         
         $(element).tagsinput({
             tagClass: '',
+            allowDuplicates: false,
             typeaheadjs: {
                 name: 'tags',
                 displayKey: 'name',

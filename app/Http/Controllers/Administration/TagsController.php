@@ -108,7 +108,7 @@ class TagsController extends Controller {
 
         // Render updated tag list
         $entity = $response->getFirstContentItem();
-        $ajax->addContent('#tag-container', $this->_renderPartial('administration.tags._partials.panels.entity-tag-list', ['entity' => $entity, 'tags' => $entity->getTags()]));
+        $ajax->addContent('#tag-container', $this->_renderPartial('administration.tags._partials.panels.entity-tag-list', ['entity' => $entity, 'tags' => $entity->getTags(), 'editable' => true]));
         $ajax->addCallback('core.closeDialog');
         return Response::json($ajax->toArray());
 	}
@@ -148,9 +148,7 @@ class TagsController extends Controller {
         $term = $request->get('term', '');
         
         // Get the set of tags
-        $filter = array(
-            ['text', 'LIKE', '%'.$term.'%']
-        );
+        $filter = array(['text', 'LIKE', '%'.$term.'%']);
         $response = $this->_service->all($filter);
         if ($response->containsErrors()) {
 			// Errors encountered - redisplay form with error messages
@@ -167,5 +165,4 @@ class TagsController extends Controller {
         
         echo json_encode($output);
     }
-  
 }
