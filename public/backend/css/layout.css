@@ -6317,21 +6317,87 @@ dl.data-list dd {
   margin-bottom: 15px;
   border-radius: 75px; }
 
-div.tagsinput {
+/*div.tagsinput {
+    background-color: $input-bg;
+    border: 1px solid $input-border;
+    padding: 5px 5px 0 5px;
+    width: auto;
+    height: auto;
+    overflow-y: auto;
+    @include box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
+    @include transition(border-color ease-in-out .15s, box-shadow ease-in-out .15s);
+}
+
+span.tag {
+    background-color: $tags-default-bg;
+    color: $tags-color;
+    display: inline-block;
+    padding: 2px 5px;
+    margin-bottom: 4px;
+    text-transform: lowercase;
+    font-variant: small-caps;
+}
+
+span.tag a {
+    color: $tags-color;
+}
+
+div.tagsinput span.tag {
+    display:block;
+    float:left;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+div.tagsinput input {
+    width:80px;
+    border:1px solid transparent;
+    background:0 0;
+    color:#000;
+    outline:0
+}
+
+div.tagsinput div {
+    display:block;
+    float:left
+}
+
+.tags_clear {
+    clear:both;
+    width:100%;
+    height:0
+}
+
+.not_valid{
+    background:#FBD8DB!important;
+    color:#90111A!important
+}*/
+.bootstrap-tagsinput {
   background-color: #fff;
   border: 1px solid #ccc;
-  padding: 5px 5px 0 5px;
-  width: auto;
-  height: auto;
-  overflow-y: auto;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  padding: 4px 6px;
+  vertical-align: middle;
+  max-width: 100%;
+  line-height: 22px;
+  cursor: text;
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s; }
+
+.bootstrap-tagsinput input {
+  width: auto;
+  border: none;
+  background: 0 0;
+  outline: 0; }
+
+.bootstrap-tagsinput input:focus {
+  border: none;
+  box-shadow: none; }
 
 span.tag {
   background-color: #708296;
   color: #ffffff;
   display: inline-block;
-  padding: 2px 5px;
+  padding: 0px 5px 2px 5px;
   margin-bottom: 4px;
   text-transform: lowercase;
   font-variant: small-caps; }
@@ -6339,31 +6405,24 @@ span.tag {
 span.tag a {
   color: #ffffff; }
 
-div.tagsinput span.tag {
-  display: block;
-  float: left;
-  margin-right: 5px;
-  margin-bottom: 5px; }
+.bootstrap-tagsinput .tag {
+  margin-right: 2px;
+  margin-top: 2px;
+  margin-bottom: 2px; }
 
-div.tagsinput input {
-  width: 80px;
-  border: 1px solid transparent;
-  background: 0 0;
-  color: #000;
-  outline: 0; }
+.bootstrap-tagsinput .tag [data-role="remove"] {
+  margin-left: 8px;
+  cursor: pointer; }
 
-div.tagsinput div {
-  display: block;
-  float: left; }
+.bootstrap-tagsinput .tag [data-role="remove"]:after {
+  content: "x";
+  padding: 0px 2px; }
 
-.tags_clear {
-  clear: both;
-  width: 100%;
-  height: 0; }
+.bootstrap-tagsinput .tag [data-role="remove"]:hover {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05); }
 
-.not_valid {
-  background: #FBD8DB !important;
-  color: #90111A !important; }
+.bootstrap-tagsinput .tag [data-role="remove"]:hover:active {
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125); }
 
 .label-entity-person {
   background-color: #6a1b9a !important; }

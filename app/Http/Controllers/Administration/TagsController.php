@@ -149,7 +149,7 @@ class TagsController extends Controller {
         
         // Get the set of tags
         $filter = array(
-            ['text', 'LIKE', $term]
+            ['text', 'LIKE', '%'.$term.'%']
         );
         $response = $this->_service->all($filter);
         if ($response->containsErrors()) {
