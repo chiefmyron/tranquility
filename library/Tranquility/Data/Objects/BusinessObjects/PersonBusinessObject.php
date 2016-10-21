@@ -74,7 +74,7 @@ class PersonBusinessObject extends BusinessObject {
         $builder = new ClassMetadataBuilder($metadata);
         // Define table name
         $builder->setTable('entity_people');
-        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\PersonRepository');
         
         // Define fields
         $builder->createField('title', 'string')->nullable()->build();
@@ -148,5 +148,24 @@ class PersonBusinessObject extends BusinessObject {
 
     public function isPrimaryContact() {
         return $this->primaryContact;
+    }
+
+    /**
+     * Retrieves value for an object property for display in a form
+     * Added for compatibility with laravelcollective/html package forms
+     *
+     * @var string $name  Property name
+     * @return mixed
+     */
+    public function getFormValue($name) {
+        if ($name == 'accountId') {
+            $account = $this->getAccount();
+            if (!is_null($account)) {
+                return $account->id.':'.$account->name;
+            } else {
+                return null;
+            }
+        }
+        return $this->__get($name);
     }
 }

@@ -107,7 +107,7 @@ class AccountBusinessObject extends BusinessObject {
         $criteria = Criteria::create()->where(Criteria::expr()->eq("primaryContact", true));
         $contact = $this->contacts->matching($criteria);
         if ($contact->count() > 0) {
-            return $contact;
+            return $contact[0];
         }
 
         return null;

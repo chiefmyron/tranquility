@@ -252,13 +252,13 @@ abstract class Service implements \Tranquility\Services\Interfaces\ServiceInterf
 	}
     
     /**
-     * Use the address service to find the parent entity for an address
+     * Generic function to find any entity
      *
-     * @param int $parentId  ID of the parent entity
+     * @param int $entityId  ID of the entity
      * @return \Tranquility\Services\ServiceResponse
      */
-    public function findParentEntity($parentId) {
-        $entity = $this->_entityManager->find(Entity::class, $parentId);
+    public function findEntity($entityId) {
+        $entity = $this->_entityManager->find(Entity::class, $entityId);
 		return $this->_findResponse(array($entity));
     }
 	

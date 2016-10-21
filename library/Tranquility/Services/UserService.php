@@ -48,7 +48,7 @@ class UserService extends \Tranquility\Services\Service {
         
         // Retrieve parent entity
         $parentId = Utility::extractValue($data, 'parentId', 0);
-        $response = $this->findParentEntity($parentId);
+        $response = $this->findEntity($parentId);
         if ($response->containsErrors()) {
             return $response;
         }

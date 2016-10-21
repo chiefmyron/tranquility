@@ -1,5 +1,6 @@
 <?php namespace Tranquility\Services;
 
+use \Tranquility\Utility;
 use \Tranquility\Enums\System\EntityType   as EnumEntityType;
 use \Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
@@ -20,6 +21,18 @@ class PersonService extends \Tranquility\Services\Service {
 	 * @return \Tranquility\Services\ServiceResponse
 	 */
 	public function create(array $data) {
+        $accountId = Utility::extractValue($data, 'accountId', '');
+        
+        // If an associated account has been provided, associate it now
+        if ($accountId != '') {
+            $response = $this->findEntity($accountId);
+            if ($response->containsErrors()) {
+                return $response;
+            }
+            $data['account'] = $response->getFirstContentItem();
+        }
+        
+        // Create new Person record
 		$response = parent::create($data);
 		
 		// Add entity specific success code
@@ -113,6 +126,16 @@ class PersonService extends \Tranquility\Services\Service {
 	 */
 	public function validateBusinessObjectRules($inputs, $newRecord) {
 		$messages = array();
+
+        // Check that the account is valid (if provided)
+		if (isset($inputs['account']) && !is_a($inputs['account'], '\Tranquility\Data\Objects\BusinessObjects\AccountBusinessObject')) {
+			$messages[] = array(
+				'code' => 10024,
+				'text' => 'message_10024_person_invalid_account',
+				'level' => EnumMessageLevel::Error,
+				'fieldId' => 'accountId'
+			);
+		}
 		
 		// TODO: Validate title code against reference data table
 		

@@ -27,7 +27,7 @@ class AddressService extends \Tranquility\Services\Service {
 		$category = Utility::extractValue($data, 'category', null);
         
 		// Retrieve parent entity
-		$response = $this->findParentEntity($parentId);
+		$response = $this->findEntity($parentId);
         if ($response->containsErrors()) {
             return $response;
         }

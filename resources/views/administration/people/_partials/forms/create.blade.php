@@ -23,7 +23,7 @@
 </div>
 
 <div class="form-group">
-	{!! Form::label('account', trans('administration.people_label_company')) !!}
-	{!! Form::text('account', null, ['class' => 'form-control', 'data-custom-control' => 'entity-select-single', 'data-custom-control-entity-type' => 'account', 'data-custom-control-datasource' => action('Administration\SearchController@autocomplete')]) !!}	
-	{!! FormError::inline('account', Session::get('messages')) !!}
+	{!! Form::label('accountId', trans('administration.people_label_company')) !!}
+	{!! Form::text('accountId', null, ['class' => 'form-control', 'data-custom-control' => 'entity-select-single', 'data-custom-control-entity-type' => 'account', 'data-custom-control-datasource' => action('Administration\SearchController@autocomplete')]) !!}	
+	{!! FormError::inline('accountId', Session::get('messages')) !!}
 </div>

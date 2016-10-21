@@ -69,7 +69,9 @@ define(['tagsinput', 'typeahead', 'bloodhound'], function() {
             entities.initialize();
             typeaheads[entityType] = entities;
         }
-        
+
+        // Render control
+        existingValue = $(element).val();
         $(element).tagsinput({
             tagClass: 'single-select',
             itemValue: 'id',
@@ -81,14 +83,26 @@ define(['tagsinput', 'typeahead', 'bloodhound'], function() {
                 source: typeaheads[entityType].ttAdapter(),
             }
         });
+        $(element).siblings('div.bootstrap-tagsinput').addClass('entity-select-single');
 
         $(element).on('itemAdded', function(event) {
             if ($(this).tagsinput('items').length > 0) {
-                console.log($(this));
-                console.log($(this).siblings().find('input.tt-input'));
-                $(this).parent().find('input.tt-input').hide();
+                $(this).parent().find('.twitter-typeahead').hide();
             }
         });
+
+        $(element).on('itemRemoved', function(event) {
+            if ($(this).tagsinput('items').length <= 0) {
+                $(this).parent().find('.twitter-typeahead').show();
+            }
+        });
+
+        // Add the existing value
+        if (existingValue != '') {
+            _log('Existing value found for element: ' + existingValue);
+            values = existingValue.split(":");
+            $(element).tagsinput('add', { id: values[0], label: values[1] });
+        }
     }
 
     /**

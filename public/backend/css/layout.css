@@ -6405,6 +6405,12 @@ span.tag {
 span.tag a {
   color: #ffffff; }
 
+.bootstrap-tagsinput.entity-select-single span.twitter-typeahead {
+  width: 100%; }
+
+.bootstrap-tagsinput.entity-select-single div.tt-menu {
+  width: 100%; }
+
 .bootstrap-tagsinput .tag {
   margin-right: 2px;
   margin-top: 2px;

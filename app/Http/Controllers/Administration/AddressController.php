@@ -296,7 +296,7 @@ class AddressController extends Controller {
     private function _refreshAddressList($parent, $type) {
         if (is_numeric($parent)) {
             // Retrieve parent entity details
-            $response = $this->_getService($type)->findParentEntity($parent);
+            $response = $this->_getService($type)->findEntity($parent);
             if ($response->containsErrors()) {
                 $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
                 return $ajax;

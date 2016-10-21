@@ -18,6 +18,7 @@ return array(
     'message_10021_person_record_updated_successfully' => 'Person record was updated successfully',
     'message_10022_person_record_deleted_successfully' => 'Person record was deleted successfully',
     'message_10023_person_multiple_records_deleted_successfully' => ':count people records were deleted successfully',
+    'message_10024_person_invalid_account' => 'The company you have specified cannot be found',
     
     'message_10030_user_record_created_successfully' => 'New user account added for :name',
     'message_10031_user_record_updated_successfully' => 'User account for :name has been updated',

@@ -56,7 +56,7 @@ class TagsController extends Controller {
 		}
         
         // Retrieve parent entity
-        $response = $this->_service->findParentEntity($parentId);
+        $response = $this->_service->findEntity($parentId);
         if ($response->containsErrors()) {
             $ajax->addMessages($result->getMessages());
             $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));

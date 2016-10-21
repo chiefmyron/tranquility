@@ -144,7 +144,7 @@ class PeopleController extends Controller {
 		// Save details of person
 		$params = $request->all();
 		$id = $request->input('id', 0);
-		
+
 		// Add in additional audit trail details
 		$params['type'] = EnumEntityType::Account;
 		$params['updateBy'] = Auth::user();
