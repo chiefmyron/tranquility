@@ -52,6 +52,7 @@ return array(
     'people_label_user_account' => 'User account',
     'people_label_no_user_account' => 'No user account',
     'people_label_company' => 'Company',
+    'people_label_no_company' => 'No company',
     'people_label_contacts' => 'Contacts',
     'people_command_create' => 'Create new person record',
     'people_command_update' => 'Update person details',
