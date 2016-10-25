@@ -70,10 +70,6 @@ class AccountBusinessObject extends BusinessObject {
         // Add relationships
         $builder->createOneToMany('contacts', Contact::class)->mappedBy('account')->orphanRemoval(true)->build();
     }
-    
-    //*************************************************************************
-    // Class-specific getter methods                                          *
-    //*************************************************************************
 
     /**
      * Create a new instance of the Account
@@ -88,6 +84,15 @@ class AccountBusinessObject extends BusinessObject {
         // Initialise collections for related entities
         $this->contacts = new ArrayCollection();
     }
+
+    //*************************************************************************
+    // Class-specific getter and setter methods                               *
+    //*************************************************************************
+
+
+    //*************************************************************************
+    // Contact relationship                                                   *
+    //*************************************************************************
 
     /**
      * Retreive a collection of contacts associated with this Account
@@ -111,5 +116,19 @@ class AccountBusinessObject extends BusinessObject {
         }
 
         return null;
+    }
+
+    /**
+     * Remove a Contact relationship from the Account
+     *
+     * @return \Tranquility\Data\BusinessObjects\AccountBusinessObject
+     */
+    public function removeContact(Contact $contact) {
+        if ($this->contacts->contains($contact)) {
+            $this->contacts->removeElement($contact);
+            $contact->setAccount(null);
+        }
+
+        return $this;
     }
 }

@@ -101,10 +101,6 @@ class UserBusinessObject extends BusinessObject implements UserContract {
         $builder->createOneToMany('userTokens', UserToken::class)->mappedBy('user')->build();
     }
     
-    //*************************************************************************
-    // Class-specific getter methods                                          *
-    //*************************************************************************
-    
     /**
      * Create a new instance of the User entity
      *
@@ -118,6 +114,23 @@ class UserBusinessObject extends BusinessObject implements UserContract {
         // Initialise collections for related entities
         $this->userTokens = new ArrayCollection();
     }
+
+    //*************************************************************************
+    // Class-specific getter methods                                          *
+    //*************************************************************************
+
+    /**
+     * Get the full name of the Person associated with the User
+     *
+     * @return string
+     */
+    public function getDisplayName() {
+        return $this->person->getFullName();
+    }
+
+    //*************************************************************************
+    // UserContract mandatory functions                                       *
+    //*************************************************************************
     
     /**
 	 * Get the unique identifier for the user.
@@ -179,25 +192,13 @@ class UserBusinessObject extends BusinessObject implements UserContract {
 	public function getRememberTokenName() {
 		return EnumUserTokenType::RememberMe;
 	}
-    
+
     /**
-     * Get the full name of the Person associated with the User
+     * Retrieves a token for the specified type
      *
-     * @return string
+     * @param string $type  User token type
+     * @return \Tranquility\Data\Objects\ExtensionObjects\UserToken
      */
-    public function getDisplayName() {
-        return $this->person->getFullName();
-    }
-    
-    /**
-     * Get the parent Person associated with the User
-     *
-     * @return Person
-     */
-    public function getPerson() {
-        return $this->person;
-    }
-    
     public function getUserToken($type) {
         // Check type is a valid token type
         if (!EnumUserTokenType::isValidValue($type)) {
@@ -213,6 +214,13 @@ class UserBusinessObject extends BusinessObject implements UserContract {
         return $token;
     }
     
+    /**
+     * Associate a token with the user account
+     * 
+     * @param string $type  User token type
+     * @param string $value Token value
+     * @return void
+     */
     public function setUserToken($type, $value) {
         // Check if token already exists
         $token = $this->getUserToken($type);
@@ -222,5 +230,18 @@ class UserBusinessObject extends BusinessObject implements UserContract {
         }
         
         $token->setToken($type, $value);
+    }
+
+    //*************************************************************************
+    // Contact relationship                                                   *
+    //*************************************************************************
+    
+    /**
+     * Get the parent Person associated with the User
+     *
+     * @return Person
+     */
+    public function getPerson() {
+        return $this->person;
     }
 }

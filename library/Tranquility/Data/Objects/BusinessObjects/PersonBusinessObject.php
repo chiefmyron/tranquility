@@ -86,10 +86,6 @@ class PersonBusinessObject extends BusinessObject {
         $builder->createOneToOne('user', User::class)->addJoinColumn('userId','id')->build();
         $builder->createOneToMany('contacts', Contact::class)->mappedBy('person')->orphanRemoval(true)->fetchLazy()->build();
     }
-
-    //*************************************************************************
-    // Class-specific getter methods                                          *
-    //*************************************************************************
     
     /**
      * Create a new instance of the Person entity
@@ -105,6 +101,10 @@ class PersonBusinessObject extends BusinessObject {
         $this->contacts = new ArrayCollection();
     }
 
+    //*************************************************************************
+    // Class-specific getter and setter methods                               *
+    //*************************************************************************
+
     /**
      * Retrieve formatted name for person
      *
@@ -117,6 +117,10 @@ class PersonBusinessObject extends BusinessObject {
         }
         return $name;
     }
+
+    //*************************************************************************
+    // User relationship                                                      *
+    //*************************************************************************
     
     /**
      * Retrieve the User object associated with this person
@@ -133,10 +137,14 @@ class PersonBusinessObject extends BusinessObject {
      * @param User $user  User account to be associated with the person
      * @return Person
      */
-    public function setUserAccount($user) {
+    public function setUserAccount(User $user) {
         $this->user = $user;
         return $this;
     }
+
+    //*************************************************************************
+    // Contact relationship                                                   *
+    //*************************************************************************
 
     /** 
      * Retrieve the Contact relationship object associated with this Person
@@ -179,18 +187,6 @@ class PersonBusinessObject extends BusinessObject {
         return null;
     }
 
-    public function _getAccount() {
-        return $this->getAccount();
-    }
-
-    public function setPrimaryContact($value) {
-        $this->primaryContact = $value;
-    }
-
-    public function isPrimaryContact() {
-        return $this->primaryContact;
-    }
-
     /**
      * Retrieves value for an object property for display in a form
      * Added for compatibility with laravelcollective/html package forms
@@ -199,6 +195,7 @@ class PersonBusinessObject extends BusinessObject {
      * @return mixed
      */
     public function getFormValue($name) {
+        // 'accountId' is used in the create / update form to associate an Account with the Person
         if ($name == 'accountId') {
             $account = $this->getAccount();
             if (!is_null($account)) {
@@ -207,6 +204,8 @@ class PersonBusinessObject extends BusinessObject {
                 return null;
             }
         }
+
+        // For all other properties, retrieve from class variable
         return $this->__get($name);
     }
 }
