@@ -69,16 +69,18 @@ class Contact extends ExtensionObject {
      */
     protected static $_entityType = EnumEntityType::Contact;
 
-    public function setPerson(Person $person) {
+    public function setPerson(Person $person = null) {
         $this->person = $person;
+        return $this;
     }
 
     public function getPerson() {
         return $this->person;
     }
 
-    public function setAccount(Account $account) {
+    public function setAccount(Account $account = null) {
         $this->account = $account;
+        return $this;
     }
 
     public function getAccount() {

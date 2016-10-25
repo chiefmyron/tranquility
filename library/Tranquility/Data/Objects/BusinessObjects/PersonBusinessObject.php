@@ -92,6 +92,20 @@ class PersonBusinessObject extends BusinessObject {
     //*************************************************************************
     
     /**
+     * Create a new instance of the Person entity
+     *
+     * @var array $data     [Optional] Initial values for object properties
+     * @var array $options  [Optional] Configuration options for the object
+     * @return void
+     */
+    public function __construct($data = array(), $options = array()) {
+        parent::__construct($data, $options);
+        
+        // Initialise collections for related entities
+        $this->contacts = new ArrayCollection();
+    }
+
+    /**
      * Retrieve formatted name for person
      *
      * @return string
@@ -121,6 +135,33 @@ class PersonBusinessObject extends BusinessObject {
      */
     public function setUserAccount($user) {
         $this->user = $user;
+        return $this;
+    }
+
+    /** 
+     * Retrieve the Contact relationship object associated with this Person
+     *
+     * @return \Tranquility\Data\ExtensionObjects\Contact
+     */
+    public function getContact() {
+        if (count($this->contacts) > 0) {
+            return $this->contacts[0];
+        }
+
+        return null;
+    }
+
+    /**
+     * Remove a Contact relationship from the Person
+     *
+     * @return \Tranquility\Data\BusinessObjects\PersonBusinessObject
+     */
+    public function removeContact(Contact $contact) {
+        if ($this->contacts->contains($contact)) {
+            $this->contacts->removeElement($contact);
+            $contact->setPerson(null);
+        }
+
         return $this;
     }
 

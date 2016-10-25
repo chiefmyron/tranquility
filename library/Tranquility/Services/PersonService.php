@@ -51,6 +51,18 @@ class PersonService extends \Tranquility\Services\Service {
 	 * @return \Tranquility\Services\ServiceResponse
 	 */
 	public function update($id, array $data) {
+        $accountId = Utility::extractValue($data, 'accountId', '');
+        
+        // If an associated account has been provided, associate it now
+        if ($accountId != '') {
+            $response = $this->findEntity($accountId);
+            if ($response->containsErrors()) {
+                return $response;
+            }
+            $data['account'] = $response->getFirstContentItem();
+        }
+
+        // Update existing Person record
 		$response = parent::update($id, $data);
 		
 		// Add entity specific success code
