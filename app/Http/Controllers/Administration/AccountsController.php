@@ -96,7 +96,7 @@ class AccountsController extends Controller {
 			// Render dialog
 			$ajax = new AjaxResponse();
 			$dialog = $this->_renderPartial('administration.accounts._partials.dialogs.create');
-			$ajax->addContent('#modal-content', $dialog, 'displayDialog');
+			$ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
 			return Response::json($ajax->toArray());
 		}
         
@@ -125,7 +125,7 @@ class AccountsController extends Controller {
 			// Render dialog
 			$ajax = new AjaxResponse();
 			$dialog = $this->_renderPartial('administration.accounts._partials.dialogs.update', $data);
-			$ajax->addContent('#modal-content', $dialog, 'displayDialog');
+			$ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
 			return Response::json($ajax->toArray());
 		}
         
@@ -174,8 +174,8 @@ class AccountsController extends Controller {
 			$ajax = new AjaxResponse(); 
 			$ajax->addContent('#page-header .page-title', $heading);
 			$ajax->addContent('#main-content-container', $content);
-			$ajax->addContent('#process-message-container', $messages, 'showElement', array('process-message-container'));
-			$ajax->addCallback('closeDialog');
+			$ajax->addContent('#process-message-container', $messages, 'core.showElement', array('process-message-container'));
+			$ajax->addCallback('core.closeDialog');
 			return Response::json($ajax->toArray());
 		}
 
@@ -217,7 +217,7 @@ class AccountsController extends Controller {
 
 		// AJAX response
 		$ajax = new \Tranquility\View\AjaxResponse();
-		$ajax->addContent('#modal-content', $dialog, 'displayDialog');
+		$ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
 		return Response::json($ajax->toArray());
 	}
     
@@ -249,10 +249,10 @@ class AccountsController extends Controller {
 
 			// AJAX response
 			$ajax = new \Tranquility\View\AjaxResponse();
-            $ajax->addCallback('hideElement', array('process-message-container'));
+            $ajax->addCallback('core.hideElement', array('process-message-container'));
 			$ajax->addContent('#main-content-container', $this->_renderPartial('administration.accounts._partials.panels.list-table', $responseArray));
-            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
-            $ajax->addCallback('closeDialog');
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
+            $ajax->addCallback('core.closeDialog');
 			return Response::json($ajax->toArray());
 		}
 		

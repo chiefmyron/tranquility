@@ -11,10 +11,12 @@
                             </div>
                             <div class="data-item">
                                 <span class="heading">{{ trans('administration.people_label_company') }}</span>
-                        @if(is_null($account))        
-                                <span>No company</span>
-                        @else
+                        @if (!is_null($account) && $person->position != '')
                                 <span>{{ $person->position }} at <a href="{{ action('Administration\AccountsController@show', ['id' => $account->id]) }}">{{ $account->name }}</a></span>
+                        @elseif (!is_null($account) && $person->position == '')
+                                <span><a href="{{ action('Administration\AccountsController@show', ['id' => $account->id]) }}">{{ $account->name }}</a></span>
+                        @else
+                                <span><em>{{ trans('administrator.people_label_no_company') }}</em></span>
                         @endif
                             </div>
                         </li>

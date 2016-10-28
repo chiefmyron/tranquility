@@ -41,6 +41,22 @@ class UserBusinessObject extends BusinessObject implements UserContract {
     // Related extension data objects
     protected $userTokens;
 
+    /** 
+     * Type of entity represented by the business object
+     *
+     * @var string
+     * @static
+     */
+    protected static $_entityType = EnumEntityType::User;
+
+    /**
+     * Name of the class responsible for representing historical versions of this business entity
+     * 
+     * @var string
+     * @static
+     */
+    protected static $_historicalEntityClass = UserHistory::class;
+
     /**
      * Property definition for object
      * 
@@ -60,20 +76,30 @@ class UserBusinessObject extends BusinessObject implements UserContract {
     );
     
     /**
-     * Name of the class responsible for representing historical versions of this business entity
-     * 
-     * @var string
-     * @static
-     */
-    protected static $_historicalEntityClass = UserHistory::class;
-    
-    /** 
-     * Type of entity represented by the business object
+     * Metadata used to define object relationship to database
      *
-     * @var string
-     * @static
+     * @var \Doctrine\ORM\Mapping\ClassMetadata $metadata  Metadata to be passed to Doctrine
+     * @return void
      */
-    protected static $_entityType = EnumEntityType::User;
+    public static function loadMetadata(ClassMetadata $metadata) {
+        $builder = new ClassMetadataBuilder($metadata);
+        // Define table name
+        $builder->setTable('entity_users');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\UserRepository');
+        
+        // Define fields
+        $builder->addField('username', 'string');
+        $builder->addField('password', 'string');
+        $builder->addField('timezoneCode', 'string');
+        $builder->addField('localeCode', 'string');
+        $builder->addField('active', 'boolean');
+        $builder->addField('securityGroupId', 'integer');
+        $builder->addField('registeredDateTime', 'datetime');
+        
+        // Add relationships
+        $builder->createOneToOne('person', Person::class)->mappedBy('user')->build();
+        $builder->createOneToMany('userTokens', UserToken::class)->mappedBy('user')->build();
+    }
     
     /**
      * Create a new instance of the User entity
@@ -88,6 +114,23 @@ class UserBusinessObject extends BusinessObject implements UserContract {
         // Initialise collections for related entities
         $this->userTokens = new ArrayCollection();
     }
+
+    //*************************************************************************
+    // Class-specific getter methods                                          *
+    //*************************************************************************
+
+    /**
+     * Get the full name of the Person associated with the User
+     *
+     * @return string
+     */
+    public function getDisplayName() {
+        return $this->person->getFullName();
+    }
+
+    //*************************************************************************
+    // UserContract mandatory functions                                       *
+    //*************************************************************************
     
     /**
 	 * Get the unique identifier for the user.
@@ -149,25 +192,13 @@ class UserBusinessObject extends BusinessObject implements UserContract {
 	public function getRememberTokenName() {
 		return EnumUserTokenType::RememberMe;
 	}
-    
+
     /**
-     * Get the full name of the Person associated with the User
+     * Retrieves a token for the specified type
      *
-     * @return string
+     * @param string $type  User token type
+     * @return \Tranquility\Data\Objects\ExtensionObjects\UserToken
      */
-    public function getDisplayName() {
-        return $this->person->getFullName();
-    }
-    
-    /**
-     * Get the parent Person associated with the User
-     *
-     * @return Person
-     */
-    public function getPerson() {
-        return $this->person;
-    }
-    
     public function getUserToken($type) {
         // Check type is a valid token type
         if (!EnumUserTokenType::isValidValue($type)) {
@@ -183,6 +214,13 @@ class UserBusinessObject extends BusinessObject implements UserContract {
         return $token;
     }
     
+    /**
+     * Associate a token with the user account
+     * 
+     * @param string $type  User token type
+     * @param string $value Token value
+     * @return void
+     */
     public function setUserToken($type, $value) {
         // Check if token already exists
         $token = $this->getUserToken($type);
@@ -193,30 +231,17 @@ class UserBusinessObject extends BusinessObject implements UserContract {
         
         $token->setToken($type, $value);
     }
+
+    //*************************************************************************
+    // Contact relationship                                                   *
+    //*************************************************************************
     
     /**
-     * Metadata used to define object relationship to database
+     * Get the parent Person associated with the User
      *
-     * @var \Doctrine\ORM\Mapping\ClassMetadata $metadata  Metadata to be passed to Doctrine
-     * @return void
+     * @return Person
      */
-    public static function loadMetadata(ClassMetadata $metadata) {
-        $builder = new ClassMetadataBuilder($metadata);
-        // Define table name
-        $builder->setTable('entity_users');
-        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\UserRepository');
-        
-        // Define fields
-        $builder->addField('username', 'string');
-        $builder->addField('password', 'string');
-        $builder->addField('timezoneCode', 'string');
-        $builder->addField('localeCode', 'string');
-        $builder->addField('active', 'boolean');
-        $builder->addField('securityGroupId', 'integer');
-        $builder->addField('registeredDateTime', 'datetime');
-        
-        // Add relationships
-        $builder->createOneToOne('person', Person::class)->mappedBy('user')->build();
-        $builder->createOneToMany('userTokens', UserToken::class)->mappedBy('user')->build();
+    public function getPerson() {
+        return $this->person;
     }
 }

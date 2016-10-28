@@ -66,6 +66,7 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
 
     // Search controller
     Route::any ('/search',                           'Administration\SearchController@index');
+    Route::any ('/search/autocomplete',              'Administration\SearchController@autocomplete');
     
     // Address controller
     Route::post('/address',                          'Administration\AddressController@store');

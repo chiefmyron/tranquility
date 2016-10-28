@@ -1,11 +1,14 @@
 <?php namespace App\Http\Controllers\Administration;
 
 use \Session;
-use Illuminate\Http\Request                   as Request;
-use Illuminate\Routing\Controller             as BaseController;
+use \Response;
+use Illuminate\Http\Request as Request;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
+use Tranquility\Utility;
+use Tranquility\View\AjaxResponse as AjaxResponse;
 use Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
 
 abstract class Controller extends BaseController {
@@ -56,12 +59,48 @@ abstract class Controller extends BaseController {
         if ($request->ajax()) {
             $ajax = new AjaxResponse();
             $html = $this->_renderPartial('administration._partials.errors', ['messages' => $messages]);
-            $ajax->addContent('#modal-dialog-container #process-message-container', $html, 'showElement', array('modal-dialog-container #process-message-container'));
-            $ajax->addMessages($response->getMessages());
+            $ajax->addContent('#modal-dialog-container #process-message-container', $html, 'core.showElement', array('modal-dialog-container #process-message-container'));
+            $ajax->addMessages($this->_renderInlineMessages($messages));
             return Response::json($ajax->toArray());
         }
 
         // Use a redirect to go back to the form
         return redirect()->back()->withInput();
+    }
+
+    protected function _renderInlineMessages($messages) {
+        $messageText = array(
+            'error' => array(), 
+            'warning' => array(), 
+            'success' => array(), 
+            'info' => array()
+        );
+
+        // Group messages by level, and then by field
+        foreach ($messages as $message) {
+            $fieldId = Utility::extractValue($message, 'fieldId', null);
+            $level = Utility::extractValue($message, 'level', 'error');
+
+            if ($fieldId !== null) {
+                $messageText[$level][$fieldId][] = $message['text'];
+            }
+        }
+
+        // Render a single message per level / field combination
+        $newMessages = array();
+        foreach ($messageText as $messageLevel => $fields) {
+            foreach ($fields as $fieldId => $messageStrings) {
+                $newMessages[] = array(
+                    'code' => '',
+                    'text' => implode(', ', $messageStrings),
+                    'level' => $messageLevel,
+                    'fieldId' => $fieldId,
+                    'target' => null,
+                    'html' => $this->_renderPartial('administration._partials.errors-inline', ['fieldId' => $fieldId, 'messages' => $messageStrings, 'level' => $level])
+                );
+            }
+        }
+
+        return $newMessages;
     }
 }

@@ -25,24 +25,6 @@ class AccountBusinessObject extends BusinessObject {
     
     // Related entities
     protected $contacts;
-
-    /**
-     * Property definition for object
-     * 
-     * @static
-     * @var array
-     */
-    protected static $_fieldDefinitions = array(
-        'name' => array('mandatoryUpdate', 'mandatoryCreate', 'searchable')
-    );
-    
-    /**
-     * Name of the class responsible for representing historical versions of a Account entity
-     * 
-     * @var string
-     * @static
-     */
-    protected static $_historicalEntityClass = AccountHistory::class;
     
     /** 
      * Type of entity represented by the business object
@@ -53,52 +35,23 @@ class AccountBusinessObject extends BusinessObject {
     protected static $_entityType = EnumEntityType::Account;
 
     /**
-     * Create a new instance of the Account
-     *
-     * @var array $data     [Optional] Initial values for object properties
-     * @var array $options  [Optional] Configuration options for the object
-     * @return void
+     * Name of the class responsible for representing historical versions of a Account entity
+     * 
+     * @var string
+     * @static
      */
-    public function __construct($data = array(), $options = array()) {
-        parent::__construct($data, $options);
-        
-        // Initialise collections for related entities
-        $this->contacts = new ArrayCollection();
-    }
+    protected static $_historicalEntityClass = AccountHistory::class;
 
     /**
-     * Retreive a collection of contacts associated with this Account
-     *
-     * @return mixed
+     * Property definition for object
+     * 
+     * @static
+     * @var array
      */
-    public function getContacts() {
-        return array_map(
-            function ($contact) {
-                $person = $contact->getPerson();
-                $person->primaryContact = $contact->primaryContact;
-                return $person;
-            },
-            $this->contacts->toArray()
-        );
-    }
+    protected static $_fieldDefinitions = array(
+        'name' => array('mandatoryUpdate', 'mandatoryCreate', 'searchable')
+    );
 
-    /**
-     * Retrieve the primary contact for the Account
-     *
-     * @return mixed
-     */
-    public function getPrimaryContact() {
-        $criteria = Criteria::create()->where(Criteria::expr()->eq("primaryContact", true));
-        $contact = $this->contacts->matching($criteria);
-        if ($contact->count() > 0) {
-            $person = $contact[0]->getPerson();
-            $person->primaryContact = true;
-            return $person;
-        }
-
-        return null;
-    }
-    
     /**
      * Metadata used to define object relationship to database
      *
@@ -116,5 +69,66 @@ class AccountBusinessObject extends BusinessObject {
         
         // Add relationships
         $builder->createOneToMany('contacts', Contact::class)->mappedBy('account')->orphanRemoval(true)->build();
+    }
+
+    /**
+     * Create a new instance of the Account
+     *
+     * @var array $data     [Optional] Initial values for object properties
+     * @var array $options  [Optional] Configuration options for the object
+     * @return void
+     */
+    public function __construct($data = array(), $options = array()) {
+        parent::__construct($data, $options);
+        
+        // Initialise collections for related entities
+        $this->contacts = new ArrayCollection();
+    }
+
+    //*************************************************************************
+    // Class-specific getter and setter methods                               *
+    //*************************************************************************
+
+
+    //*************************************************************************
+    // Contact relationship                                                   *
+    //*************************************************************************
+
+    /**
+     * Retreive a collection of contacts associated with this Account
+     *
+     * @return mixed
+     */
+    public function getContacts() {
+        return $this->contacts;
+    }
+
+    /**
+     * Retrieve the primary contact for the Account
+     *
+     * @return mixed
+     */
+    public function getPrimaryContact() {
+        $criteria = Criteria::create()->where(Criteria::expr()->eq("primaryContact", true));
+        $contact = $this->contacts->matching($criteria);
+        if ($contact->count() > 0) {
+            return $contact[0];
+        }
+
+        return null;
+    }
+
+    /**
+     * Remove a Contact relationship from the Account
+     *
+     * @return \Tranquility\Data\BusinessObjects\AccountBusinessObject
+     */
+    public function removeContact(Contact $contact) {
+        if ($this->contacts->contains($contact)) {
+            $this->contacts->removeElement($contact);
+            $contact->setAccount(null);
+        }
+
+        return $this;
     }
 }

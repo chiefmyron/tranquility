@@ -27,6 +27,9 @@ class PersonBusinessObject extends BusinessObject {
     protected $firstName;
     protected $lastName;
     protected $position;
+
+    // Temporary property (not persisted)
+    protected $primaryContact;
     
     // Related entities
     protected $user;
@@ -58,8 +61,7 @@ class PersonBusinessObject extends BusinessObject {
         'title'          => array(),
         'firstName'      => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
         'lastName'       => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
-        'position'       => array('searchable'),
-        'primaryContact' => array() // Only set when loaded via Contact relationship with an Account
+        'position'       => array('searchable')
     );
 
     /**
@@ -72,7 +74,7 @@ class PersonBusinessObject extends BusinessObject {
         $builder = new ClassMetadataBuilder($metadata);
         // Define table name
         $builder->setTable('entity_people');
-        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\PersonRepository');
         
         // Define fields
         $builder->createField('title', 'string')->nullable()->build();
@@ -84,11 +86,25 @@ class PersonBusinessObject extends BusinessObject {
         $builder->createOneToOne('user', User::class)->addJoinColumn('userId','id')->build();
         $builder->createOneToMany('contacts', Contact::class)->mappedBy('person')->orphanRemoval(true)->fetchLazy()->build();
     }
+    
+    /**
+     * Create a new instance of the Person entity
+     *
+     * @var array $data     [Optional] Initial values for object properties
+     * @var array $options  [Optional] Configuration options for the object
+     * @return void
+     */
+    public function __construct($data = array(), $options = array()) {
+        parent::__construct($data, $options);
+        
+        // Initialise collections for related entities
+        $this->contacts = new ArrayCollection();
+    }
 
     //*************************************************************************
-    // Class-specific getter methods                                          *
+    // Class-specific getter and setter methods                               *
     //*************************************************************************
-    
+
     /**
      * Retrieve formatted name for person
      *
@@ -101,6 +117,10 @@ class PersonBusinessObject extends BusinessObject {
         }
         return $name;
     }
+
+    //*************************************************************************
+    // User relationship                                                      *
+    //*************************************************************************
     
     /**
      * Retrieve the User object associated with this person
@@ -117,8 +137,39 @@ class PersonBusinessObject extends BusinessObject {
      * @param User $user  User account to be associated with the person
      * @return Person
      */
-    public function setUserAccount($user) {
+    public function setUserAccount(User $user) {
         $this->user = $user;
+        return $this;
+    }
+
+    //*************************************************************************
+    // Contact relationship                                                   *
+    //*************************************************************************
+
+    /** 
+     * Retrieve the Contact relationship object associated with this Person
+     *
+     * @return \Tranquility\Data\ExtensionObjects\Contact
+     */
+    public function getContact() {
+        if (count($this->contacts) > 0) {
+            return $this->contacts[0];
+        }
+
+        return null;
+    }
+
+    /**
+     * Remove a Contact relationship from the Person
+     *
+     * @return \Tranquility\Data\BusinessObjects\PersonBusinessObject
+     */
+    public function removeContact(Contact $contact) {
+        if ($this->contacts->contains($contact)) {
+            $this->contacts->removeElement($contact);
+            $contact->setPerson(null);
+        }
+
         return $this;
     }
 
@@ -136,7 +187,25 @@ class PersonBusinessObject extends BusinessObject {
         return null;
     }
 
-    public function _getAccount() {
-        return $this->getAccount();
+    /**
+     * Retrieves value for an object property for display in a form
+     * Added for compatibility with laravelcollective/html package forms
+     *
+     * @var string $name  Property name
+     * @return mixed
+     */
+    public function getFormValue($name) {
+        // 'accountId' is used in the create / update form to associate an Account with the Person
+        if ($name == 'accountId') {
+            $account = $this->getAccount();
+            if (!is_null($account)) {
+                return $account->id.':'.$account->name;
+            } else {
+                return null;
+            }
+        }
+
+        // For all other properties, retrieve from class variable
+        return $this->__get($name);
     }
 }

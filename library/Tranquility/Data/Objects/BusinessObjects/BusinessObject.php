@@ -55,6 +55,40 @@ abstract class BusinessObject extends DataObject {
         'version' => array('mandatoryUpdate'),
         'deleted' => array()
     );
+
+    /**
+     * Metadata used to define object relationship to database
+     *
+     * @var \Doctrine\ORM\Mapping\ClassMetadata $metadata  Metadata to be passed to Doctrine
+     * @return void
+     */
+    public static function loadMetadata(ClassMetadata $metadata) {
+        $builder = new ClassMetadataBuilder($metadata);
+        // Define table name
+        $builder->setTable('entity');
+        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
+        
+        // Define inheritence
+        $builder->setJoinedTableInheritance();
+        $builder->setDiscriminatorColumn('type');
+        $builder->addDiscriminatorMapClass(EnumEntityType::Person, Person::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::User, User::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::Account, Account::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::Address, Address::class);
+        $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhysical, AddressPhysical::class);
+        
+        // Define fields
+        $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
+        $builder->addField('version', 'integer');
+        $builder->addField('deleted', 'boolean');
+        
+        // Add relationships
+        $builder->createOneToOne('auditTrail', AuditTrail::class)->addJoinColumn('transactionId','transactionId')->build();
+        $builder->createOneToMany('addresses', Address::class)->mappedBy('parentEntity')->build();
+        $builder->createOneToMany('physicalAddresses', AddressPhysical::class)->mappedBy('parentEntity')->build();
+        $builder->createManyToMany('tags', Tag::class)->inversedBy('entities')->setJoinTable('entity_tags_xref')->addJoinColumn('entityId', 'id')->addInverseJoinColumn('tagId', 'id')->build();
+        $builder->createManyToMany('relatedEntities', BusinessObject::class)->setJoinTable('entity_entity_xref')->addJoinColumn('parentId', 'id')->addInverseJoinColumn('childId', 'id')->build();
+    }
     
     /**
      * Create a new instance of the Business Object
@@ -282,40 +316,6 @@ abstract class BusinessObject extends DataObject {
         return $this->auditTrail;
     }
      
-    /**
-     * Metadata used to define object relationship to database
-     *
-     * @var \Doctrine\ORM\Mapping\ClassMetadata $metadata  Metadata to be passed to Doctrine
-     * @return void
-     */
-    public static function loadMetadata(ClassMetadata $metadata) {
-        $builder = new ClassMetadataBuilder($metadata);
-        // Define table name
-        $builder->setTable('entity');
-        $builder->setCustomRepositoryClass('Tranquility\Data\Repositories\EntityRepository');
-        
-        // Define inheritence
-        $builder->setJoinedTableInheritance();
-        $builder->setDiscriminatorColumn('type');
-        $builder->addDiscriminatorMapClass(EnumEntityType::Person, Person::class);
-        $builder->addDiscriminatorMapClass(EnumEntityType::User, User::class);
-        $builder->addDiscriminatorMapClass(EnumEntityType::Account, Account::class);
-        $builder->addDiscriminatorMapClass(EnumEntityType::Address, Address::class);
-        $builder->addDiscriminatorMapClass(EnumEntityType::AddressPhysical, AddressPhysical::class);
-        
-        // Define fields
-        $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
-        $builder->addField('version', 'integer');
-        $builder->addField('deleted', 'boolean');
-        
-        // Add relationships
-        $builder->createOneToOne('auditTrail', AuditTrail::class)->addJoinColumn('transactionId','transactionId')->build();
-        $builder->createOneToMany('addresses', Address::class)->mappedBy('parentEntity')->build();
-        $builder->createOneToMany('physicalAddresses', AddressPhysical::class)->mappedBy('parentEntity')->build();
-        $builder->createManyToMany('tags', Tag::class)->inversedBy('entities')->setJoinTable('entity_tags_xref')->addJoinColumn('entityId', 'id')->addInverseJoinColumn('tagId', 'id')->build();
-        $builder->createManyToMany('relatedEntities', BusinessObject::class)->setJoinTable('entity_entity_xref')->addJoinColumn('parentId', 'id')->addInverseJoinColumn('childId', 'id')->build();
-    }
-    
     /**
      * Returns a list of all available fields for the business object
      *

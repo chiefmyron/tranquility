@@ -4,7 +4,7 @@ use \Session as Session;
 use \Response as Response;
 use \Auth as Auth;
 use Illuminate\Http\Request as Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Administration\Controller;
 
 use Carbon\Carbon;
 use Tranquility\Utility;
@@ -106,24 +106,37 @@ class PeopleController extends Controller {
 		return view('administration.people.create');
 	}
 	
-	/**
-	 * Displays page for updating details of an existing person record
+    /**
+	 * Displays page for updating details of an existing Person record
 	 *
-	 * @param int $id  Entity ID of the person to update
+	 * @param int $id  Entity ID of the Person to update
 	 * @return Response
 	 */
-	public function update($id) {
+	public function update(Request $request, $id) {
+		// Retrieve account details
 		$response = $this->_service->find($id);
 		if ($response->containsErrors()) {
 			// Redirect to index with error message
 			Session::flash('messages', $response->getMessages());
 			return redirect()->action('Administration\PeopleController@index');
 		}
-		return view('administration.people.update')->with('person', $response->getFirstContentItem());
+		$data = array('person' => $response->getFirstContentItem());
+		
+		// If called via AJAX, display as a dialog
+		if ($request->ajax()) {
+			// Render dialog
+			$ajax = new AjaxResponse();
+			$dialog = $this->_renderPartial('administration.people._partials.dialogs.update', $data);
+			$ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
+			return Response::json($ajax->toArray());
+		}
+        
+        // Display full page
+		return view('administration.peoplle.update')->with($data);
 	}
 	
 	/**
-	 * Store details of a new or updated person record
+	 * Store details of a new or updated Person record
 	 *
 	 * @return Response
 	 */
@@ -131,9 +144,9 @@ class PeopleController extends Controller {
 		// Save details of person
 		$params = $request->all();
 		$id = $request->input('id', 0);
-		
+
 		// Add in additional audit trail details
-		$params['type'] = EnumEntityType::Person;
+		$params['type'] = EnumEntityType::Account;
 		$params['updateBy'] = Auth::user();
 		$params['updateDateTime'] = Carbon::now();
 		$params['transactionSource'] = EnumTransactionSource::UIBackend;
@@ -146,16 +159,30 @@ class PeopleController extends Controller {
             $params['updateReason'] = 'backend person create';
 			$result = $this->_service->create($params);
 		}
-		
-		// Flash messages to session, and check for errors
-		Session::flash('messages', $result->getMessages());
+
+		// If errors were encountered, display on the form
 		if ($result->containsErrors()) {
-			// Errors encountered - redisplay form with error messages
-			return redirect()->back()->withInput();
+			return $this->_renderFormErrors($request, $result->getMessages());
 		}
 		
-		// No errors - return to index page
-		return redirect()->action('Administration\PeopleController@index');
+		// Show updated record
+		$person = $result->getFirstContentItem();
+		if ($request->ajax()) {
+			// Render address panel for parent entity
+			$heading = $this->_renderPartial('administration._partials.heading', ['heading' => $person->getFullName()]);
+			$content = $this->_renderPartial('administration.people._partials.content.show', ['person' => $person]);
+			$messages = $this->_renderPartial('administration._partials.errors', ['messages' => $result->getMessages()]);
+
+			$ajax = new AjaxResponse(); 
+			$ajax->addContent('#page-header .page-title', $heading);
+			$ajax->addContent('#main-content-container', $content);
+			$ajax->addContent('#process-message-container', $messages, 'core.showElement', array('process-message-container'));
+			$ajax->addCallback('core.closeDialog');
+			return Response::json($ajax->toArray());
+		}
+
+		Session::flash('messages', $result->getMessages());		
+		return redirect()->action('Administration\PeopleController@show', ['id' => $person->id]);
 	}
 	
 	public function confirmAction(Request $request) {
@@ -206,7 +233,7 @@ class PeopleController extends Controller {
 		
 		// AJAX response
 		$ajax = new \Tranquility\View\AjaxResponse();
-		$ajax->addContent('#modal-content', $dialog, 'displayDialog');
+		$ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
 		return Response::json($ajax->toArray());
 	}
     
@@ -229,14 +256,16 @@ class PeopleController extends Controller {
         // If AJAX request, send response
         if ($request->ajax()) {
             // Refresh index view
-            $responseArray = $this->_service->all()->toArray();
+            $pageNumber = $request->get('page', 1);
+            $recordsPerPage = $request->get('recordsPerPage', 20);
+            $response = $this->_service->all(array(), array(), $recordsPerPage, $pageNumber);
 
 			// AJAX response
 			$ajax = new \Tranquility\View\AjaxResponse();
-            $ajax->addCallback('hideElement', array('process-message-container'));
-			$ajax->addContent('#main-content-container', $this->_renderPartial('administration.people._partials.panels.list-table', $responseArray));
-            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
-            $ajax->addCallback('closeDialog');
+            $ajax->addCallback('core.hideElement', array('process-message-container'));
+			$ajax->addContent('#main-content-container', $this->_renderPartial('administration.people._partials.panels.list-table', ['people' => $response->getContent()]));
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
+            $ajax->addCallback('core.closeDialog');
 			return Response::json($ajax->toArray());
 		}
 		
@@ -263,7 +292,7 @@ class PeopleController extends Controller {
         $response = $this->_service->find($id);
         if ($response->containsErrors()) {
             $ajax->addMessages($result->getMessages());
-            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
             return $ajax;
         }
         
@@ -272,7 +301,7 @@ class PeopleController extends Controller {
         $user = $person->getUserAccount();
         if (!is_null($user)) {
             $ajax->addMessage(10034, 'message_10033_user_already_exists', EnumMessageLevel::Error, null);
-            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
         }
         
         // Get any existing email addresses for the person
@@ -283,7 +312,7 @@ class PeopleController extends Controller {
         
         // Render dialog
         $dialog = $this->_renderPartial('administration.people._partials.dialogs.create-user', ['person' => $person, 'emailAddresses' => $emailAddresses]);
-        $ajax->addContent('#modal-content', $dialog, 'displayDialog');
+        $ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
 		return Response::json($ajax->toArray());
     }
     
@@ -330,8 +359,8 @@ class PeopleController extends Controller {
                 $response = $this->_addressService->create($emailData);
                 if ($response->containsErrors()) {
                     // Errors encountered - redisplay form with error messages
-                    $ajax->addContent('#modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('modal-dialog-container #process-message-container'));
-                    $ajax->addMessages($response->getMessages());
+                    $ajax->addContent('#modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('modal-dialog-container #process-message-container'));
+                    $ajax->addMessages($this->_renderInlineMessages($response->getMessages()));
                     return Response::json($ajax->toArray());
                 }
             }
@@ -348,17 +377,17 @@ class PeopleController extends Controller {
         $response = $this->_userService->create($data);
         if ($response->containsErrors()) {
             // Errors encountered - redisplay form with error messages
-            $ajax->addContent('#modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('modal-dialog-container #process-message-container'));
-            $ajax->addMessages($response->getMessages());
+            $ajax->addContent('#modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('modal-dialog-container #process-message-container'));
+            $ajax->addMessages($this->_renderInlineMessages($response->getMessages()));
             return Response::json($ajax->toArray());
         }
         
         // Render address panel for person
         $person = $this->_service->find($id)->getFirstContentItem();
-        $ajax->addContent('#person-details-container', $this->_renderPartial('administration.people._partials.panels.person-details', ['person' => $person, 'user' => $person->getUserAccount()]));
-        $ajax->addContent('#email-addresses-container', $this->_renderPartial('administration.addresses._partials.panels.email-address', ['addresses' => $person->getAddresses(EnumAddressType::Email), 'parentId' => $person->id]), 'attachCommonHandlers');
-        $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
-        $ajax->addCallback('closeDialog');
+        $ajax->addContent('#person-details-container', $this->_renderPartial('administration.people._partials.panels.person-details', ['person' => $person, 'user' => $person->getUserAccount(), 'account' => $person->getAccount()]));
+        $ajax->addContent('#email-addresses-container', $this->_renderPartial('administration.addresses._partials.panels.email-address', ['addresses' => $person->getAddresses(EnumAddressType::Email), 'parentId' => $person->id]));
+        $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
+        $ajax->addCallback('core.closeDialog');
         return Response::json($ajax->toArray());
     }
     
@@ -374,7 +403,7 @@ class PeopleController extends Controller {
         $response = $this->_service->find($id);
         if ($response->containsErrors()) {
             $ajax->addMessages($result->getMessages());
-            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'showElement', array('process-message-container'));
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
             return $ajax;
         }
         
@@ -386,7 +415,7 @@ class PeopleController extends Controller {
         
         // Render dialog
         $dialog = $this->_renderPartial('administration.users._partials.dialogs.view-details', $person->getUserAccount());
-        $ajax->addContent('#modal-content', $dialog, 'displayDialog');
+        $ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
 		return Response::json($ajax->toArray());
 	}
 }

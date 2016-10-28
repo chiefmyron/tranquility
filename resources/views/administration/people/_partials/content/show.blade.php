@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-lg-3 col-md-4 col-sm-4">
-        @include('administration.people._partials.panels.person-details', ['person' => $person])
+        @include('administration.people._partials.panels.person-details', ['person' => $person, 'user' => $person->getUserAccount(), 'account' => $person->getAccount()])
     </div>
     <div class="col-lg-9 col-md-8 col-sm-8">
         <!-- Nav tabs -->

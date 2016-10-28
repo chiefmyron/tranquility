@@ -5,6 +5,7 @@ $primaryContact = $account->getPrimaryContact();
 
 $primaryContactAddresses = array();
 if ($primaryContact !== null) {
+    $primaryContact = $primaryContact->getPerson();
     $primaryContactAddresses = $primaryContact->getPrimaryAddresses();
 }
 ?>

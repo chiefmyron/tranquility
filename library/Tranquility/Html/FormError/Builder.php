@@ -1,5 +1,6 @@
 <?php namespace Tranquility\Html\FormError;
 
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Traits\Macroable;
 
 use Tranquility\Utility;
@@ -27,17 +28,27 @@ class Builder {
 			return;
 		}
 		
+		$messageText = array(
+            'error' => array(), 
+            'warning' => array(), 
+            'success' => array(), 
+            'info' => array()
+        );
+
 		// Check for field level messages
 		foreach ($messages as $message) {
 			if (isset($message['fieldId']) && $message['fieldId'] == $name) {
-				$response = $response.'<div class="alert alert-inline alert-danger '.$this->_getClass($message['level']).'">'.trans('messages.'.$message['text']).'</div>'."\n";
+				$messageText[$message['level']][] = $message['text'];
+			}
+		}
+
+		foreach ($messageText as $level => $messageStrings) {
+			if (count($messageStrings) > 0) {
+				$html = view('administration._partials.errors-inline', ['fieldId' => $name, 'messages' => $messageStrings, 'level' => $level]);
+				$response = $response.$html;
 			}
 		}
 		
 		return $response;
-	}
-	
-	private function _getClass($level) {
-		return 'text-'.Utility::extractValue($this->_classes, $level, 'error');
 	}
 }
