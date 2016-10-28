@@ -2,7 +2,7 @@
 			<table class="table table-striped data-table entity-person">
 				<thead>
 					<tr class="action-strip">
-						<td colspan="5">
+						<td colspan="7">
 							<div class="filter">
 								<h4>Filter results</h4>
 								<ul class="filter-items">
@@ -33,27 +33,30 @@
 							<input type="checkbox" name="selectAll" value="" class="record-select-all checkbox" />
 						</th>
 						<th>
-							{{ trans('administration.people_name') }}	
+							{{ trans('administration.people_label_name') }}	
+						</th>
+						<th>
+							{{ trans('administration.people_label_position') }}	
+						</th>
+						<th>
+							{{ trans('administration.people_label_company') }}	
 						</th>
 						<th>
 							{{ trans('administration.common_email_address') }}
 						</th>
 						<th>
-							User account
+							{{ trans('administration.address_label_phone_number') }}
 						</th>
 						<th>
-							Logged in
+							{{ trans('administration.people_label_user_account') }}
 						</th>
 					</tr>
 			@foreach ($people as $person)
 <?php
-// Get primary contact details for person
 $emailAddress = $person->getPrimaryAddress('email');
 if (!is_null($emailAddress)) {
 	$emailAddress = $emailAddress->toString();
 }
-$userAccount = $person->getUserAccount();
-
 ?>		
 					<tr>
 						<td class="checkboxcol">
@@ -63,18 +66,32 @@ $userAccount = $person->getUserAccount();
 							<a href="{{ action('Administration\PeopleController@show', [$person->id]) }}" data-secondary-info="{{ $emailAddress }}">{{ $person->firstName.' '.$person->lastName}}</a>
 						</td>
 						<td>
-							{{ $emailAddress or 'No email' }}
+							{{ $person->position }}
 						</td>
 						<td>
-							
+							@if (!is_null($person->getAccount()))
+							<a href="{{ action('Administration\AccountsController@show', [$person->getAccount()->id]) }}">{{ $person->getAccount()->name }}</a>
+							@endif
 						</td>
 						<td>
-							
+							@if (!is_null($person->getPrimaryAddress('email')))
+							<a href="mailto:{{ $person->getPrimaryAddress('email')->toString() }}">{{ $person->getPrimaryAddress('email')->toString() }}</a>
+							@endif
+						</td>
+						<td>
+							@if (!is_null($person->getPrimaryAddress('phone')))
+							<a href="tel:{{ $person->getPrimaryAddress('phone')->toString() }}">{{ $person->getPrimaryAddress('phone')->toString() }}</a>
+							@endif
+						</td>
+						<td>
+							@if (!is_null($person->getUserAccount()))
+							Yes
+							@endif
 						</td>
 					</tr>
 			@endforeach
 					<tr>
-						<td class="footer" colspan="6"></td>
+						<td class="footer" colspan="7"></td>
 					</tr>
 				</tbody>
 			</table>
