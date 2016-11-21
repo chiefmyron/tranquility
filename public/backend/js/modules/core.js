@@ -194,28 +194,11 @@ define(['modules/controls', 'bootstrap', 'jquery'], function(controls) {
     }
 
     /**
-     * Event handler: Dialog load complete
-     */
-    function _eventDialogDisplayed(context, e) {
-        console.log ("Event: Dialog displayed");
-        
-        
-        // Attach tagging
-        context.find('[data-role="tagsinput"]').each(function (element) {
-            $(this).tagsInput({
-                'height': 'auto',
-                'width': '100%',
-                'autocomplete_url': $(this).attr('data-autocomplete'),
-                'delimiter': ','
-            });
-        });
-    }
-
-    /**
      * Private: Wrapper to handle AJAX calls to backend
      */
     function _ajaxCall(url, type, data, datatype) {
         _log("Performing " + type.toUpperCase() + " request to endpoint: " + url);
+        _log(data);
 
         // Perform AJAX call - handling of response will be done by generic callbacks
         $.ajax({
@@ -305,7 +288,9 @@ define(['modules/controls', 'bootstrap', 'jquery'], function(controls) {
         });
 
         // Remove any existing inline error messages
-        $('div.alert-inline').slideUp().remove();
+        $(".form-control.error").removeClass("error");
+        $("label.error").removeClass("error");
+        $("div.alert-inline").slideUp().remove();
         
         // Display inline error messages
         $.each(response.messages, function(i, message) {
@@ -317,7 +302,11 @@ define(['modules/controls', 'bootstrap', 'jquery'], function(controls) {
 
                 // Add new inline error message (hidden by default)
                 $("#" + message.fieldId).after(message.html);
-                _log(message.text + '(Field ID: ' + message.fieldId + ' | Level: ' + message.level + ')');
+                _log(message.text + ' (Field ID: ' + message.fieldId + ' | Level: ' + message.level + ')');
+
+                // Add error class to input control and label
+                $("#" + message.fieldId + ".form-control").addClass(message.level);
+                $("label[for='" + message.fieldId + "']").addClass(message.level);
             }
         });
 
@@ -409,82 +398,6 @@ define(['modules/controls', 'bootstrap', 'jquery'], function(controls) {
         $(element).html(content);
         $(element).trigger('tql.element.refresh');
     }
-
-    /**
-     * Private: Render process messages and inline error messages for forms
-     * 
-     * @var messages Array of message strings
-     * @var target   [Optional] Element ID to display messages inside of
-     */
-    /*function displayMessages(messages, target) {
-        var inline_container, container_div;
-        
-        // Determine container for messages
-        var messageContainer = "#process-message-container"
-        if ((typeof target !== 'undefined') && (target.length > 0))  {
-            messageContainer = target;
-        }
-        
-        // Remove any existing messages
-        $("span.help-inline").slideUp().remove();
-        if ($(messageContainer).is(":visible")) {
-            $(messageContainer).slideUp();
-        }
-        
-        // Generate HTML for messages
-        var messageHtml = "";
-        for (var i = 0; i < messages.length; i++) {
-            
-        }
-
-        // Work out where we are displaying top-level (i.e. not field level) messages
-        if (type == "dialog") {
-            container_div = "#modal-message-container";
-            
-            // Remove inline error messages from dialog
-            inline_container = "#modalDialog ";
-            $(inline_container + "span.help-inline").slideUp();
-            $(inline_container + "span.help-inline").remove();
-        } else {
-            container_div = "#message-container";
-            
-            // Remove all inline error messages
-            inline_container = "";
-            $("span.help-inline").slideUp();
-            $("span.help-inline").remove();
-        }
-        
-        // Clear any existing top-level messages
-        if ($(container_div).is(":visible")) {
-            $(container_div).slideUp();
-        }
-        
-        // Loop through supplied messages and add to container
-        var messageHtml = "";
-        for (var i = 0; i < messages.length; i++) {
-            if (messages[i].html.length > 0) {
-                // HTML message present - add to top level message container
-                messageHtml = messageHtml + messages[i].html;
-            } else if (messages[i].fieldId != null) {
-                // Field level validation messages display under form element
-                var formElement = $(inline_container + " #" + messages[i].fieldId);
-                formElement.after('<span class="help-inline" style="display: none;">' + messages[i].text + '</span>');
-            }
-        }
-        
-        // If there are messages, append them and display the container
-        if (messageHtml.length > 0) {
-            $(container_div).queue(function() {
-                $(this).html(messageHtml);
-                $(this).dequeue();
-            });
-            
-            $(container_div).slideDown();
-        }
-        
-        // Display any inline errors as well
-        $(inline_container + "span.help-inline").slideDown();
-    }*/
 
     /**
      * Private: Message logging

@@ -16,7 +16,7 @@
                         @elseif (!is_null($account) && $person->position == '')
                                 <span><a href="{{ action('Administration\AccountsController@show', ['id' => $account->id]) }}">{{ $account->name }}</a></span>
                         @else
-                                <span><em>{{ trans('administrator.people_label_no_company') }}</em></span>
+                                <span><em>{{ trans('administration.people_label_no_company') }}</em></span>
                         @endif
                             </div>
                         </li>

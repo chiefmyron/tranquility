@@ -918,6 +918,18 @@ label + .checkbox {
     margin-top: 0;
 }
 
+.form-control.error {
+    border-color: $brand-danger;
+}
+
+.form-control.error:focus {
+    @include form-control-focus($brand-danger);
+}
+
+label.error {
+    color: $brand-danger;
+}
+
 // Selectize JS control
 @import "resources/assets/sass/selectize"; 
 
@@ -965,13 +977,14 @@ span.tag a {
 
 // Process messages
 .alert-error {
-    @include alert-variant($alert-danger-bg, $alert-danger-border, $alert-danger-text);
+    @include alert-variant($alert-danger-bg, $alert-danger-border, $brand-danger);
 }
 
 // Inline form validation messages
 .alert-inline {
-    padding: 5px;
-    border-top: none;
+    border: none;
+    padding: 5px 0 0 0;
+    background-color: transparent;
 }
 
 // Autocomplete
