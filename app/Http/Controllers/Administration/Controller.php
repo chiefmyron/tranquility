@@ -52,9 +52,6 @@ abstract class Controller extends BaseController {
     }
 
     protected function _renderFormErrors(Request $request, $messages) {
-        // Flash messages to session
-		Session::flash('messages', $messages);
-        
         // If request was from an AJAX call, return errors messages only
         if ($request->ajax()) {
             $ajax = new AjaxResponse();
@@ -65,6 +62,7 @@ abstract class Controller extends BaseController {
         }
 
         // Use a redirect to go back to the form
+		Session::flash('messages', $messages);
         return redirect()->back()->withInput();
     }
 
