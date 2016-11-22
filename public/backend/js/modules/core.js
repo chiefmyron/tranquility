@@ -158,12 +158,20 @@ define(['modules/controls', 'bootstrap', 'jquery'], function(controls) {
         // Prevent default form behaviour
         event.preventDefault();
         
-        // Serialise form input and submit via AJAX
+        // Serialise form input
         var form = $(this).closest("form");
         var formValues = form.serialize();
         var formAction = form.attr("action");
         var formMethod = form.attr("method");
-        return _ajaxCall(formAction, formMethod, formValues, "json");
+
+        // Disable submit button on form
+        $(form).find("button[type='submit']").addClass("in-progress");
+        var enableSubmitButton = function(textStatus, xhr) {
+            $(form).find("button[type='submit']").removeClass("in-progress");
+        };
+
+        // Submit form via AJAX
+        return _ajaxCall(formAction, formMethod, formValues, "json", enableSubmitButton);
     }
 
     /**
@@ -196,7 +204,7 @@ define(['modules/controls', 'bootstrap', 'jquery'], function(controls) {
     /**
      * Private: Wrapper to handle AJAX calls to backend
      */
-    function _ajaxCall(url, type, data, datatype) {
+    function _ajaxCall(url, type, data, datatype, callback) {
         _log("Performing " + type.toUpperCase() + " request to endpoint: " + url);
         _log(data);
 
@@ -208,7 +216,8 @@ define(['modules/controls', 'bootstrap', 'jquery'], function(controls) {
             async: true,
             data: data,
             success: _callbackAjaxSuccess,
-            error: _callbackAjaxError
+            error: _callbackAjaxError,
+            complete: callback
         });
     }
 
