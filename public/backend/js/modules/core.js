@@ -302,6 +302,7 @@ define(['modules/controls', 'bootstrap', 'jquery'], function(controls) {
         $("div.alert-inline").slideUp().remove();
         
         // Display inline error messages
+        inlineErrors = false;
         $.each(response.messages, function(i, message) {
             if (message.fieldId != null) {
                 // If message has not been pre-rendered, attempt to render it now
@@ -316,8 +317,15 @@ define(['modules/controls', 'bootstrap', 'jquery'], function(controls) {
                 // Add error class to input control and label
                 $("#" + message.fieldId + ".form-control").addClass(message.level);
                 $("label[for='" + message.fieldId + "']").addClass(message.level);
+
+                inlineErrors = true;
             }
         });
+
+        // If inline error message has been displayed, set autofocus to first field in error
+        if (inlineErrors) {
+            $(".form-control.error").first().focus();
+        }
 
         // Display all inline error messages
         $("div.alert-inline").slideDown();
