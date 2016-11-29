@@ -1,7 +1,7 @@
 <?php $primaryAddresses = $entity->getPrimaryAddresses(); ?>
 
 @if (count($primaryAddresses) > 0)
-<li>
+<li id="profile-primary-addresses">
     <div class="icon">
         <i class="icon-envelope"></i>
     </div>

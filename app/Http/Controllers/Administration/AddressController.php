@@ -306,6 +306,7 @@ class AddressController extends Controller {
         
         // Render refreshed address list panel
         $ajax = new \Tranquility\View\AjaxResponse();
+        $ajax->addContent('#profile-primary-addresses', $this->_renderPartial('administration.addresses._partials.panels.profile-primary-address', ['entity' => $parent]));
         $ajax->addContent("#".$type.'-addresses-container', $this->_renderPartial('administration.addresses._partials.panels.'.$type.'-address', ['addresses' => $parent->getAddresses($type), 'parentId' => $parent->id]));
         return $ajax;
     }

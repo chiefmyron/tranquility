@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-lg-3 col-md-4 col-sm-4">
-        @include('administration.accounts._partials.panels.show-details', ['account' => $account])
+        @include('administration.accounts._partials.panels.profile-container', ['account' => $account])
     </div>
     <div class="col-lg-9 col-md-8 col-sm-8">
         <!-- Nav tabs -->
