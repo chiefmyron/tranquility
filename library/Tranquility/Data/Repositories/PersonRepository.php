@@ -61,15 +61,16 @@ class PersonRepository extends EntityRepository {
         // Check if we need to create a new Contact record
         if (!is_null($account) && is_null($contact)) {
             $contact = new Contact();
-            $contact->setPerson($person);
-            $contact->setAccount($account);
             if (count($account->getContacts()) <= 0) {
                 $contact->primaryContact = true;
             } else {
                 $contact->primaryContact = false;
             }
-            $this->_em->persist($contact);
-            $this->_em->flush();
+
+            // Associate Person and Account to the Contact record
+            $person->addContact($contact);
+            $account->addContact($contact);
+            $this->_em->flush(); // Cascading persists will take care of person and account
         }
 
         // Check if we need to update an existing Contact record

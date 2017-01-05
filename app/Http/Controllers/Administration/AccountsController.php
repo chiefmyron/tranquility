@@ -244,14 +244,22 @@ class AccountsController extends Controller {
         
         // If AJAX request, send response
         if ($request->ajax()) {
-            // Refresh index view
-            $responseArray = $this->_accountService->all()->toArray();
+			// Get the existing messages from the 'delete' service call
+			$deleteMessages = $response->getMessages();
+
+			// Refresh index view
+            $pageNumber = $request->get('page', 1);
+            $recordsPerPage = $request->get('recordsPerPage', 20);
+            $response = $this->_accountService->all(array(), array(), $recordsPerPage, $pageNumber);
+
+			// Merge message arrays
+			$messages = array_merge($deleteMessages, $response->getMessages());
 
 			// AJAX response
 			$ajax = new \Tranquility\View\AjaxResponse();
             $ajax->addCallback('core.hideElement', array('process-message-container'));
-			$ajax->addContent('#main-content-container', $this->_renderPartial('administration.accounts._partials.panels.list-table', $responseArray));
-            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
+			$ajax->addContent('#main-content-container', $this->_renderPartial('administration.accounts._partials.panels.index', ['accounts' => $response->getContent()]));
+            $ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $messages]), 'core.showElement', array('process-message-container'));
             $ajax->addCallback('core.closeDialog');
 			return Response::json($ajax->toArray());
 		}

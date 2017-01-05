@@ -68,7 +68,7 @@ class AccountBusinessObject extends BusinessObject {
         $builder->addField('name', 'string');
         
         // Add relationships
-        $builder->createOneToMany('contacts', Contact::class)->mappedBy('account')->orphanRemoval(true)->build();
+        $builder->createOneToMany('contacts', Contact::class)->mappedBy('account')->orphanRemoval(true)->cascadePersist()->cascadeRemove()->build();
     }
 
     /**
@@ -116,6 +116,20 @@ class AccountBusinessObject extends BusinessObject {
         }
 
         return null;
+    }
+
+    /**
+     * Add a Contact relationship to the Account
+     *
+     * @return \Tranquility\Data\BusinessObjects\AccountBusinessObject
+     */
+    public function addContact(Contact $contact) {
+        if (!$this->contacts->contains($contact)) {
+            $this->contacts->add($contact);
+            $contact->setAccount($this);
+        }
+
+        return $this;
     }
 
     /**

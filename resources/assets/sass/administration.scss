@@ -768,127 +768,6 @@ dl.data-list dd {
     border-radius: 75px;
 }
 
-
-
-/*.bootstrap-tagsinput {
-    background-color: $input-bg;
-    border: 1px solid $input-border;
-    @include box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
-    padding: 4px 6px;
-    vertical-align: middle;
-    max-width: 100%;
-    line-height: 22px;
-    cursor: text;
-    @include transition(border-color ease-in-out .15s, box-shadow ease-in-out .15s);
-}
-
-.bootstrap-tagsinput input {
-    width: auto;
-    border: none;
-    background: 0 0;
-    outline: 0;
-}
-
-.bootstrap-tagsinput input:focus {
-    border: none;
-    box-shadow: none;
-}
-
-span.tag {
-    background-color: $tags-default-bg;
-    color: $tags-color;
-    display: inline-block;
-    padding: 0px 5px 2px 5px;
-    margin-bottom: 4px;
-    text-transform: lowercase;
-    font-variant: small-caps;
-}
-
-span.tag a {
-    color: $tags-color;
-}
-
-// Entity single select control styles
-.bootstrap-tagsinput.entity-select-single span.twitter-typeahead {
-    width: 100%;
-}
-
-.bootstrap-tagsinput.entity-select-single div.tt-menu {
-    width: 100%;
-}
-
-.bootstrap-tagsinput .tag {
-    margin-right: 2px;
-    margin-top: 2px;
-    margin-bottom: 2px;
-}
-
-.bootstrap-tagsinput .tag [data-role="remove"] {
-  margin-left: 8px;
-  cursor: pointer;
-}
-
-.bootstrap-tagsinput .tag.single-select {
-    position: relative;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    display: block;
-    margin-right: -6px;
-    margin-left: -6px;
-    margin-top: -4px;
-    padding-top: 5px;
-    margin-bottom: -4px;
-    padding-bottom: 5px;
-    font-size: 14px;
-    line-height: 1.428571429;
-    color: #555555;
-    text-transform: none;
-    font-variant: normal;
-    background-color: #eef1f4;
-}
-
-.bootstrap-tagsinput .tag.single-select [data-role="remove"] {
-    float: right;
-}
-
-.bootstrap-tagsinput .tag [data-role="remove"]:after {
-  content: "\00d7"; // Symbol for &times; character
-  padding: 0px 2px;
-}
-.bootstrap-tagsinput .tag [data-role="remove"]:hover {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-.bootstrap-tagsinput .tag [data-role="remove"]:hover:active {
-  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-}
-
-// Autocomplete
-.tt-hint {
-    color: #959595;
-}
-
-.tt-menu {
-    background-color: $dropdown-bg;
-    padding: 5px;
-    border: 1px solid $dropdown-fallback-border; // IE8 fallback
-    border: 1px solid $dropdown-border;
-    border-radius: $border-radius-base;
-    @include box-shadow(0 6px 12px rgba(0,0,0,.175));
-}
-
-.tt-suggestion.tt-selectable {
-    margin: 0px -5px;
-    padding: 0px 5px;
-}
-
-.tt-suggestion.tt-selectable:hover {
-    cursor: pointer;
-    text-decoration: none;
-    color: $dropdown-link-hover-color;
-    background-color: $dropdown-link-hover-bg;
-}*/
-
 // Entity labels
 .label-entity-person {
     background-color: $brand-entity-person !important;
@@ -916,6 +795,45 @@ span.tag a {
 label + .radio,
 label + .checkbox {
     margin-top: 0;
+}
+
+.form-control.error {
+    border-color: $brand-danger;
+}
+
+.form-control.error:focus {
+    @include form-control-focus($brand-danger);
+}
+
+label.error {
+    color: $brand-danger;
+}
+
+.btn.btn-primary.in-progress {
+    cursor: not-allowed;
+    opacity: 0.65;
+    filter: alpha(opacity=65);
+    box-shadow: none;
+}
+
+.btn.btn-primary.in-progress:focus {
+    outline: 0;
+}
+
+.btn.btn-primary.in-progress::before {
+	-moz-transition: opacity 0.2s;
+	-webkit-transition: opacity 0.2s;
+	transition: opacity 0.2s;
+	content: ' ';
+	z-index: 2;
+	display: inline-block;
+	width: 16px;
+	height: 16px; 
+	margin: 0 24px 0 -40px;
+	background: url('../images/spinner-64.gif');
+	background-size: 16px 16px;
+    vertical-align: middle;
+    cursor: default;
 }
 
 // Selectize JS control
@@ -965,13 +883,14 @@ span.tag a {
 
 // Process messages
 .alert-error {
-    @include alert-variant($alert-danger-bg, $alert-danger-border, $alert-danger-text);
+    @include alert-variant($alert-danger-bg, $alert-danger-border, $brand-danger);
 }
 
 // Inline form validation messages
 .alert-inline {
-    padding: 5px;
-    border-top: none;
+    border: none;
+    padding: 5px 0 0 0;
+    background-color: transparent;
 }
 
 // Autocomplete

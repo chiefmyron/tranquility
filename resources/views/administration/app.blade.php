@@ -9,11 +9,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="csrf-token" content="{{ csrf_token() }}" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         
         <!-- Linked fonts and icons -->
         @if(App::environment('local'))
+        <meta name="use-local-resources" content="true" />
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
         <link href="/backend/css/local/bootstrap.3.3.6.min.css" rel="stylesheet" type="text/css" />
         <link href="/backend/css/local/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -26,8 +27,6 @@
         @endif
         
         <!-- Custom styles -->
-        <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />-->
-        <link href="/backend/css/jquery-ui.css" rel="stylesheet" type="text/css" />
         <link href="/backend/css/layout.css" rel="stylesheet" type="text/css" />
         
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->

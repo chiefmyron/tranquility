@@ -84,7 +84,7 @@ class PersonBusinessObject extends BusinessObject {
         
         // Add relationships
         $builder->createOneToOne('user', User::class)->addJoinColumn('userId','id')->build();
-        $builder->createOneToMany('contacts', Contact::class)->mappedBy('person')->orphanRemoval(true)->fetchLazy()->build();
+        $builder->createOneToMany('contacts', Contact::class)->mappedBy('person')->orphanRemoval(true)->cascadePersist()->cascadeRemove()->fetchLazy()->build();
     }
     
     /**
@@ -157,6 +157,20 @@ class PersonBusinessObject extends BusinessObject {
         }
 
         return null;
+    }
+
+    /**
+     * Add a Contact relationship to the Person
+     *
+     * @return \Tranquility\Data\BusinessObjects\PersonBusinessObject
+     */
+    public function addContact(Contact $contact) {
+        if (!$this->contacts->contains($contact)) {
+            $this->contacts->add($contact);
+            $contact->setPerson($this);
+        }
+
+        return $this;
     }
 
     /**
