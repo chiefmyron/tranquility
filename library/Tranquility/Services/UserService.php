@@ -2,6 +2,7 @@
 
 use \Hash;
 use \Auth                                     as Auth;
+use Carbon\Carbon;
 use \Tranquility\Utility                      as Utility;
 use \Tranquility\Enums\System\MessageLevel    as EnumMessageLevel;
 use \Tranquility\Enums\System\HttpStatusCode  as EnumHttpStatusCode;
@@ -32,6 +33,9 @@ class UserService extends \Tranquility\Services\Service {
                 $data[$key] = null;
             }
         }
+
+		// Set registered date and time
+		$data['registeredDateTime'] = Carbon::now();
 				
 		// Perform input validation
 		$validation = $this->validateInputFields($data, true);
@@ -158,41 +162,41 @@ class UserService extends \Tranquility\Services\Service {
 		// Password verification
 		if ($newRecord) {
             $messages = $this->validateNewPasswordFields($inputs);
-		}
         
-        // Username validation
-        $username = Utility::extractValue($inputs, 'username', null);
-		if (isset($inputs['username']) && !filter_var($username, FILTER_VALIDATE_EMAIL)) {
-			$messages[] = array(
-				'code' => 10004,
-				'text' => 'message_10004_username_must_be_email_address',
-				'level' => EnumMessageLevel::Error,
-				'fieldId' => 'username'
-			);
-            $messages[] = array(
-				'code' => 10004,
-				'text' => 'message_10004_username_must_be_email_address',
-				'level' => EnumMessageLevel::Error,
-				'fieldId' => 'addressText'
-			);
-		}
+			// Username validation
+			$username = Utility::extractValue($inputs, 'username', null);
+			if (isset($inputs['username']) && !filter_var($username, FILTER_VALIDATE_EMAIL)) {
+				$messages[] = array(
+					'code' => 10004,
+					'text' => 'message_10004_username_must_be_email_address',
+					'level' => EnumMessageLevel::Error,
+					'fieldId' => 'username'
+				);
+				$messages[] = array(
+					'code' => 10004,
+					'text' => 'message_10004_username_must_be_email_address',
+					'level' => EnumMessageLevel::Error,
+					'fieldId' => 'addressText'
+				);
+			}
         
-        // Check username does not already exist
-        $result = $this->findBy('username', $username);
-        if ($result->getItemCount() > 0) {
-            $messages[] = array(
-				'code' => 10038,
-				'text' => 'message_10038_username_not_available',
-				'level' => EnumMessageLevel::Error,
-				'fieldId' => 'username'
-			);
-            $messages[] = array(
-				'code' => 10038,
-				'text' => 'message_10038_username_not_available',
-				'level' => EnumMessageLevel::Error,
-				'fieldId' => 'addressText'
-			);
-        }
+	        // Check username does not already exist
+			$result = $this->findBy('username', $username);
+			if ($result->getItemCount() > 0) {
+				$messages[] = array(
+					'code' => 10038,
+					'text' => 'message_10038_username_not_available',
+					'level' => EnumMessageLevel::Error,
+					'fieldId' => 'username'
+				);
+				$messages[] = array(
+					'code' => 10038,
+					'text' => 'message_10038_username_not_available',
+					'level' => EnumMessageLevel::Error,
+					'fieldId' => 'addressText'
+				);
+			}
+		}
         return $messages;
 	}
     

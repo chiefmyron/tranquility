@@ -73,5 +73,6 @@
     {!! FormError::inline('active', Session::get('messages')) !!}
 </div>
 
+{!! Form::hidden('parentId', $person->id) !!}
 {{-- TODO: Security group hidden until ACL implemented --}}
 {!! Form::hidden('securityGroupId', 1) !!}

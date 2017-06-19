@@ -23,6 +23,7 @@ class UserRepository extends EntityRepository {
         $entity = new $entityName($data);
         $entity->version = 1; // Force version for new records to be 1
         $entity->setAuditTrail($auditTrail);
+        $entity->setPerson($data['parent']);
         $this->_em->persist($entity);
         
         // Link user to parent entity
