@@ -114,8 +114,9 @@ trait PropertyAccessorTrait {
      */
     public function toArray() {
         $result = array();
+        $hiddenFields = self::getHiddenFields();
         foreach (self::getFields() as $fieldName) {
-            if (!in_array($fieldName, AuditTrail::getFields()) && !in_array($fieldName, $this->_getHiddenFields())) {
+            if (!in_array($fieldName, AuditTrail::getFields()) && !in_array($fieldName, $hiddenFields)) {
                 $result[$fieldName] = $this->$fieldName;
             }
         }
@@ -153,25 +154,8 @@ trait PropertyAccessorTrait {
     public static function getMandatoryFields($newRecord = false) {
         // If getting for the first time, build a static list of mandatory fields
         if (static::$_mandatoryFields === null) {
-            $mandatoryFields = array('update' => array(), 'create' => array());
-
-            $entityFields = self::$_fieldDefinitions;
-            foreach ($entityFields as $fieldName => $definition) {
-                if (in_array('mandatoryUpdate', $definition)) {
-                    $mandatoryFields['update'][] = $fieldName;
-                }
-                if (in_array('mandatoryCreate', $definition)) {
-                    $mandatoryFields['create'][] = $fieldName;
-                }
-            }
-
-            if ($newRecord) {
-                $mandatoryFields['create'] = array_merge($mandatoryFields['create'], AuditTrail::getMandatoryFields($newRecord));
-            } else {
-                $mandatoryFields['update'] = array_merge($mandatoryFields['update'], AuditTrail::getMandatoryFields($newRecord));
-            }
-            static::$_mandatoryFields = $mandatoryFields;
-        }
+            static::_setEntityFieldMetadata();
+         }
 
         // Get mandatory fields (different for create / update actions)
         if ($newRecord) {
@@ -188,43 +172,28 @@ trait PropertyAccessorTrait {
      * @return array
      */
     public static function getSearchableFields() {
-        // If getting for the first time, build a static list of mandatory fields
+        // If getting for the first time, build a static list of searchable fields
         if (static::$_searchableFields === null) {
-            $searchableFields = array();
-
-            $entityFields = self::$_fieldDefinitions;
-            foreach ($entityFields as $fieldName => $definition) {
-                if (in_array('searchable', $definition)) {
-                    $searchableFields[] = $fieldName;
-                }
-            }
-            static::$_searchableFields = array_merge($searchableFields, Entity::getSearchableFields());
+            static::_setEntityFieldMetadata();
         }
 
         return static::$_searchableFields;
     }
     
     /**
-     * Returns a list of fields that will not be exposed publically
+     * Returns a list of fields that will not be exposed publicly
      *
      * @static
      * @return array
      */
     public static function getHiddenFields() {
-        // If getting for the first time, build a static list of mandatory fields
+        // If getting for the first time, build a static list of hidden fields
         if (static::$_hiddenFields === null) {
-            $hiddenFields = array();
-
-            $entityFields = self::$_fieldDefinitions;
-            foreach ($entityFields as $fieldName => $definition) {
-                if (in_array('hidden', $definition)) {
-                    $hiddenFields[] = $fieldName;
-                }
-            }
-            static::$_hiddenFields = array_merge($hiddenFields, Entity::getHiddenFields());
+            static::_setEntityFieldMetadata();
         }
 
-        return static::$_hiddenFields;
+        $hiddenFields = static::$_hiddenFields;
+        return $hiddenFields;
     }
     
     /**
@@ -244,5 +213,46 @@ trait PropertyAccessorTrait {
      */
     public static function getEntityType() {
         return self::$_entityType;
+    }
+
+    /**
+     * Convert field definitions into static set of fields used for 
+     * creating, updating and searching business objects
+     *
+     * @static
+     * @return void
+     */
+    private static function _setEntityFieldMetadata() {
+        $mandatoryFields = array('create' => array(), 'update' => array());
+        $searchableFields = array();
+        $hiddenFields = array();
+
+        $entityFields = self::$_fieldDefinitions;
+        foreach ($entityFields as $fieldName => $fieldDefinition) {
+            foreach ($fieldDefinition as $definition) {
+                switch ($definition) {
+                    case 'mandatoryCreate':
+                        $mandatoryFields['create'][] = $fieldName;
+                        break;
+                    case 'mandatoryUpdate':
+                        $mandatoryFields['update'][] = $fieldName;
+                        break;
+                    case 'searchable':
+                        $searchableFields[] = $fieldName;
+                        break;
+                    case 'hidden':
+                        $hiddenFields[] = $fieldName;
+                        break;
+                }
+            }
+        }
+
+        // Add in field definitions for base Entity object
+        $mandatoryFields['create'] = array_merge($mandatoryFields['create'], AuditTrail::getMandatoryFields(true));
+        $mandatoryFields['update'] = array_merge($mandatoryFields['update'], AuditTrail::getMandatoryFields(false));
+        static::$_searchableFields = array_merge($searchableFields, Entity::getSearchableFields());
+        $hiddenFields = array_merge($hiddenFields, Entity::_getHiddenFields()); 
+        static::$_hiddenFields = $hiddenFields;
+        static::$_mandatoryFields = $mandatoryFields;
     }
 }

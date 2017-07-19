@@ -34,7 +34,7 @@
                         <div class="nav-items">
                             <ul class="nav nav-stacked">
                                 <li class="heading">
-                                    <h3>Website</h3>
+                                    <h3>{{ trans('administration.common_website') }}</h3>
                                 </li>
                                 <li class="nav-item pages{{ strtolower($active) == "pages" ? " active" : ""}}">
                                     <a href="#" class="nav-link">
@@ -49,7 +49,7 @@
                                     </a>
                                 </li>
                                 <li class="heading">
-                                    <h3>Customers</h3>
+                                    <h3>{{ trans('administration.common_customers') }}</h3>
                                 </li>
                                 <li class="nav-item people{{ strtolower($active) == "people" ? " active" : ""}}">
                                     <a href="{{ action('Administration\PeopleController@index') }}" class="nav-link">
@@ -64,7 +64,13 @@
                                     </a>
                                 </li>
                                 <li class="heading">
-                                    <h3>Store</h3>
+                                    <h3>{{ trans('administration.common_store') }}</h3>
+                                </li>
+                                <li class="nav-item products{{ strtolower($active) == "products" ? " active" : ""}}">
+                                    <a href="{{ action('Administration\ProductsController@index') }}" class="nav-link">
+                                        <i class="icon-bag"></i>
+                                        <span class="title">{{ trans('administration.products_heading_products') }}</span>
+                                    </a>
                                 </li>
                                 <li class="nav-item orders{{ strtolower($active) == "invoices" ? " active" : ""}}">
                                     <a href="#" class="nav-link">

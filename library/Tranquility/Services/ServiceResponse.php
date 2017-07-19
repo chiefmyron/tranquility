@@ -84,6 +84,9 @@ class ServiceResponse {
 	 * @throws \Tranquility\Services\ServiceException
 	 */
 	public function setContent($content = array(), $calculateMetadata = true) {
+		// Clear any existing content in the response object
+		$this->_content = array();
+		
 		// If content is a paginated collection, use it as the content collection without modification
 		if ($content instanceof \Illuminate\Pagination\AbstractPaginator) {
 			$this->_content = $content;

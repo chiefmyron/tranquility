@@ -401,7 +401,7 @@ define(['modules/controls', 'bootstrap', 'jquery'], function(controls) {
         var selectedItems = [];
         $('input:checkbox[name='+inputName+']:checked').each(function() {
             selectedItems.push($(this).val());
-        });
+        }); 
         
         return selectedItems;
     }

@@ -37,17 +37,45 @@ class AddressService extends \Tranquility\Services\Service {
 		if (count($data['parent']->getAddresses($category)) <= 0) {
 			$data['primaryContact'] = true;
 		}
-        
-        // Create address
-		$response = parent::create($data);
-		
-		// Add entity specific success code
-		if (!$response->containsErrors()) {
-			if ($category == EnumAddressType::Email) {
-				$response->addMessage(10046, EnumMessageLevel::Success, 'message_10046_electronic_address_record_created_successfully');
-			} else {
-				$response->addMessage(10043, EnumMessageLevel::Success, 'message_10043_phone_address_record_created_successfully');
-			}
+
+		// Set any empty strings to nulls
+        foreach ($data as $key => $value) {
+            if ($value === '') {
+                $data[$key] = null;
+            }
+        }
+				
+		// Perform input validation
+		$response = new ServiceResponse();
+		$validation = $this->validateInputFields($data, true);
+		if ($validation !== true) {
+			// Send error response back immediately
+			$response->addMessages($validation);
+			$response->setHttpResponseCode(EnumHttpStatusCode::BadRequest);
+			return $response;
+		}
+
+		// Check if address already exists for the parent entity
+		$criteria = array(
+			['addressText', '=', $data['addressText']],
+			['addressType', '=', $data['addressType']],
+			['parentEntity', '=', $data['parent']]
+		);
+		$searchResponse = $this->all($criteria);
+		if ($searchResponse->getItemCount() > 0) {
+			// Address already exists - no need to create
+			$searchResponse->addMessage(10052, EnumMessageLevel::Warning, 'message_10052_address_already_exists');
+			return $searchResponse;
+		}
+
+		// Attempt to create the entity
+        $entity = $this->_getRepository()->create($data);
+		$response->setContent($entity);
+		$response->setHttpResponseCode(EnumHttpStatusCode::OK);
+		if ($category == EnumAddressType::Email) {
+			$response->addMessage(10046, EnumMessageLevel::Success, 'message_10046_electronic_address_record_created_successfully');
+		} else {
+			$response->addMessage(10043, EnumMessageLevel::Success, 'message_10043_phone_address_record_created_successfully');
 		}
 		
 		return $response;

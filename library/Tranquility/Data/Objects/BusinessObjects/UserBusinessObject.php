@@ -65,9 +65,9 @@ class UserBusinessObject extends BusinessObject implements UserContract {
      */
     protected static $_fieldDefinitions = array(
         'username'           => array('mandatoryUpdate', 'mandatoryCreate', 'searchable'),
-        'password'           => array('mandatoryUpdate', 'mandatoryCreate'),
-        'passwordConfirm'    => array('mandatoryCreate'),
-        'parentId'           => array('mandatoryCreate'),
+        'password'           => array('mandatoryCreate'),
+        'passwordConfirm'    => array('mandatoryCreate', 'hidden'),
+        'parentId'           => array('mandatoryCreate', 'hidden'),
         'timezoneCode'       => array('mandatoryUpdate', 'mandatoryCreate'),
         'localeCode'         => array('mandatoryUpdate', 'mandatoryCreate'),
         'active'             => array('mandatoryUpdate', 'mandatoryCreate'),
@@ -233,7 +233,7 @@ class UserBusinessObject extends BusinessObject implements UserContract {
     }
 
     //*************************************************************************
-    // Contact relationship                                                   *
+    // Parent entity relationship                                             *
     //*************************************************************************
     
     /**
@@ -243,5 +243,16 @@ class UserBusinessObject extends BusinessObject implements UserContract {
      */
     public function getPerson() {
         return $this->person;
+    }
+
+    /**
+     * Associates a person with this user account
+     * 
+     * @param Person $person Person to be associated with the user account
+     * @return User
+     */
+    public function setPerson(Person $person) {
+        $this->person = $person;
+        return $this;
     }
 }

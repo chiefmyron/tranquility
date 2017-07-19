@@ -29,6 +29,10 @@ return array(
     'common_selection_num_items' => ' item(s) selected',
     'common_related_items' => 'Related items',
     'common_activity_feed' => 'Activity feed',
+    'common_website' => 'Website',
+    'common_store' => 'Store',
+    'common_customers' => 'Customers',
+
 	
 	// Login text
 	'login_heading_login' => 'Login',
@@ -110,6 +114,9 @@ return array(
     'accounts_message_delete_confirmation_single' => 'Are you sure you want to delete the account for :name?',
     'accounts_message_delete_confirmation_multiple' => 'Are you sure you want to delete the :count accounts currently selected?',
     'accounts_message_no_contacts' => 'There are no contacts for this account',
+
+    // Product strings
+    'products_heading_products' => 'Products',
 
     // Search strings
     'search_heading_search' => 'Search',

@@ -83,7 +83,7 @@ class PersonBusinessObject extends BusinessObject {
         $builder->addField('position', 'string');
         
         // Add relationships
-        $builder->createOneToOne('user', User::class)->addJoinColumn('userId','id')->build();
+        $builder->createOneToOne('user', User::class)->inversedBy('person')->addJoinColumn('userId','id')->orphanRemoval(true)->cascadePersist()->cascadeRemove()->fetchLazy()->build();
         $builder->createOneToMany('contacts', Contact::class)->mappedBy('person')->orphanRemoval(true)->cascadePersist()->cascadeRemove()->fetchLazy()->build();
     }
     

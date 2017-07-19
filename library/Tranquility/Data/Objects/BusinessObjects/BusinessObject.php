@@ -378,7 +378,7 @@ abstract class BusinessObject extends DataObject {
      * @static
      * @return array
      */
-    protected static function _getHiddenFields() {
+    public static function _getHiddenFields() {
         $entityFields = self::$_fieldDefinitions;
 
         $hiddenFields = array();

@@ -5763,7 +5763,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Open Sans", Arial, Helvetica, sans-serif;
+  font-family: "Open Sans", "Segoe UI Light", Arial, Helvetica, sans-serif;
   text-transform: lowercase;
   margin: 0; }
 
@@ -5803,7 +5803,7 @@ body {
 .nav-container .branding a {
   color: #90a4b9;
   font-size: 24px;
-  font-family: "Open Sans", Arial, Helvetica, sans-serif; }
+  font-family: "Open Sans", "Segoe UI Light", Arial, Helvetica, sans-serif; }
 
 .nav-container .branding .nav-toggle {
   position: absolute;
@@ -6368,7 +6368,8 @@ label.error {
   margin: 0 24px 0 -40px;
   background: url("../images/spinner-64.gif");
   background-size: 16px 16px;
-  vertical-align: middle; }
+  vertical-align: middle;
+  cursor: default; }
 
 /**
  * selectize.bootstrap3.css (v0.12.4) - Bootstrap 3 Theme

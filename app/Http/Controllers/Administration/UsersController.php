@@ -7,12 +7,15 @@ use Illuminate\Http\Request as Request;
 use App\Http\Controllers\Administration\Controller;
 
 use Carbon\Carbon;
+use Tranquility\Utility;
 use Tranquility\View\AjaxResponse as AjaxResponse;
 use Tranquility\Services\UserService as UserService;
 use Tranquility\Services\PersonService as PersonService;
+use Tranquility\Services\AddressService as AddressService;
 use Tranquility\Enums\System\EntityType as EnumEntityType;
 use Tranquility\Enums\System\TransactionSource as EnumTransactionSource;
 use Tranquility\Enums\System\MessageLevel as EnumMessageLevel;
+use Tranquility\Enums\BusinessObjects\Address\AddressTypes as EnumAddressType;
 
 class UsersController extends Controller {
 
@@ -39,14 +42,21 @@ class UsersController extends Controller {
 	private $_personService;
 
 	/**
+	 * Address service used to create email addresses (if necessary)
+	 * @var \Tranquility\Services\AddressService
+	 */
+	private $_addressService;
+
+	/**
      * Constructor
 	 * Create a new controller instance.
 	 *
 	 * @return void
 	 */
-	public function __construct(UserService $userService, PersonService $personService) {
+	public function __construct(UserService $userService, PersonService $personService, AddressService $addressService) {
 		$this->_userService = $userService;
         $this->_personService = $personService;
+		$this->_addressService = $addressService;
 	}
 
 	/**
@@ -73,12 +83,24 @@ class UsersController extends Controller {
 	 * @param int $id  Entity ID of the user to show
 	 * @return Response
 	 */
-	public function show($id) {
+	public function show($id, Request $request) {
 		$response = $this->_userService->find($id);
 		if ($response->containsErrors()) {
 			// Redirect to index with error message
 			Session::flash('messages', $response->getMessages());
 			return redirect()->action('Administration\UsersController@index');
+		}
+
+		// Get user details 
+		$user = $response->getFirstContentItem();
+
+		// If this was an AJAX request, display user details in a modal dialog
+		if ($request->ajax()) {
+			// Display user details in modal dialog
+			$ajax = new \Tranquility\View\AjaxResponse();
+            $dialog = $this->_renderPartial('administration.users._partials.dialogs.show-user-details', ['user' => $user]);    
+	        $ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
+    	    return Response::json($ajax->toArray());
 		}
 
         // Set flag to indicate if this is viewing the record for the current user
@@ -87,11 +109,13 @@ class UsersController extends Controller {
         if ($currentUser && (count($messages) <= 0)) {
             $this->_addProcessMessage(EnumMessageLevel::Info, 'message_10034_user_viewing_own_record');
         }
-		return view('administration.users.show', ['user' => $response->getFirstContentItem(), 'currentUser' => $currentUser]);
+
+		// Display full page view of user details
+		return view('administration.users.show', ['user' => $user, 'currentUser' => $currentUser]);
 	}
 	
 	/**
-	 * Display page for creating a new person record
+	 * Display page for creating a new user record
 	 *
 	 * @return Response
 	 */
@@ -105,14 +129,41 @@ class UsersController extends Controller {
 	 * @param int $id  Entity ID of the user to update
 	 * @return Response
 	 */
-	public function update($id) {
+	public function update($id, Request $request) {
 		$response = $this->_userService->find($id);
 		if ($response->containsErrors()) {
 			// Redirect to index with error message
 			Session::flash('messages', $response->getMessages());
 			return redirect()->action('Administration\UsersController@index');
 		}
-		return view('administration.users.update')->with('user', $response->getFirstContentItem());
+
+		// Get user details 
+		$user = $response->getFirstContentItem();
+
+		// If this was an AJAX request, display update form in a modal dialog
+		if ($request->ajax()) {
+			// Display user details in modal dialog
+			$ajax = new \Tranquility\View\AjaxResponse();
+            $dialog = $this->_renderPartial('administration.users._partials.dialogs.update-user', ['user' => $user]);    
+	        $ajax->addContent('#modal-content', $dialog, 'core.displayDialog');
+    	    return Response::json($ajax->toArray());
+		}
+
+		return view('administration.users.update')->with('user', $user);
+	}
+
+	private function _returnStandardErrorResponse($messages, $isAjax = false, $target = 'standard') {
+		// If target is the modal dialog, the response will always be an AJAX response message
+		if ($target == 'dialog' || $isAjax) {
+			$ajax = new \Tranquility\View\AjaxResponse();
+			$ajax->addContent('#modal-dialog-container #process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $messages]), 'core.showElement', array('modal-dialog-container #process-message-container'));
+			$ajax->addMessages($this->_renderInlineMessages($messages));
+			return Response::json($ajax->toArray());
+		}
+
+		// Standard request - redirect to previous page with messages flashed to the session
+		Session::flash('messages', $messages);
+		return redirect()->back()->withInput();
 	}
 	
 	/**
@@ -128,29 +179,71 @@ class UsersController extends Controller {
 		// Add in additional audit trail details
 		$params['type'] = EnumEntityType::User;
 		$params['updateBy'] = Auth::user();
-		$params['updateReason'] = 'who knows?';
 		$params['updateDateTime'] = Carbon::now();
 		$params['transactionSource'] = EnumTransactionSource::UIBackend;
 		
 		// Create or update record		
 		if ($id != 0) {
-			$result = $this->_userService->update($id, $params);
+			// Update existing user record
+			$params['updateReason'] = 'Update user details';
+			$response = $this->_userService->update($id, $params);
 		} else {
-			$result = $this->_userService->create($params);
+			// Create new user
+			$params['updateReason'] = 'Create new user';
+			$parentId = $request->input('parentId', 0);
+
+			// Check if a new email address needs to be created
+			if (Utility::extractValue($params, 'usernameOption', 'new') == 'new') {
+				// Use new email address text as username
+				$params['username'] = Utility::extractValue($params, 'addressText', '');
+
+				// Create new email address
+				$emailData = array(
+					'addressType' => 'other',
+					'addressText' => $params['username'],
+					'primaryContact' => 0,
+					'category' => EnumAddressType::Email,
+					'parentId' => $parentId,
+					'updateBy' => Auth::user(),
+					'updateReason' => 'Created as part of new user account',
+					'updateDateTime' => Carbon::now(),
+					'transactionSource' => EnumTransactionSource::UIBackend
+				);
+				$response = $this->_addressService->create($emailData);
+				if ($response->containsErrors()) {
+					return $this->_returnStandardErrorResponse($response->getMessages(), $request->ajax());
+				}
+			} else {
+				// Set username to use existing email address
+				$params['username'] = Utility::extractValue($params, 'existingUsername', '');
+			}
+
+			// Create new user
+			unset($params['usernameOption'], $params['existingUsername'], $params['newUsername']);
+			$response = $this->_userService->create($params);
 		}
-		
-		// Flash messages to session, and check for errors
-		Session::flash('messages', $result->getMessages());
-		if ($result->containsErrors()) {
-			// Errors encountered - redisplay form with error messages
-			return redirect()->back()->withInput();
+
+		// Handle any errors raised during user creation / update
+		if ($response->containsErrors()) {
+			return $this->_returnStandardErrorResponse($response->getMessages(), $request->ajax());
 		}
-		
-		// No errors - update session variables and return to user page
-        $user = $result->getFirstContentItem();
-        Session::set('tranquility.localeFormatCode', $user->localeCode);
-        Session::set('tranquility.timezoneFormatCode', $user->timezoneCode);
-		return redirect()->action('Administration\UsersController@show', ['id' => $user->id]);
+
+		// Return success messages
+		$user = $response->getFirstContentItem();
+		Session::set('tranquility.localeFormatCode', $user->localeCode);
+		Session::set('tranquility.timezoneFormatCode', $user->timezoneCode);
+		if ($request->ajax()) {
+			// Render updated sections of person record
+			$person = $user->getPerson();
+			$ajax = new \Tranquility\View\AjaxResponse();
+			$ajax->addContent('#person-details-container', $this->_renderPartial('administration.people._partials.panels.person-details', ['person' => $person, 'user' => $user, 'account' => $person->getAccount()]));
+			$ajax->addContent('#process-message-container', $this->_renderPartial('administration._partials.errors', ['messages' => $response->getMessages()]), 'core.showElement', array('process-message-container'));
+			$ajax->addCallback('core.closeDialog');
+			return Response::json($ajax->toArray());
+		} else {
+			// Return to user details screen	
+			return redirect()->action('Administration\UsersController@show', ['id' => $user->id]);
+		}
 	}
     
     /** 

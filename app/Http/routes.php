@@ -64,6 +64,9 @@ Route::group(['prefix' => 'administration', 'middleware' => ['administration.aut
 	Route::get ('/accounts/{id}',                    'Administration\AccountsController@show');
 	Route::get ('/accounts/{id}/update',             'Administration\AccountsController@update');
 
+    // Products controller
+    Route::get ('/products',                         'Administration\ProductsController@index');
+
     // Search controller
     Route::any ('/search',                           'Administration\SearchController@index');
     Route::any ('/search/autocomplete',              'Administration\SearchController@autocomplete');

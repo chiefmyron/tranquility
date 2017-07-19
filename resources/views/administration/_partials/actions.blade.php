@@ -9,7 +9,7 @@ if (is_array($primaryAction)) {
 
     $id = '';
     if (isset($primaryAction['id'])) {
-        $id = ' id="' + $primaryAction['id'] + '"';
+        $id = ' id="'.$primaryAction['id'].'"';
     }
 
     $class = "btn btn-primary";

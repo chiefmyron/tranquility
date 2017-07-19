@@ -10,7 +10,7 @@
     </div>
 </li>
 @else
-        <span><a href="{{ action('Administration\UsersController@show', ['id' => $user->id]) }}">{{ $user->username }}</a></span><br />
+        <span><a href="{{ action('Administration\UsersController@show', ['id' => $user->id]) }}" class="ajax" data-ajax-preload-target="modal">{{ $user->username }}</a></span><br />
     @if($user->active)
         <span><strong class="text-success">{{ trans('administration.users_status_active') }}</strong></span>
     @else
