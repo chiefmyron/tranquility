@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers\Administration;
+<?php namespace Tranquility\Http\Controllers\Administration;
 
 use \Session;
 use \Response;

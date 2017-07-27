@@ -1,4 +1,4 @@
-<?php namespace App\Http\Middleware\Administration;
+<?php namespace Tranquility\Http\Middleware\Administration;
 
 use Closure;
 

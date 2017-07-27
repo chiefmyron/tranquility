@@ -1,6 +1,4 @@
-<?php namespace App\Http\Controllers\Administration;
-
-use App\Http\Controllers\Controller;
+<?php namespace Tranquility\Http\Controllers\Administration;
 
 class SettingsController extends Controller {
 

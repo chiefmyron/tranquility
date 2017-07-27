@@ -1,10 +1,9 @@
-<?php namespace App\Http\Controllers\Administration;
+<?php namespace Tranquility\Http\Controllers\Administration;
 
 use \Session as Session;
 use \Response as Response;
 use \Auth as Auth;
 use Illuminate\Http\Request as Request;
-use App\Http\Controllers\Administration\Controller;
 
 use Carbon\Carbon;
 use Tranquility\Utility;
@@ -132,7 +131,7 @@ class PeopleController extends Controller {
 		}
         
         // Display full page
-		return view('administration.peoplle.update')->with($data);
+		return view('administration.people.update')->with($data);
 	}
 	
 	/**

@@ -1,6 +1,4 @@
-<?php
-
-namespace Tranquility\Providers;
+<?php namespace Tranquility\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

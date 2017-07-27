@@ -1,6 +1,6 @@
-<?php namespace App\Http\Controllers\Administration;
+<?php namespace Tranquility\Http\Controllers\Administration;
 
-use App\Http\Controllers\Administration\Controller;
+use Tranquility\Http\Controllers\Administration\Controller;
 
 class HomeController extends Controller {
 

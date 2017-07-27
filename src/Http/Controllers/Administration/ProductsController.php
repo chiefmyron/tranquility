@@ -1,6 +1,4 @@
-<?php namespace App\Http\Controllers\Administration;
-
-use App\Http\Controllers\Administration\Controller;
+<?php namespace Tranquility\Http\Controllers\Administration;
 
 class ProductsController extends Controller {
 

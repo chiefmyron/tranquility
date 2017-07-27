@@ -50,6 +50,11 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        // Administration-specific middlewares
+		'administration.auth'    => 'Tranquility\Http\Middleware\Administration\AuthenticationRequired',
+		'administration.guest'   => 'Tranquility\Http\Middleware\Administration\RedirectIfAuthenticated',
+		'administration.noCache' => 'Tranquility\Http\Middleware\Administration\SetNoCacheHeaders',		
+
         'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,

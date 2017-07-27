@@ -1,10 +1,9 @@
-<?php namespace App\Http\Controllers\Administration;
+<?php namespace Tranquility\Http\Controllers\Administration;
 
 use \Session as Session;
 use \Response as Response;
 use \Auth as Auth;
 use Illuminate\Http\Request as Request;
-use App\Http\Controllers\Administration\Controller;
 
 use Carbon\Carbon;
 use Tranquility\Utility;
@@ -230,8 +229,8 @@ class UsersController extends Controller {
 
 		// Return success messages
 		$user = $response->getFirstContentItem();
-		Session::set('tranquility.localeFormatCode', $user->localeCode);
-		Session::set('tranquility.timezoneFormatCode', $user->timezoneCode);
+		Session::put('tranquility.localeFormatCode', $user->localeCode);
+		Session::put('tranquility.timezoneFormatCode', $user->timezoneCode);
 		if ($request->ajax()) {
 			// Render updated sections of person record
 			$person = $user->getPerson();

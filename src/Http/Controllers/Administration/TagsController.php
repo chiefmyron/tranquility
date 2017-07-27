@@ -1,11 +1,10 @@
-<?php namespace App\Http\Controllers\Administration;
+<?php namespace Tranquility\Http\Controllers\Administration;
 
 use \Exception as Exception;
 use \Session as Session;
 use \Response as Response;
 use \Auth as Auth;
 use Illuminate\Http\Request as Request;
-use App\Http\Controllers\Administration\Controller;
 
 use Carbon\Carbon;
 use Tranquility\View\AjaxResponse                          as AjaxResponse;
