@@ -10,7 +10,7 @@ class EventServiceProvider extends ServiceProvider {
      * @var array
      */
     protected $listen = array(
-        'Illuminate\Auth\Events\Login' => array('App\Listeners\SetUserTimezoneAndLocale')
+        'Illuminate\Auth\Events\Login' => array('Tranquility\Listeners\SetUserTimezoneAndLocale')
 	);
 
     /**

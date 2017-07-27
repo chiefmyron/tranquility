@@ -190,7 +190,7 @@ class AuthController extends Controller {
 	 */
 	public function logout() {
 		$this->auth->logout();
-		return redirect(property_exists($this, 'redirectAfterLogout') ? $this->redirectAfterLogout : action('WelcomeController@index'));
+		return redirect(property_exists($this, 'redirectAfterLogout') ? $this->redirectAfterLogout : action('Frontend\HomeController@index'));
 	}
 
 	/**
